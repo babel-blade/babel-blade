@@ -1,0 +1,12 @@
+{
+	"name": "babel-boilerplate.macro",
+	"version": "0.0.1",
+	"description": "DESCRIBE YOUR MACRO",
+	"main": "index.js",
+	"keywords": [ "babel-macros", "babel-plugin-macros" ],
+	"author": "YOUR NAME <your@name.com> (http://YOURURL.com/)",
+	"license": "MIT",
+	"dependencies": {
+		"babel-plugin-boilerplate": "^0.0.1"
+	}
+}
