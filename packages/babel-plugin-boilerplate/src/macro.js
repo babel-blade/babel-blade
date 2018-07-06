@@ -1,8 +1,8 @@
-const { createMacro } = require('babel-plugin-macros');
-const { getReplacement } = require('./helpers');
+const { createMacro } = require('babel-plugin-macros')
+const { getReplacement } = require('./helpers')
 
-module.exports = createMacro(prevalMacros);
+module.exports = createMacro(yourNewMacro)
 
-function prevalMacros({ references, state, babel }) {
-	// do something here
+function yourNewMacro({ references, state, babel }) {
+  // do something here
 }

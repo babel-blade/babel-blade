@@ -1,1 +1,9 @@
 node_modules
+coverage
+dist
+.opt-in
+.opt-out
+*.log
+
+package-lock.json
+yarn.lock
