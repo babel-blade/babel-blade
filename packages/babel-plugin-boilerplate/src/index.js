@@ -1,5 +1,5 @@
 // const getReplacers = require('./replace')
-// const {isCodegenComment, looksLike} = require('./helpers')
+// const {looksLike} = require('./helpers')
 
 // TODO: WRITE BABEL PLUGIN
 // TODO: ???

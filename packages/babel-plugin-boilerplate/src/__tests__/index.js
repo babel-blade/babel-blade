@@ -18,38 +18,38 @@ pluginTester({
   snapshot: true,
   babelOptions: {filename: __filename},
   tests: {
-    // 'does not touch non-codegen code': {
+    // 'does not touch non-boilerplate code': {
     //   snapshot: false,
-    //   code: 'const x = notCodegen`module.exports = "nothing"`;',
+    //   code: 'const x = notboilerplate`module.exports = "nothing"`;',
     // },
-    'basic value': 'const x = codegen`module.exports = "1"`',
+    'basic value': 'const x = boilerplate`module.exports = "1"`',
     // 'simple variable assignment':
-    //   'codegen`module.exports = "var x = \'some directive\'"`',
+    //   'boilerplate`module.exports = "var x = \'some directive\'"`',
     // 'object with arrow function': `
-    //   const y = codegen\`
+    //   const y = boilerplate\`
     //     module.exports = '({booyah: () => "booyah"})'
     //   \`
     // `,
     // 'must export a string': {
-    //   code: 'const y = codegen`module.exports = {}`',
+    //   code: 'const y = boilerplate`module.exports = {}`',
     //   error: true,
     // },
-    // 'codegen comment': `
-    //   // @codegen
+    // 'boilerplate comment': `
+    //   // @boilerplate
     //   const array = ['apple', 'orange', 'pear']
     //   module.exports = array
     //     .map(fruit => \`export const \${fruit} = "\${fruit}";\`)
     //     .join('')
     // `,
     // 'dynamic value that is wrong': {
-    //   code: `const x = codegen\`module.exports = "\${dynamic}"\``,
+    //   code: `const x = boilerplate\`module.exports = "\${dynamic}"\``,
     //   error: true,
     // },
-    // 'import comment': 'import /* codegen */ "./fixtures/assign-one.js"',
+    // 'import comment': 'import /* boilerplate */ "./fixtures/assign-one.js"',
     // 'import comment with extra comments after':
-    //   'import /* codegen */ /* this is extra stuff */ "./fixtures/assign-one.js"',
+    //   'import /* boilerplate */ /* this is extra stuff */ "./fixtures/assign-one.js"',
     // 'import comment with extra comments before':
-    //   'import /* this is extra stuff */ /* codegen */ "./fixtures/assign-one.js"',
+    //   'import /* this is extra stuff */ /* boilerplate */ "./fixtures/assign-one.js"',
     // 'does not touch import comments that are irrelevant': {
     //   code: 'import /* this is extra stuff */"./fixtures/assign-one.js";',
     //   snapshot: false,
@@ -65,7 +65,7 @@ pluginTester({
 //   tests: {
 //     'handles some dynamic values': `
 //       const three = 3
-//       const x = codegen\`module.exports = "\${three}"\`
+//       const x = boilerplate\`module.exports = "\${three}"\`
 //     `,
 //     'accepts babels parser options for generated code': {
 //       babelOptions: {
@@ -73,7 +73,7 @@ pluginTester({
 //         parserOpts: {plugins: ['flow', 'doExpressions']},
 //       },
 //       code: `
-//         // @codegen
+//         // @boilerplate
 //         module.exports = "var fNum: number = do { if(true) {100} else {200} };"
 //       `,
 //     },

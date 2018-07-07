@@ -1,6 +1,6 @@
 {
-  "projectName": "babel-plugin-codegen",
-  "projectOwner": "kentcdodds",
+  "projectName": "babel-plugin-boilerplate",
+  "projectOwner": "sw-yx",
   "files": [
     "README.md"
   ],

@@ -134,7 +134,7 @@ require('babel-core').transform('code', {
 
 Once you've
 [configured `babel-plugin-macros`](https://github.com/kentcdodds/babel-plugin-macros/blob/master/other/docs/user.md)
-you can import/require the codegen macro at `babel-plugin-boilerplate/macro`. For
+you can import/require the boilerplate macro at `babel-plugin-boilerplate/macro`. For
 example:
 
 ```javascript
@@ -165,7 +165,7 @@ any caveats you like to say
 
 ## Inspiration
 
-This is based on [babel-plugin-codegen](https://github.com/kentcdodds/babel-plugin-codegen).
+This is based on [babel-plugin-boilerplate](https://github.com/kentcdodds/babel-plugin-boilerplate).
 
 ## Other Solutions
 
@@ -178,7 +178,7 @@ Thanks goes to these people ([emoji key][emojis]):
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore -->
-| [<img src="https://avatars.githubusercontent.com/u/1500684?v=3" width="100px;"/><br /><sub><b>Kent C. Dodds</b></sub>](https://kentcdodds.com)<br />[💻](https://github.com/kentcdodds/babel-plugin-codegen/commits?author=kentcdodds "Code") [📖](https://github.com/kentcdodds/babel-plugin-codegen/commits?author=kentcdodds "Documentation") [🚇](#infra-kentcdodds "Infrastructure (Hosting, Build-Tools, etc)") [⚠️](https://github.com/kentcdodds/babel-plugin-codegen/commits?author=kentcdodds "Tests") | [<img src="https://avatars1.githubusercontent.com/u/1958812?v=4" width="100px;"/><br /><sub><b>Michael Rawlings</b></sub>](https://github.com/mlrawlings)<br />[💻](https://github.com/kentcdodds/babel-plugin-codegen/commits?author=mlrawlings "Code") [📖](https://github.com/kentcdodds/babel-plugin-codegen/commits?author=mlrawlings "Documentation") [⚠️](https://github.com/kentcdodds/babel-plugin-codegen/commits?author=mlrawlings "Tests") | [<img src="https://avatars3.githubusercontent.com/u/5230863?v=4" width="100px;"/><br /><sub><b>Jan Willem Henckel</b></sub>](https://jan.cologne)<br />[💻](https://github.com/kentcdodds/babel-plugin-codegen/commits?author=djfarly "Code") [📖](https://github.com/kentcdodds/babel-plugin-codegen/commits?author=djfarly "Documentation") [⚠️](https://github.com/kentcdodds/babel-plugin-codegen/commits?author=djfarly "Tests") | [<img src="https://avatars3.githubusercontent.com/u/1824298?v=4" width="100px;"/><br /><sub><b>Karan Thakkar</b></sub>](https://twitter.com/geekykaran)<br />[📖](https://github.com/kentcdodds/babel-plugin-codegen/commits?author=karanjthakkar "Documentation") |
+| [<img src="https://avatars.githubusercontent.com/u/1500684?v=3" width="100px;"/><br /><sub><b>Kent C. Dodds</b></sub>](https://kentcdodds.com)<br />[💻](https://github.com/sw-yx/babel-plugin-boilerplate/commits?author=kentcdodds "Code") [📖](https://github.com/sw-yx/babel-plugin-boilerplate/commits?author=kentcdodds "Documentation") [🚇](#infra-kentcdodds "Infrastructure (Hosting, Build-Tools, etc)") [⚠️](https://github.com/sw-yx/babel-plugin-boilerplate/commits?author=kentcdodds "Tests") | [<img src="https://avatars1.githubusercontent.com/u/1958812?v=4" width="100px;"/><br /><sub><b>Michael Rawlings</b></sub>](https://github.com/mlrawlings)<br />[💻](https://github.com/sw-yx/babel-plugin-boilerplate/commits?author=mlrawlings "Code") [📖](https://github.com/sw-yx/babel-plugin-boilerplate/commits?author=mlrawlings "Documentation") [⚠️](https://github.com/sw-yx/babel-plugin-boilerplate/commits?author=mlrawlings "Tests") | [<img src="https://avatars3.githubusercontent.com/u/5230863?v=4" width="100px;"/><br /><sub><b>Jan Willem Henckel</b></sub>](https://jan.cologne)<br />[💻](https://github.com/sw-yx/babel-plugin-boilerplate/commits?author=djfarly "Code") [📖](https://github.com/sw-yx/babel-plugin-boilerplate/commits?author=djfarly "Documentation") [⚠️](https://github.com/sw-yx/babel-plugin-boilerplate/commits?author=djfarly "Tests") | [<img src="https://avatars3.githubusercontent.com/u/1824298?v=4" width="100px;"/><br /><sub><b>Karan Thakkar</b></sub>](https://twitter.com/geekykaran)<br />[📖](https://github.com/sw-yx/babel-plugin-boilerplate/commits?author=karanjthakkar "Documentation") |
 | :---: | :---: | :---: | :---: |
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
@@ -194,21 +194,21 @@ MIT
 
 [npm]: https://www.npmjs.com/
 [node]: https://nodejs.org
-[build-badge]: https://img.shields.io/travis/kentcdodds/babel-plugin-codegen.svg?style=flat-square
-[build]: https://travis-ci.org/kentcdodds/babel-plugin-codegen
-[coverage-badge]: https://img.shields.io/codecov/c/github/kentcdodds/babel-plugin-codegen.svg?style=flat-square
-[coverage]: https://codecov.io/github/kentcdodds/babel-plugin-codegen
-[version-badge]: https://img.shields.io/npm/v/babel-plugin-codegen.svg?style=flat-square
-[package]: https://www.npmjs.com/package/babel-plugin-codegen
-[downloads-badge]: https://img.shields.io/npm/dm/babel-plugin-codegen.svg?style=flat-square
-[npmtrends]: http://www.npmtrends.com/babel-plugin-codegen
-[license-badge]: https://img.shields.io/npm/l/babel-plugin-codegen.svg?style=flat-square
-[license]: https://github.com/kentcdodds/babel-plugin-codegen/blob/master/LICENSE
+[build-badge]: https://img.shields.io/travis/kentcdodds/babel-plugin-boilerplate.svg?style=flat-square
+[build]: https://travis-ci.org/kentcdodds/babel-plugin-boilerplate
+[coverage-badge]: https://img.shields.io/codecov/c/github/kentcdodds/babel-plugin-boilerplate.svg?style=flat-square
+[coverage]: https://codecov.io/github/kentcdodds/babel-plugin-boilerplate
+[version-badge]: https://img.shields.io/npm/v/babel-plugin-boilerplate.svg?style=flat-square
+[package]: https://www.npmjs.com/package/babel-plugin-boilerplate
+[downloads-badge]: https://img.shields.io/npm/dm/babel-plugin-boilerplate.svg?style=flat-square
+[npmtrends]: http://www.npmtrends.com/babel-plugin-boilerplate
+[license-badge]: https://img.shields.io/npm/l/babel-plugin-boilerplate.svg?style=flat-square
+[license]: https://github.com/kentcdodds/babel-plugin-boilerplate/blob/master/LICENSE
 [prs-badge]: https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square
 [prs]: http://makeapullrequest.com
 [donate-badge]: https://img.shields.io/badge/$-support-green.svg?style=flat-square
 [coc-badge]: https://img.shields.io/badge/code%20of-conduct-ff69b4.svg?style=flat-square
-[coc]: https://github.com/kentcdodds/babel-plugin-codegen/blob/master/other/CODE_OF_CONDUCT.md
+[coc]: https://github.com/kentcdodds/babel-plugin-boilerplate/blob/master/other/CODE_OF_CONDUCT.md
 [emojis]: https://github.com/kentcdodds/all-contributors#emoji-key
 [all-contributors]: https://github.com/kentcdodds/all-contributors
 [glamorous]: https://github.com/paypal/glamorous
