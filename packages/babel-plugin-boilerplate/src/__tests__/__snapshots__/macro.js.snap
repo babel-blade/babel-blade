@@ -1,0 +1,14 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`macros as tag: as tag 1`] = `
+
+import boilerplate from '../macro'
+const greeting = 'Hello world!'
+boilerplate\`module.exports = "module.exports = '\${greeting}';"\`
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+const greeting = 'Hello world!';
+boilerplate\`module.exports = "module.exports = '\${greeting}';"\`;
+
+`;

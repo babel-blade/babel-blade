@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ast-transform basic value: basic value 1`] = `
+
+const x = codegen\`module.exports = "1"\`
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+const x = negedoc\`module.exports = "1"\`;
+
+`;
