@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ast-transform basic value: basic value 1`] = `
+
+const x = boilerplate\`module.exports = "1"\`
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+const x = etalpreliob\`module.exports = "1"\`;
+
+`;
