@@ -11,7 +11,7 @@ never done that before, that's great! Check this free short video tutorial to
 learn how: http://kcd.im/pull-request
 -->
 
-- `babel-plugin-preval` version:
+- `babel-plugin-codegen` version:
 - `node` version:
 - `npm` (or `yarn`) version:
 

@@ -10,6 +10,6 @@ You should have read through the [babel handbook](https://github.com/jamiebuilds
 
 ## Usage
 
-Clone, not fork, this repo. Write your plugin and tests in `babel-plugin-boilerplate`, and then handle the macro portion in `babel-boilerplate.macro`. Rename both of them to whatever your new name is.
+Clone, not fork, this repo. Write your plugin and tests in `babel-plugin-boilerplate`, and then handle the macro portion in `boilerplate.macro`. Rename both of them to whatever your new name is.
 
 When you are done writing and testing, run `lerna publish` from this root level and you should be good to go.
