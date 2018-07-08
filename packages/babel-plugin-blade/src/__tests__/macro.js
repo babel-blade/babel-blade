@@ -19,9 +19,9 @@ pluginTester({
   babelOptions: {filename: __filename, parserOpts: {plugins: ['jsx']}},
   tests: {
     'as tag': `
-      import boilerplate from '../macro'
+      import blade from '../macro'
       const greeting = 'Hello world!'
-      boilerplate\`module.exports = "module.exports = '\${greeting}';"\`
+      blade\`module.exports = "module.exports = '\${greeting}';"\`
     `,
     // 'as function': `
     //   const myCodgen = require('../macro')
@@ -30,37 +30,37 @@ pluginTester({
     //   \`)
     // `,
     // 'as jsx': `
-    //   const boilerplate = require('../macro')
+    //   const blade = require('../macro')
     //   const ui = (
-    //     <boilerplate>{"module.exports = '<div>Hi</div>'"}</boilerplate>
+    //     <blade>{"module.exports = '<div>Hi</div>'"}</blade>
     //   )
     // `,
     // 'as jsx with tag': `
-    //   const boilerplate = require('../macro')
+    //   const blade = require('../macro')
     //   const ui = (
-    //     <boilerplate>{\`module.exports = '<div>Hi</div>'\`}</boilerplate>
+    //     <blade>{\`module.exports = '<div>Hi</div>'\`}</blade>
     //   )
     // `,
     // 'with multiple': `
-    //   import boilerplate from '../macro'
+    //   import blade from '../macro'
 
-    //   boilerplate\`module.exports = ['a', 'b', 'c'].map(l => 'export const ' + l + ' = ' + JSON.stringify(l)).join(';')\`
+    //   blade\`module.exports = ['a', 'b', 'c'].map(l => 'export const ' + l + ' = ' + JSON.stringify(l)).join(';')\`
     // `,
     // 'as require call': `
-    //   import boilerplate from '../macro';
-    //   var x = boilerplate.require('./fixtures/return-one');
+    //   import blade from '../macro';
+    //   var x = blade.require('./fixtures/return-one');
     // `,
     // 'invalid usage: as fn argument': {
     //   code: `
-    //     import boilerplate from '../macro';
-    //     var x = doSomething(boilerplate);
+    //     import blade from '../macro';
+    //     var x = doSomething(blade);
     //   `,
     //   error: true,
     // },
     // 'invalid usage: missing code string': {
     //   code: `
-    //     import boilerplate from '../macro';
-    //     var x = boilerplate;
+    //     import blade from '../macro';
+    //     var x = blade;
     //   `,
     //   error: true,
     // },

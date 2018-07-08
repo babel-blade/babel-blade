@@ -1,0 +1,128 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`babel-blade basic test of functionality: basic test of functionality 1`] = `
+
+import { Connect, query } from 'urql';
+
+const movieQuery = createQuery(); // doesnt take arguments for now
+const Movie = ({ id, onClose }) => (
+	<div>
+		<Connect
+			query={query(movieQuery, { id: id })} // razor transpiles into a query string
+			children={({ data }) => {
+				const DATA = movieQuery(data); // razor(foobar) initializes DATA as a blade, names query as DATA
+				const movie = DATA.movie; // \`movie\` is an alias. \`movie\` is also a blade now
+				return (
+					<div>
+						<h2>{movie.gorilla}</h2>
+						<p>{movie.monkey}</p>
+						<p>{DATA.chimp}</p>
+					</div>
+				);
+			}}
+		/>
+	</div>
+);
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+import { Connect, query } from 'urql';
+
+// doesnt take arguments for now
+const Movie = ({ id, onClose }) => <div>
+		<Connect query={query(\`
+query {
+  movie {
+    gorilla
+    monkey
+  }
+  chimp
+}
+\`, { id: id })} // razor transpiles into a query string
+	children={({ data }) => {
+		const DATA = data; // razor(foobar) initializes DATA as a blade, names query as DATA
+		const movie = DATA.movie; // \`movie\` is an alias. \`movie\` is also a blade now
+		return <div>
+						<h2>{movie.gorilla}</h2>
+						<p>{movie.monkey}</p>
+						<p>{DATA.chimp}</p>
+					</div>;
+	}} />
+	</div>;
+
+`;
+
+exports[`babel-blade injection of fragments: injection of fragments 1`] = `
+
+import { Connect, query } from 'urql';
+
+const fragment = createFragment('Movie');
+const Movie = ({ data }) => {
+	let result = fragment(data);
+	let movie = result.movie;
+	return (
+		<div>
+			<h2>{movie.test.title}</h2>
+			<p>{movie.foo}</p>
+		</div>
+	);
+};
+Movie.fragment = fragment;
+
+const pageQuery = createQuery(); // create a top-level query
+const App = () => (
+	// rendering Movie automatically composes \`Movie.fragment\` into the query.
+	<Connect
+		query={query(pageQuery)}
+		children={({ loaded, data }) => {
+			let result2 = pageQuery(data);
+			return (
+				<div>
+					<h1>{result2.monkey}</h1>
+					<Movie data={result2.movie} />
+				</div>
+			);
+		}}
+	/>
+);
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+import { Connect, query } from 'urql';
+
+const Movie = ({ data }) => {
+	let result = data;
+	let movie = result.movie;
+	return <div>
+			<h2>{movie.test.title}</h2>
+			<p>{movie.foo}</p>
+		</div>;
+};
+Movie.fragment = \`
+fragment movieFragment on Movie {
+  movie {
+    test {
+      title
+    }
+    foo
+  }
+}
+\`;
+
+// create a top-level query
+const App = () =>
+// rendering Movie automatically composes \`Movie.fragment\` into the query.
+<Connect query={query(\`
+query {
+  monkey
+  movie
+}
+\`)} children={({ loaded, data }) => {
+	let result2 = data;
+	return <div>
+					<h1>{result2.monkey}</h1>
+					<Movie data={result2.movie} />
+				</div>;
+}} />;
+
+`;

@@ -13,43 +13,51 @@ expect.addSnapshotSerializer({
   },
 })
 
+const error = code => ({code, error: true})
+const noSnapshot = code => ({code, snapshot: false})
+const fixture = filename => ({
+  fixture: require.resolve(`./fixtures/${filename}`),
+})
+
 pluginTester({
   plugin,
   snapshot: true,
   babelOptions: {filename: __filename},
   tests: {
-    // 'does not touch non-boilerplate code': {
+    'basic test of functionality': fixture('basic'),
+    'injection of fragments': fixture('fragment'),
+    // 'does not touch non-blade code': {
     //   snapshot: false,
-    //   code: 'const x = notboilerplate`module.exports = "nothing"`;',
+    //   code: 'const x = notblade`module.exports = "nothing"`;',
     // },
-    'basic value': 'const x = boilerplate`module.exports = "1"`',
+    // 'basic value': 'const x = blade`module.exports = "1"`'
     // 'simple variable assignment':
-    //   'boilerplate`module.exports = "var x = \'some directive\'"`',
+    //   'blade`module.exports = "var x = \'some directive\'"`',
     // 'object with arrow function': `
-    //   const y = boilerplate\`
+    //   const y = blade\`
     //     module.exports = '({booyah: () => "booyah"})'
     //   \`
     // `,
     // 'must export a string': {
-    //   code: 'const y = boilerplate`module.exports = {}`',
+    //   code: 'const y = blade`module.exports = {}`',
     //   error: true,
     // },
-    // 'boilerplate comment': `
-    //   // @boilerplate
+    // 'blade comment': `
+    //   // @blade
     //   const array = ['apple', 'orange', 'pear']
     //   module.exports = array
     //     .map(fruit => \`export const \${fruit} = "\${fruit}";\`)
     //     .join('')
     // `,
     // 'dynamic value that is wrong': {
-    //   code: `const x = boilerplate\`module.exports = "\${dynamic}"\``,
+    //   code: `const x = blade\`module.exports = "\${dynamic}"\``,
     //   error: true,
     // },
-    // 'import comment': 'import /* boilerplate */ "./fixtures/assign-one.js"',
+    // 'import comment': 'import /* blade */ "./fixtures/assign-one.js"',
     // 'import comment with extra comments after':
-    //   'import /* boilerplate */ /* this is extra stuff */ "./fixtures/assign-one.js"',
+    //   'import /* blade */ /* this is extra stuff */ "./fixtures/assign-one.js"',
     // 'import comment with extra comments before':
-    //   'import /* this is extra stuff */ /* boilerplate */ "./fixtures/assign-one.js"',
+    //   'import /* this is extra stuff */ /* blade */ "./fixtures/assign-one.js"',
     // 'does not touch import comments that are irrelevant': {
     //   code: 'import /* this is extra stuff */"./fixtures/assign-one.js";',
     //   snapshot: false,
@@ -65,7 +73,7 @@ pluginTester({
 //   tests: {
 //     'handles some dynamic values': `
 //       const three = 3
-//       const x = boilerplate\`module.exports = "\${three}"\`
+//       const x = blade\`module.exports = "\${three}"\`
 //     `,
 //     'accepts babels parser options for generated code': {
 //       babelOptions: {
@@ -73,7 +81,7 @@ pluginTester({
 //         parserOpts: {plugins: ['flow', 'doExpressions']},
 //       },
 //       code: `
-//         // @boilerplate
+//         // @blade
 //         module.exports = "var fNum: number = do { if(true) {100} else {200} };"
 //       `,
 //     },
