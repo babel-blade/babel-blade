@@ -3,6 +3,9 @@ import semver from 'semver'
 import jsx from '@babel/plugin-syntax-jsx'
 import jsx6 from 'babel-plugin-syntax-jsx'
 
+// data structure
+const {BladeData, RazorData} = require('./dataStructures')
+
 /****
  *
  * Discussion of babel strategy
@@ -42,11 +45,16 @@ export default function(babel) {
           const refs = path.scope.bindings[identifier].referencePaths
           if (refs.length > 0) {
             let razorID = null
-            let razorType = path.parent.arguments.length
+            let fragmentType = path.parent.arguments.length
               ? path.parent.arguments[0].value
-              : ''
+              : null
             let queryType = isCreateFragment(path) ? 'fragment' : 'query'
-            let razorSet = {} // the core datastructure
+            let razorData = new RazorData({
+              type: queryType,
+              name: identifier,
+              fragmentType,
+              // todo: implement args
+            })
             refs.forEach(razor => {
               // go through all razors
               if (isCallee(razor)) {
@@ -56,18 +64,24 @@ export default function(babel) {
                 if (razor.container.arguments[0])
                   razor.parentPath.replaceWith(razor.container.arguments[0])
                 else razor.parentPath.remove()
-                parseBlade(razor, razorID, razorSet, queryType)
+                parseBlade(razor, razorID, razorData)
               }
             })
 
+            // TODO: FIX THIS
             // insert query
             refs.forEach(razor => {
               if (!isObject(razor)) {
                 let fragmentName = getFragmentName(razor)
+                //razor.replaceWithSourceString(razorData.print())
                 razor.replaceWith(
-                  queryType === 'fragment'
-                    ? generateFragment(fragmentName, razorType, razorSet)
-                    : generateQuery(razorSet),
+                  t.templateLiteral(
+                    [t.templateElement({raw: razorData.print()})],
+                    [],
+                  ),
+                  // queryType === 'fragment'
+                  //   ? generateFragment(fragmentName, fragmentType, razorSet)
+                  //   : generateQuery(razorSet),
                 )
               }
             })
@@ -130,47 +144,55 @@ export default function(babel) {
       ),
     )
   }
-}
 
-const isReference = Symbol('isReference')
+  function parseBlade(path, id, razorData) {
+    const refs =
+      path.scope.bindings[id] && path.scope.bindings[id].referencePaths
+    // console.log('parseblade', { refs, id, razorSet, path });
 
-function parseBlade(path, id, razorSet, queryType) {
-  const refs = path.scope.bindings[id] && path.scope.bindings[id].referencePaths
-  // console.log('parseblade', { refs, id, razorSet, path });
-
-  if (refs && refs.length > 0) {
-    // there has been an assignment and it has been used
-    refs.forEach(blade => {
-      if (isObject(blade)) {
-        const bladeID = getAssignTarget(blade)
-        if (bladeID) {
-          // there was an assignment. new blade!
-          safeAdd(razorSet, bladeID, {})
-          parseBlade(blade, bladeID, razorSet[bladeID])
-        } else {
-          // no assignment. traverse children!
-          const propID = getObjectPropertyName(blade)
-          safeAdd(razorSet, propID, {})
-          const ref = getJSXReference(blade)
-          // console.log({ blade });
-          if (queryType === 'fragment' && ref) {
-            safeAdd(razorSet[propID], ref, {[isReference]: true})
+    if (refs && refs.length > 0) {
+      // there has been an assignment and it has been used
+      refs.forEach(blade => {
+        if (isObject(blade)) {
+          const bladeID = getAssignTarget(blade)
+          if (bladeID) {
+            // there was an assignment. new blade, with an alias
+            const propID = getObjectPropertyName(blade)
+            blade.parentPath.get('property').replaceWith(t.Identifier(bladeID)) // when the query comes back it uses the alias' name
+            // console.log({blade: blade.parentPath.get('property'), bladeID, propID})
+            const child = razorData.add({name: propID, alias: bladeID})
+            parseBlade(blade, bladeID, child)
+          } else {
+            // no assignment. traverse children!
+            const propID = getObjectPropertyName(blade)
+            const child = razorData.add({name: propID})
+            // const ref = getJSXReference(blade);
+            // // console.log({ blade });
+            // if (queryType === 'fragment' && ref) {
+            // 	safeAdd(razorSet[propID], ref, { [isReference]: true });
+            // }
+            parseBlade(blade.parentPath, propID, child)
           }
-          parseBlade(blade.parentPath, propID, razorSet[propID])
+        } else if (isCallee(blade)) {
+          // handleBlade(blade)
+        } else {
+          const bladeID = getAssignTarget2(blade)
+          if (bladeID) {
+            // blade was assigned without calling
+            parseBlade(blade, bladeID, razorData)
+          } else {
+            console.log('illegal call', blade)
+          }
         }
-      } else if (isCallee(blade)) {
-        // handleBlade(blade)
-      } else {
-        console.log('illegal call', blade)
+      })
+    } else {
+      // there has been no assignment or it has not been used
+      const bladeID = getObjectPropertyName(path)
+      if (bladeID) {
+        const propID = getObjectPropertyName(path)
+        const child = razorData.add({name: propID})
+        parseBlade(path.parentPath, propID, child)
       }
-    })
-  } else {
-    // there has been no assignment or it has not been used
-    const bladeID = getObjectPropertyName(path)
-    if (bladeID) {
-      const propID = getObjectPropertyName(path)
-      safeAdd(razorSet, propID, {})
-      parseBlade(path.parentPath, propID, razorSet[propID])
     }
   }
 }
@@ -179,6 +201,10 @@ function getAssignTarget(path) {
   return path.parentPath.container.id
     ? path.parentPath.container.id.name
     : undefined
+}
+
+function getAssignTarget2(path) {
+  return path.container.id ? path.container.id.name : undefined
 }
 
 function getObjectPropertyName(path) {

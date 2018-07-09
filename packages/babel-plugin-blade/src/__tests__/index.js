@@ -25,7 +25,8 @@ pluginTester({
   babelOptions: {filename: __filename},
   tests: {
     'basic test of functionality': fixture('basic'),
-    'injection of fragments': fixture('fragment'),
+    'aliases work': fixture('alias'),
+    // 'injection of fragments': fixture('fragment'),
     // 'does not touch non-blade code': {
     //   snapshot: false,
     //   code: 'const x = notblade`module.exports = "nothing"`;',
