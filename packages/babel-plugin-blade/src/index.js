@@ -4,7 +4,7 @@ import jsx from '@babel/plugin-syntax-jsx'
 import jsx6 from 'babel-plugin-syntax-jsx'
 
 // data structure
-const {BladeData, RazorData} = require('./dataStructures')
+const {RazorData} = require('./dataStructures')
 
 /****
  *
@@ -20,6 +20,7 @@ const {BladeData, RazorData} = require('./dataStructures')
  * 				recursively call parseBlade on the blade
  * 	once all blades are parsed, compose and insert the graphql query where the razor is referenced
  *
+ * // the below has been rewritten and is slightly outdated, see the dataStructures file
  * along the way we build up a datastructure called the razorSet.
  * 	it is just a POJO with all the fields requested.
  * 	since every field can have query arguments, we store it alongside as __args
@@ -28,28 +29,34 @@ const {BladeData, RazorData} = require('./dataStructures')
  **/
 
 export default function(babel) {
-  const {types: t, template, traverse, version} = babel
+  const {
+    types: t,
+    // template,
+    // traverse,
+    version,
+  } = babel
   const babel6 = semver.satisfies(version, '^6.0.0')
 
   return {
     name: 'babel-blade', // not required
     inherits: babel6 ? jsx6 : jsx, // for jsx/babel6-7 interop
     visitor: {
+      // eslint-disable-next-line complexity
       Identifier(path) {
         if (isCreateQuery(path) || isCreateFragment(path)) {
           // get the identifier
           const identifier = getAssignTarget(path)
           // clear the reference
-          path.findParent(path => path.isVariableDeclaration()).remove()
+          path.findParent(ppath => ppath.isVariableDeclaration()).remove()
           // traverse scope for identifier references
           const refs = path.scope.bindings[identifier].referencePaths
           if (refs.length > 0) {
             let razorID = null
-            let fragmentType = path.parent.arguments.length
+            const fragmentType = path.parent.arguments.length
               ? path.parent.arguments[0].value
               : null
-            let queryType = isCreateFragment(path) ? 'fragment' : 'query'
-            let razorData = new RazorData({
+            const queryType = isCreateFragment(path) ? 'fragment' : 'query'
+            const razorData = new RazorData({
               type: queryType,
               name: identifier,
               fragmentType,
@@ -68,17 +75,16 @@ export default function(babel) {
               }
             })
 
-            // TODO: FIX THIS
             // insert query
             refs.forEach(razor => {
               if (!isObject(razor)) {
-                let fragmentName = getFragmentName(razor)
                 //razor.replaceWithSourceString(razorData.print())
                 razor.replaceWith(
                   t.templateLiteral(
                     [t.templateElement({raw: razorData.print()})],
                     [],
                   ),
+                  // const fragmentName = getFragmentName(razor)
                   // queryType === 'fragment'
                   //   ? generateFragment(fragmentName, fragmentType, razorSet)
                   //   : generateQuery(razorSet),
@@ -89,60 +95,6 @@ export default function(babel) {
         }
       },
     },
-  }
-
-  function generateFields(obj, references, indent = '  ') {
-    // console.log('generateFields', {obj, references})
-    return (
-      indent +
-      Object.keys(obj)
-        .map(key => {
-          let name = key
-          if (obj[key][isReference]) {
-            name = `...${key[0].toLowerCase() + key.slice(1) + 'Fragment'}`
-            references.add(key)
-          }
-          return (
-            `${name}` +
-            (Object.keys(obj[key]).length
-              ? ` {\n` +
-                generateFields(obj[key], references, indent + '  ') +
-                `\n${indent}}`
-              : '')
-          )
-        })
-        .join(`\n${indent}`)
-    )
-  }
-
-  function generateFragment(id, type, fields) {
-    let references = new Set()
-    let f = generateFields(fields, references)
-    const abc = generateTemplate(
-      `\nfragment ${id} on ${type} {\n${f}\n}\n`,
-      references,
-    )
-    // return console.log('generateFragment', {abc}) || abc
-    return abc
-  }
-
-  function generateQuery(fields) {
-    let references = new Set()
-    let f = generateFields(fields, references)
-    // console.log({ fields, references });
-    const abc = generateTemplate(`\nquery {\n${f}\n}\n`, references)
-    // return console.log('generateQuery', {abc}) || abc
-    return abc
-  }
-
-  function generateTemplate(s, references) {
-    return t.templateLiteral(
-      //[t.templateElement({raw: '\n'}), t.templateElement({raw: s})],
-      [t.templateElement({raw: s})],
-      [...references].map(ref =>
-        t.memberExpression(t.identifier(ref), t.identifier('fragment')),
-      ),
-    )
   }
 
   function parseBlade(path, id, razorData) {
@@ -158,30 +110,28 @@ export default function(babel) {
           if (bladeID) {
             // there was an assignment. new blade, with an alias
             const propID = getObjectPropertyName(blade)
+
+            // eslint-disable-next-line
             blade.parentPath.get('property').replaceWith(t.Identifier(bladeID)) // when the query comes back it uses the alias' name
-            // console.log({blade: blade.parentPath.get('property'), bladeID, propID})
             const child = razorData.add({name: propID, alias: bladeID})
             parseBlade(blade, bladeID, child)
           } else {
             // no assignment. traverse children!
             const propID = getObjectPropertyName(blade)
             const child = razorData.add({name: propID})
-            // const ref = getJSXReference(blade);
-            // // console.log({ blade });
-            // if (queryType === 'fragment' && ref) {
-            // 	safeAdd(razorSet[propID], ref, { [isReference]: true });
-            // }
+            // may need to .add here in future for fragment inference
             parseBlade(blade.parentPath, propID, child)
           }
         } else if (isCallee(blade)) {
-          // handleBlade(blade)
+          // not needed yet
         } else {
           const bladeID = getAssignTarget2(blade)
           if (bladeID) {
             // blade was assigned without calling
             parseBlade(blade, bladeID, razorData)
           } else {
-            console.log('illegal call', blade)
+            // eslint-disable-next-line no-console
+            console.warn('babel-blade: illegal call, please investigate', blade)
           }
         }
       })
@@ -197,6 +147,13 @@ export default function(babel) {
   }
 }
 
+/****
+ *
+ * Simple readable utils for navigating the path,
+ * pure functions w no significant logic
+ *
+ */
+
 function getAssignTarget(path) {
   return path.parentPath.container.id
     ? path.parentPath.container.id.name
@@ -211,35 +168,25 @@ function getObjectPropertyName(path) {
   return path.container.property ? path.container.property.name : undefined
 }
 
-function getJSXReference(path) {
-  let jsx = path.findParent(p => p.isJSXOpeningElement())
-  if (jsx) {
-    return jsx.node.name.name
-  }
-}
-
-function getFragmentName(path) {
-  if (
-    path.parentPath.isAssignmentExpression() &&
-    path.parent.left.type === 'MemberExpression' &&
-    path.parent.left.property.name === 'fragment'
-  ) {
-    let name = path.parent.left.object.name
-    return name[0].toLowerCase() + name.slice(1) + 'Fragment'
-  }
-}
+// function getFragmentName(path) {
+//   if (
+//     path.parentPath.isAssignmentExpression() &&
+//     path.parent.left.type === 'MemberExpression' &&
+//     path.parent.left.property.name === 'fragment'
+//   ) {
+//     const name = path.parent.left.object.name
+//     return name[0].toLowerCase() + name.slice(1) + 'Fragment'
+//   }
+//   return null
+// }
 
 function isObject(path) {
   return looksLike(path, {key: 'object'})
 }
 
 function isCallee(path) {
-  let parent = path.parentPath
+  const parent = path.parentPath
   return parent.isCallExpression() && path.node === parent.node.callee
-}
-
-function isArguments(path) {
-  return looksLike(path, {listKey: 'arguments'})
 }
 
 function isCreateQuery(path) {
@@ -247,12 +194,6 @@ function isCreateQuery(path) {
 }
 function isCreateFragment(path) {
   return looksLike(path, {node: {name: 'createFragment'}})
-}
-
-function safeAdd(obj, key, val) {
-  if (Object.keys(obj[key] || {}).length) {
-    obj[key] = {...obj[key], ...val}
-  } else obj[key] = val
 }
 
 function looksLike(a, b) {

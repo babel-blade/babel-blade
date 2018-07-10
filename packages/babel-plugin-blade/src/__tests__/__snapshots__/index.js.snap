@@ -2,35 +2,35 @@
 
 exports[`babel-blade aliases work: aliases work 1`] = `
 
-import { Connect, query } from 'urql';
+import {Connect, query} from 'urql'
 
-const movieQuery = createQuery();
-const Movie = ({ id, onClose }) => (
-	<div>
-		<Connect
-			query={query(movieQuery, { id: id })} // watch the query ABOVE!
-			children={({ data }) => {
-				const DATA = movieQuery(data);
-				const movieAlias = DATA.movie;
-				const filmAlias = DATA.movie;
-				return (
-					<div>
-						<h2>{movieAlias.gorilla}</h2>
-						<p>{filmAlias.monkey}</p>
-						<p>{DATA.chimp}</p>
-					</div>
-				);
-			}}
-		/>
-	</div>
-);
+const movieQuery = createQuery()
+const Movie = ({id, onClose}) => (
+  <div>
+    <Connect
+      query={query(movieQuery, {id: id})} // watch the query ABOVE!
+      children={({data}) => {
+        const DATA = movieQuery(data)
+        const movieAlias = DATA.movie
+        const filmAlias = DATA.movie
+        return (
+          <div>
+            <h2>{movieAlias.gorilla}</h2>
+            <p>{filmAlias.monkey}</p>
+            <p>{DATA.chimp}</p>
+          </div>
+        )
+      }}
+    />
+  </div>
+)
 
       ↓ ↓ ↓ ↓ ↓ ↓
 
 import { Connect, query } from 'urql';
 
 const Movie = ({ id, onClose }) => <div>
-		<Connect query={query(\`
+    <Connect query={query(\`
 query movieQuery{
   movieAlias: movie {
     gorilla
@@ -40,42 +40,42 @@ query movieQuery{
   }
   chimp
 }\`, { id: id })} // watch the query ABOVE!
-	children={({ data }) => {
-		const DATA = data;
-		const movieAlias = DATA.movieAlias;
-		const filmAlias = DATA.filmAlias;
-		return <div>
-						<h2>{movieAlias.gorilla}</h2>
-						<p>{filmAlias.monkey}</p>
-						<p>{DATA.chimp}</p>
-					</div>;
-	}} />
-	</div>;
+  children={({ data }) => {
+    const DATA = data;
+    const movieAlias = DATA.movieAlias;
+    const filmAlias = DATA.filmAlias;
+    return <div>
+            <h2>{movieAlias.gorilla}</h2>
+            <p>{filmAlias.monkey}</p>
+            <p>{DATA.chimp}</p>
+          </div>;
+  }} />
+  </div>;
 
 `;
 
 exports[`babel-blade basic test of functionality: basic test of functionality 1`] = `
 
-import { Connect, query } from 'urql';
+import {Connect, query} from 'urql'
 
-const movieQuery = createQuery(); // doesnt take arguments for now
-const Movie = ({ id, onClose }) => (
-	<div>
-		<Connect
-			query={query(movieQuery, { id: id })} // razor transpiles into a query string
-			children={({ data }) => {
-				const DATA = movieQuery(data); // razor(foobar) initializes DATA as a blade, names query as DATA
-				return (
-					<div>
-						<h2>{DATA.movie.gorilla}</h2>
-						<p>{DATA.movie.monkey}</p>
-						<p>{DATA.chimp}</p>
-					</div>
-				);
-			}}
-		/>
-	</div>
-);
+const movieQuery = createQuery() // doesnt take arguments for now
+const Movie = ({id, onClose}) => (
+  <div>
+    <Connect
+      query={query(movieQuery, {id: id})} // razor transpiles into a query string
+      children={({data}) => {
+        const DATA = movieQuery(data) // razor(foobar) initializes DATA as a blade, names query as DATA
+        return (
+          <div>
+            <h2>{DATA.movie.gorilla}</h2>
+            <p>{DATA.movie.monkey}</p>
+            <p>{DATA.chimp}</p>
+          </div>
+        )
+      }}
+    />
+  </div>
+)
 
       ↓ ↓ ↓ ↓ ↓ ↓
 
@@ -83,7 +83,7 @@ import { Connect, query } from 'urql';
 
 // doesnt take arguments for now
 const Movie = ({ id, onClose }) => <div>
-		<Connect query={query(\`
+    <Connect query={query(\`
 query movieQuery{
   movie {
     gorilla
@@ -91,14 +91,14 @@ query movieQuery{
   }
   chimp
 }\`, { id: id })} // razor transpiles into a query string
-	children={({ data }) => {
-		const DATA = data; // razor(foobar) initializes DATA as a blade, names query as DATA
-		return <div>
-						<h2>{DATA.movie.gorilla}</h2>
-						<p>{DATA.movie.monkey}</p>
-						<p>{DATA.chimp}</p>
-					</div>;
-	}} />
-	</div>;
+  children={({ data }) => {
+    const DATA = data; // razor(foobar) initializes DATA as a blade, names query as DATA
+    return <div>
+            <h2>{DATA.movie.gorilla}</h2>
+            <p>{DATA.movie.monkey}</p>
+            <p>{DATA.chimp}</p>
+          </div>;
+  }} />
+  </div>;
 
 `;
