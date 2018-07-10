@@ -32,18 +32,16 @@ import { Connect, query } from 'urql';
 const Movie = ({ id, onClose }) => <div>
     <Connect query={query(\`
 query movieQuery{
-  movieAlias: movie {
+  movie {
     gorilla
-  }
-  filmAlias: movie {
     monkey
   }
   chimp
 }\`, { id: id })} // watch the query ABOVE!
   children={({ data }) => {
     const DATA = data;
-    const movieAlias = DATA.movieAlias;
-    const filmAlias = DATA.filmAlias;
+    const movieAlias = DATA.movie;
+    const filmAlias = DATA.movie;
     return <div>
             <h2>{movieAlias.gorilla}</h2>
             <p>{filmAlias.monkey}</p>
@@ -97,6 +95,57 @@ query movieQuery{
             <h2>{DATA.movie.gorilla}</h2>
             <p>{DATA.movie.monkey}</p>
             <p>{DATA.chimp}</p>
+          </div>;
+  }} />
+  </div>;
+
+`;
+
+exports[`babel-blade destructuring work: destructuring work 1`] = `
+
+import {Connect, query} from 'urql'
+
+const movieQuery = createQuery()
+const Movie = ({id, onClose}) => (
+  <div>
+    <Connect
+      query={query(movieQuery, {id: id})} // 👆🏼👆🏼WATCH ABOVE👆🏼👆🏼
+      children={({data}) => {
+        const DATA = movieQuery(data)
+        const {actors} = DATA.movie('id: 234').credits
+        return (
+          <div>
+            <h2>{actors.leading}</h2>
+            <h2>{actors.supporting}</h2>
+          </div>
+        )
+      }}
+    />
+  </div>
+)
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+import { Connect, query } from 'urql';
+
+const Movie = ({ id, onClose }) => <div>
+    <Connect query={query(\`
+query movieQuery{
+  movie(id: 234) {
+    credits {
+      actors {
+        leading
+        supporting
+      }
+    }
+  }
+}\`, { id: id })} // 👆🏼👆🏼WATCH ABOVE👆🏼👆🏼
+  children={({ data }) => {
+    const DATA = data;
+    const { actors } = DATA.movie.credits;
+    return <div>
+            <h2>{actors.leading}</h2>
+            <h2>{actors.supporting}</h2>
           </div>;
   }} />
   </div>;
