@@ -24,9 +24,9 @@ pluginTester({
 	snapshot: true,
 	babelOptions: { filename: __filename },
 	tests: {
-		'basic test of functionality': fixture('basic'),
-		'aliases work': fixture('alias'),
-		'destructuring work': fixture('destructuring')
+		'basic test of functionality': fixture('basic')
+		// 'aliases work': fixture('alias'),
+		// 'destructuring work': fixture('destructuring')
 		// 'injection of fragments': fixture('fragment'),
 		// 'does not touch non-blade code': {
 		//   snapshot: false,
