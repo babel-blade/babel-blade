@@ -13,16 +13,16 @@ expect.addSnapshotSerializer({
   },
 })
 
+const fixture = filename => ({
+  fixture: require.resolve(`./fixtures/${filename}`),
+})
+
 pluginTester({
   plugin,
   snapshot: true,
   babelOptions: {filename: __filename, parserOpts: {plugins: ['jsx']}},
   tests: {
-    'as tag': `
-      import blade from '../macro'
-      const greeting = 'Hello world!'
-      blade\`module.exports = "module.exports = '\${greeting}';"\`
-    `,
+    'basic test of functionality': fixture('macro-basic'),
     // 'as function': `
     //   const myCodgen = require('../macro')
     //   myCodgen(\`

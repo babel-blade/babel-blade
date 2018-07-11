@@ -84,58 +84,62 @@ export default function(babel) {
     visitor: {
       // eslint-disable-next-line complexity
       Identifier(path) {
-        if (isCreateQuery(path) || isCreateFragment(path)) {
-          // get the identifier and available args
-          const identifier = getAssignTarget(path)
-          let queryArgs
-          if (isCallee(path)) {
-            queryArgs = getCalleeArgs(path)
-          }
-          // clear the reference
-          path.findParent(ppath => ppath.isVariableDeclaration()).remove()
-          // traverse scope for identifier references
-          const refs = path.scope.bindings[identifier].referencePaths
-          if (refs.length > 0) {
-            let razorID = null
-            const fragmentType = path.parent.arguments.length
-              ? path.parent.arguments[0].value
-              : null
-            const queryType = isCreateFragment(path) ? 'fragment' : 'query'
-            const razorData = new RazorData({
-              type: queryType,
-              name: identifier,
-              fragmentType,
-              args: queryArgs,
-            })
-            refs.forEach(razor => {
-              // go through all razors
-              if (isCallee(razor)) {
-                // we have been activated! time to make a blade!
-                razorID = getAssignTarget(razor)
-                // clear the reference
-                if (razor.container.arguments[0])
-                  razor.parentPath.replaceWith(razor.container.arguments[0])
-                else razor.parentPath.remove()
-                parseBlade(razor, razorID, razorData)
-              }
-            })
-
-            // insert query
-            refs.forEach(razor => {
-              if (!isObject(razor)) {
-                const {stringAccumulator, litAccumulator} = razorData.print()
-                razor.replaceWith(
-                  t.templateLiteral(
-                    stringAccumulator.map(str => t.templateElement({raw: str})),
-                    litAccumulator.map(lit => lit || t.nullLiteral()),
-                  ),
-                )
-              }
-            })
-          }
-        }
+        handleCreateRazor(path, t)
       },
     },
+  }
+}
+
+export function handleCreateRazor(path, t) {
+  if (isCreateQuery(path) || isCreateFragment(path)) {
+    // get the identifier and available args
+    const identifier = getAssignTarget(path)
+    let queryArgs
+    if (isCallee(path)) {
+      queryArgs = getCalleeArgs(path)
+    }
+    // clear the reference
+    path.findParent(ppath => ppath.isVariableDeclaration()).remove()
+    // traverse scope for identifier references
+    const refs = path.scope.bindings[identifier].referencePaths
+    if (refs.length > 0) {
+      let razorID = null
+      const fragmentType = path.parent.arguments.length
+        ? path.parent.arguments[0].value
+        : null
+      const queryType = isCreateFragment(path) ? 'fragment' : 'query'
+      const razorData = new RazorData({
+        type: queryType,
+        name: identifier,
+        fragmentType,
+        args: queryArgs,
+      })
+      refs.forEach(razor => {
+        // go through all razors
+        if (isCallee(razor)) {
+          // we have been activated! time to make a blade!
+          razorID = getAssignTarget(razor)
+          // clear the reference
+          if (razor.container.arguments[0])
+            razor.parentPath.replaceWith(razor.container.arguments[0])
+          else razor.parentPath.remove()
+          parseBlade(razor, razorID, razorData)
+        }
+      })
+
+      // insert query
+      refs.forEach(razor => {
+        if (!isObject(razor)) {
+          const {stringAccumulator, litAccumulator} = razorData.print()
+          razor.replaceWith(
+            t.templateLiteral(
+              stringAccumulator.map(str => t.templateElement({raw: str})),
+              litAccumulator.map(lit => lit || t.nullLiteral()),
+            ),
+          )
+        }
+      })
+    }
   }
 }
 
