@@ -1,6 +1,6 @@
 {
 	"name": "blade.macro",
-	"version": "0.0.6",
+	"version": "0.0.7",
 	"description": "your babel plugin with babel-macros",
 	"main": "index.js",
 	"keywords": [
@@ -10,6 +10,6 @@
 	"author": "swyx <swyx@dontemail.me> (http://twitter.com/swyx)",
 	"license": "MIT",
 	"dependencies": {
-		"babel-plugin-blade": "^0.0.6"
+		"babel-plugin-blade": "^0.0.7"
 	}
 }
