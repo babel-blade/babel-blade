@@ -1,0 +1,45 @@
+.Navigation {
+  overflow: hidden;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1;
+  background-color: #24292e;
+  display: flex;
+  align-items: baseline;
+}
+
+@media only screen and (max-device-width: 480px) {
+  .Navigation {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+.Navigation-link {
+  font-size: 12px;
+  letter-spacing: 3.5px;
+  font-weight: 500;
+  text-transform: uppercase;
+  padding: 20px;
+  text-decoration: none;
+}
+
+.Navigation-link a {
+  color: #ffffff;
+}
+
+.Navigation-search {
+  padding: 0 10px;
+}
+
+@media only screen and (max-device-width: 480px) {
+  .Navigation-link {
+    padding: 10px;
+  }
+
+  .Navigation-search {
+    padding: 10px 10px;
+  }
+}

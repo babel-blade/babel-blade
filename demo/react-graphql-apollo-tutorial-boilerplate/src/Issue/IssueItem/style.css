@@ -1,0 +1,11 @@
+.IssueItem {
+  margin-bottom: 10px;
+  display: flex;
+  align-items: baseline;
+}
+
+.IssueItem-content {
+  margin-left: 10px;
+  padding-left: 10px;
+  border-left: 1px solid #000;
+}
