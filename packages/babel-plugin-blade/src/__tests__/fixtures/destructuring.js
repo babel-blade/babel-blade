@@ -1,10 +1,10 @@
 import {Connect, query} from 'urql'
 
-const movieQuery = createQuery()
+const movieQuery = createQuery('$id: id')
 const Movie = ({id, onClose}) => (
   <div>
     <Connect
-      query={query(movieQuery, {id: id})} // 👆🏼👆🏼WATCH ABOVE👆🏼👆🏼
+      query={query(movieQuery, {id: id})}
       children={({data}) => {
         const DATA = movieQuery(data)
         const {actors} = DATA.movie('id: 234').credits

@@ -25,7 +25,7 @@ pluginTester({
   babelOptions: {filename: __filename},
   tests: {
     'basic test of functionality': fixture('basic'),
-    'assignments work': fixture('assignment'),
+    'assignments and aliases work': fixture('assignment'),
     'destructuring work': fixture('destructuring'),
     // 'injection of fragments': fixture('fragment')
     // 'does not touch non-blade code': {

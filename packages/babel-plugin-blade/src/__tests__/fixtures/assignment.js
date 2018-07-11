@@ -1,6 +1,6 @@
 import {Connect, query} from 'urql'
 
-const movieQuery = createQuery()
+const movieQuery = createQuery('$id: id')
 const Movie = ({id, onClose}) => (
   <div>
     <Connect
@@ -8,7 +8,7 @@ const Movie = ({id, onClose}) => (
       children={({data}) => {
         const DATA = movieQuery(data)
         const core = DATA
-        const film = DATA.movie
+        const film = DATA.movie('count: id')
         return (
           <div>
             <h2>{core.gorilla}</h2>

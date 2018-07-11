@@ -229,9 +229,15 @@ function zipAccumulators({stringAccumulator, litAccumulator}) {
     newLitAcc = []
   for (var i = 0; i < stringAccumulator.length; i++) {
     if (litAccumulator[i]) {
-      newLitAcc.push(litAccumulator[i])
-      newStrAcc.push(str + (stringAccumulator[i] || ''))
-      str = ''
+      let maybeSimpleString = maybeGetSimpleString(litAccumulator[i])
+      if (maybeSimpleString) {
+        // its just a simplestring!
+        str += maybeSimpleString
+      } else {
+        newLitAcc.push(litAccumulator[i])
+        newStrAcc.push(str + (stringAccumulator[i] || ''))
+        str = ''
+      }
     } else {
       // there is an empty lit, store in state
       str += stringAccumulator[i] || ''
@@ -240,4 +246,16 @@ function zipAccumulators({stringAccumulator, litAccumulator}) {
   // flush store
   if (str !== '') newStrAcc.push(str)
   return {stringAccumulator: newStrAcc, litAccumulator: newLitAcc}
+}
+
+function maybeGetSimpleString(Literal) {
+  if (Literal.type === 'StringLiteral') return Literal.value
+  if (
+    Literal.type === 'TemplateLiteral' &&
+    !Literal.expressions.length &&
+    Literal.quasis.length === 1
+  )
+    return Literal.quasis[0].value.raw
+  // else
+  return null
 }

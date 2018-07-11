@@ -85,8 +85,12 @@ export default function(babel) {
       // eslint-disable-next-line complexity
       Identifier(path) {
         if (isCreateQuery(path) || isCreateFragment(path)) {
-          // get the identifier
+          // get the identifier and available args
           const identifier = getAssignTarget(path)
+          let queryArgs
+          if (isCallee(path)) {
+            queryArgs = getCalleeArgs(path)
+          }
           // clear the reference
           path.findParent(ppath => ppath.isVariableDeclaration()).remove()
           // traverse scope for identifier references
@@ -101,7 +105,7 @@ export default function(babel) {
               type: queryType,
               name: identifier,
               fragmentType,
-              // todo: implement args
+              args: queryArgs,
             })
             refs.forEach(razor => {
               // go through all razors
@@ -148,7 +152,6 @@ function parseBlade(path, id, razorData, slice = 0) {
   } else {
     // there has been no assignment or it has not been used
     const bladeID = getObjectPropertyName(path)
-    console.log('lskdj', bladeID)
     if (bladeID) {
       const propID = getObjectPropertyName(path)
       const child = razorData.add({name: propID})

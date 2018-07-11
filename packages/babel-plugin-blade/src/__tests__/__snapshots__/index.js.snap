@@ -1,10 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`babel-blade assignments work: assignments work 1`] = `
+exports[`babel-blade assignments and aliases work: assignments and aliases work 1`] = `
 
 import { Connect, query } from 'urql';
 
-const movieQuery = createQuery();
+const movieQuery = createQuery('$id: id');
 const Movie = ({ id, onClose }) => (
 	<div>
 		<Connect
@@ -12,7 +12,7 @@ const Movie = ({ id, onClose }) => (
 			children={({ data }) => {
 				const DATA = movieQuery(data);
 				const core = DATA;
-				const film = DATA.movie;
+				const film = DATA.movie('count: id');
 				return (
 					<div>
 						<h2>{core.gorilla}</h2>
@@ -31,9 +31,9 @@ import { Connect, query } from 'urql';
 
 const Movie = ({ id, onClose }) => <div>
 		<Connect query={query(\`
-query movieQuery{
+query movieQuery($id: id){
   gorilla
-  movie {
+  movie_d68a: movie(count: id) {
     monkey
   }
   chimp
@@ -41,7 +41,7 @@ query movieQuery{
 	children={({ data }) => {
 		const DATA = data;
 		const core = DATA;
-		const film = DATA.movie;
+		const film = DATA.movie_d68a;
 		return <div>
 						<h2>{core.gorilla}</h2>
 						<p>{film.monkey}</p>
@@ -54,84 +54,82 @@ query movieQuery{
 
 exports[`babel-blade basic test of functionality: basic test of functionality 1`] = `
 
-import {Connect, query} from 'urql'
+import { Connect, query } from 'urql';
 
-const movieQuery = createQuery() // doesnt take arguments for now
-const Movie = ({id, onClose}) => (
-  <div>
-    <Connect
-      query={query(movieQuery, {id: id})} // razor transpiles into a query string
-      children={({data}) => {
-        const DATA = movieQuery(data) // razor(foobar) initializes DATA as a blade, names query as DATA
-        return (
-          <div>
-            <h2>{DATA.movie.gorilla}</h2>
-            <p>{DATA.movie.monkey}</p>
-            <p>{DATA.chimp}</p>
-          </div>
-        )
-      }}
-    />
-  </div>
-)
+const movieQuery = createQuery('$id: id');
+const Movie = ({ id, onClose }) => (
+	<div>
+		<Connect
+			query={query(movieQuery, { id: id })}
+			children={({ data }) => {
+				const DATA = movieQuery(data);
+				return (
+					<div>
+						<h2>{DATA.movie.gorilla}</h2>
+						<p>{DATA.movie.monkey}</p>
+						<p>{DATA.chimp}</p>
+					</div>
+				);
+			}}
+		/>
+	</div>
+);
 
       ↓ ↓ ↓ ↓ ↓ ↓
 
 import { Connect, query } from 'urql';
 
-// doesnt take arguments for now
 const Movie = ({ id, onClose }) => <div>
-    <Connect query={query(\`
-query movieQuery{
+		<Connect query={query(\`
+query movieQuery($id: id){
   movie {
     gorilla
     monkey
   }
   chimp
-}\`, { id: id })} // razor transpiles into a query string
-  children={({ data }) => {
-    const DATA = data; // razor(foobar) initializes DATA as a blade, names query as DATA
-    return <div>
-            <h2>{DATA.movie.gorilla}</h2>
-            <p>{DATA.movie.monkey}</p>
-            <p>{DATA.chimp}</p>
-          </div>;
-  }} />
-  </div>;
+}\`, { id: id })} children={({ data }) => {
+		const DATA = data;
+		return <div>
+						<h2>{DATA.movie.gorilla}</h2>
+						<p>{DATA.movie.monkey}</p>
+						<p>{DATA.chimp}</p>
+					</div>;
+	}} />
+	</div>;
 
 `;
 
 exports[`babel-blade destructuring work: destructuring work 1`] = `
 
-import {Connect, query} from 'urql'
+import { Connect, query } from 'urql';
 
-const movieQuery = createQuery()
-const Movie = ({id, onClose}) => (
-  <div>
-    <Connect
-      query={query(movieQuery, {id: id})} // 👆🏼👆🏼WATCH ABOVE👆🏼👆🏼
-      children={({data}) => {
-        const DATA = movieQuery(data)
-        const {actors} = DATA.movie('id: 234').credits
-        return (
-          <div>
-            <h2>{actors.leading}</h2>
-            <h2>{actors.supporting}</h2>
-          </div>
-        )
-      }}
-    />
-  </div>
-)
+const movieQuery = createQuery('$id: id');
+const Movie = ({ id, onClose }) => (
+	<div>
+		<Connect
+			query={query(movieQuery, { id: id })}
+			children={({ data }) => {
+				const DATA = movieQuery(data);
+				const { actors } = DATA.movie('id: 234').credits;
+				return (
+					<div>
+						<h2>{actors.leading}</h2>
+						<h2>{actors.supporting}</h2>
+					</div>
+				);
+			}}
+		/>
+	</div>
+);
 
       ↓ ↓ ↓ ↓ ↓ ↓
 
 import { Connect, query } from 'urql';
 
 const Movie = ({ id, onClose }) => <div>
-    <Connect query={query(\`
-query movieQuery{
-  movie_9496: movie(\${'id: 234'}) {
+		<Connect query={query(\`
+query movieQuery($id: id){
+  movie_41ca: movie(id: 234) {
     credits {
       actors {
         leading
@@ -139,85 +137,14 @@ query movieQuery{
       }
     }
   }
-}\`, { id: id })} // 👆🏼👆🏼WATCH ABOVE👆🏼👆🏼
-  children={({ data }) => {
-    const DATA = data;
-    const { actors } = DATA.movie_9496.credits;
-    return <div>
-            <h2>{actors.leading}</h2>
-            <h2>{actors.supporting}</h2>
-          </div>;
-  }} />
-  </div>;
-
-`;
-
-exports[`babel-blade injection of fragments: injection of fragments 1`] = `
-
-import {Connect, query} from 'urql'
-
-// const movieFragment = createFragment('Movie');
-// const Movie = ({ data }) => {
-// 	let result = movieFragment(data);
-// 	let movie = result.movie;
-// 	return (
-// 		<div>
-// 			<h2>{movie.test.title}</h2>
-// 			<p>{movie.foo}</p>
-// 		</div>
-// 	);
-// };
-// Movie.fragment = fragment;
-
-const pageQuery = createQuery() // create a top-level query
-const App = () => (
-  // rendering Movie automatically composes \`Movie.fragment\` into the query.
-  // <Movie data={result2.movie({ fragments: [Movie.fragment] })} />
-  <Connect
-    query={query(pageQuery)}
-    children={({loaded, data}) => {
-      let result2 = pageQuery(data)
-      return (
-        <div>
-          <h1>{result2.monkey}</h1>
-          <Movie data={result2.movie} />
-        </div>
-      )
-    }}
-  />
-)
-
-      ↓ ↓ ↓ ↓ ↓ ↓
-
-import { Connect, query } from 'urql';
-
-// const movieFragment = createFragment('Movie');
-// const Movie = ({ data }) => {
-// 	let result = movieFragment(data);
-// 	let movie = result.movie;
-// 	return (
-// 		<div>
-// 			<h2>{movie.test.title}</h2>
-// 			<p>{movie.foo}</p>
-// 		</div>
-// 	);
-// };
-// Movie.fragment = fragment;
-
-// create a top-level query
-const App = () =>
-// rendering Movie automatically composes \`Movie.fragment\` into the query.
-// <Movie data={result2.movie({ fragments: [Movie.fragment] })} />
-<Connect query={query(\`
-query pageQuery{
-  monkey
-  movie
-}\`)} children={({ loaded, data }) => {
-  let result2 = data;
-  return <div>
-          <h1>{result2.monkey}</h1>
-          <Movie data={result2.movie} />
-        </div>;
-}} />;
+}\`, { id: id })} children={({ data }) => {
+		const DATA = data;
+		const { actors } = DATA.movie_41ca.credits;
+		return <div>
+						<h2>{actors.leading}</h2>
+						<h2>{actors.supporting}</h2>
+					</div>;
+	}} />
+	</div>;
 
 `;
