@@ -1,6 +1,6 @@
 {
 	"name": "babel-plugin-blade",
-	"version": "0.0.2",
+	"version": "0.0.3",
 	"description": "generate inline graphql",
 	"main": "dist/index.js",
 	"engines": {
@@ -16,8 +16,16 @@
 		"validate": "kcd-scripts validate",
 		"precommit": "kcd-scripts precommit"
 	},
-	"files": [ "dist", "macro.js" ],
-	"keywords": [ "babel-plugin-macros", "babel-plugin", "babel", "code generation" ],
+	"files": [
+		"dist",
+		"macro.js"
+	],
+	"keywords": [
+		"babel-plugin-macros",
+		"babel-plugin",
+		"babel",
+		"code generation"
+	],
 	"author": "swyx <swyx@dontemail.me> (http://twitter.com/swyx)",
 	"license": "MIT",
 	"dependencies": {
@@ -35,10 +43,17 @@
 	"eslintConfig": {
 		"extends": "./node_modules/kcd-scripts/eslint.js"
 	},
-	"eslintIgnore": [ "node_modules", "coverage", "dist" ],
+	"eslintIgnore": [
+		"node_modules",
+		"coverage",
+		"dist"
+	],
 	"jest": {
 		"testEnvironment": "node",
-		"testPathIgnorePatterns": [ "/node_modules/", "/fixtures/" ]
+		"testPathIgnorePatterns": [
+			"/node_modules/",
+			"/fixtures/"
+		]
 	},
 	"babel": {
 		"presets": "kcd-scripts/babel"
