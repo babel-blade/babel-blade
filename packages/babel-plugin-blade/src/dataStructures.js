@@ -45,9 +45,10 @@ export class RazorData {
 		let fields = this._children;
 		if (!fields.length) return console.log('babel-blade Warning: razor with no children, doublecheck') || null; // really shouldnt happen, should we throw an error?
 		let maybeArgs = this._args && this._args[0];
-		let TemplateLiteral = appendLiterals(
-			this._type === 'query' ? `\nquery ${this._name || ''}` : `\nfragment ${this._name} on ${this._fragmentType}`
-		)
+		let TemplateLiteral = appendLiterals()
+			.addStr(
+				this._type === 'query' ? `\nquery ${this._name || ''}` : `\nfragment ${this._name} on ${this._fragmentType}`
+			)
 			.addStr(maybeArgs ? '(' : '')
 			.addLit(maybeArgs)
 			.addStr(maybeArgs ? ')' : '')
@@ -60,8 +61,7 @@ export class RazorData {
 		// todo: append to accumulator
 		fragments.forEach(frag => TemplateLiteral.append(frag.print()));
 		const g = TemplateLiteral.get();
-		const h = zipAccumulators(g);
-		console.log({ h });
+		// console.log({ g });
 		return zipAccumulators(g);
 	}
 }
@@ -105,7 +105,8 @@ export class BladeData {
 		let printDirectives = this._directive ? ` ${this._directive}` : '';
 		if (this._fragments.length) this._fragments.map(frag => fragments.push(frag)); // mutates fragments!
 		// let GraphQLString = `${indent}${printName}${maybeArgs}${printDirectives}`;
-		let TemplateLiteral = appendLiterals(`${indent}${printName}`)
+		let TemplateLiteral = appendLiterals()
+			.addStr(`${indent}${printName}`)
 			.addStr(maybeArgs ? '(' : '')
 			.addLit(maybeArgs)
 			.addStr(maybeArgs ? ')' : '')
@@ -169,9 +170,9 @@ function hashCode(str) {
 	return hash.toString(16).slice(-4); // last4hex
 }
 
-function appendLiterals(initialString = null, initialLit = null) {
-	let stringAccumulator = [initialString];
-	let litAccumulator = [initialLit];
+function appendLiterals() {
+	let stringAccumulator = [];
+	let litAccumulator = [];
 	let me = {
 		addStr(str = null) {
 			stringAccumulator.push(str);
@@ -208,13 +209,14 @@ function zipAccumulators({ stringAccumulator, litAccumulator }) {
 	for (var i = 0; i < stringAccumulator.length; i++) {
 		if (litAccumulator[i]) {
 			newLitAcc.push(litAccumulator[i]);
-			newStrAcc.push(str + stringAccumulator[i] || '');
+			newStrAcc.push(str + (stringAccumulator[i] || ''));
 			str = '';
 		} else {
 			// there is an empty lit, store in state
 			str += stringAccumulator[i] || '';
 		}
-		console.log({ newLitAcc: stringAccumulator[i] });
 	}
+	// flush store
+	if (str !== '') newStrAcc.push(str);
 	return { stringAccumulator: newStrAcc, litAccumulator: newLitAcc };
 }
