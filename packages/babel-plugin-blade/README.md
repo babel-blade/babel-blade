@@ -1,7 +1,7 @@
 <div align="center">
-<h1>babel-plugin-blade :emoji:</h1>
+<h1>babel-plugin-blade 🔪</h1>
 
-<p>your next babel plugin description</p>
+<p>inline GraphQL</p>
 </div>
 
 <hr />
@@ -15,15 +15,15 @@
 
 ## The problem
 
-The problem your plugin solves
+This is a plugin for solving the "double declaration problem" in GraphQL queries.
 
-> more resources the user shoudl read
+> **What is the "double declaration problem"?** Simply it is the bad developer experience of having to declare what you want to query in the GraphQL template string, and then again when you are using the data in your application. Ommissions are confusing to debug and overfetching due to stale queries is also a problem.
 
 ## This solution
 
-What this plugin does
+This plugin gives you `createQuery` and `createFragment` functions to wrap around the root `data` property of whatever GraphQL client you use. It then tracks everything you do with `data` and generates a GraphQL query based on your usage.
 
-How this plugin works
+This is accomplished by hooking in to Babel to building up a tree of downstream dependencies on `data`. For query arguments, the arguments are stripped and an alias generated for that specific query.
 
 ## Table of Contents
 
@@ -60,20 +60,60 @@ npm install --save-dev babel-plugin-blade
 
 ## Usage
 
-More notes on usage
+Add it to your babel config.
 
 ### first usage style
 
 **Before**:
 
 ```javascript
-// before
+import {Connect, query} from 'urql'
+
+const movieQuery = createQuery()
+const Movie = ({id, onClose}) => (
+  <div>
+    <Connect
+      query={query(movieQuery, {id: id})}
+      children={({data}) => {
+        const DATA = movieQuery(data)
+        return (
+          <div>
+            <h2>{DATA.movie.gorilla}</h2>
+            <p>{DATA.movie.monkey}</p>
+            <p>{DATA.chimp}</p>
+          </div>
+        )
+      }}
+    />
+  </div>
+)
 ```
 
-**After** some notes here:
+**After**:
 
 ```javascript
-// after
+
+import { Connect, query } from 'urql';
+
+const Movie = ({ id, onClose }) => <div>
+    <Connect query={query(`
+query movieQuery{
+  movie {
+    gorilla
+    monkey
+  }
+  chimp
+}`, { id: id })}
+  children={({ data }) => {
+    const DATA = data;
+    return <div>
+            <h2>{DATA.movie.gorilla}</h2>
+            <p>{DATA.movie.monkey}</p>
+            <p>{DATA.chimp}</p>
+          </div>;
+  }} />
+  </div>;
+
 ```
 
 more notes here!
