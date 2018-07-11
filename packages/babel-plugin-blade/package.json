@@ -1,6 +1,6 @@
 {
 	"name": "babel-plugin-blade",
-	"version": "0.0.3",
+	"version": "0.0.4",
 	"description": "generate inline graphql",
 	"main": "dist/index.js",
 	"engines": {
@@ -60,10 +60,10 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/kentcdodds/babel-plugin-blade.git"
+		"url": "https://github.com/sw-yx/babel-blade.git"
 	},
 	"bugs": {
-		"url": "https://github.com/kentcdodds/babel-plugin-blade/issues"
+		"url": "https://github.com/sw-yx/babel-blade/issues"
 	},
-	"homepage": "https://github.com/kentcdodds/babel-plugin-blade#readme"
+	"homepage": "https://github.com/sw-yx/babel-blade#readme"
 }
