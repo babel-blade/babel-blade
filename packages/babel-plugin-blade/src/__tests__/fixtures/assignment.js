@@ -7,12 +7,12 @@ const Movie = ({id, onClose}) => (
       query={query(movieQuery, {id: id})} // watch the query ABOVE!
       children={({data}) => {
         const DATA = movieQuery(data)
-        const movieAlias = DATA.movie
-        const filmAlias = DATA.movie
+        const core = DATA
+        const film = DATA.movie
         return (
           <div>
-            <h2>{movieAlias.gorilla}</h2>
-            <p>{filmAlias.monkey}</p>
+            <h2>{core.gorilla}</h2>
+            <p>{film.monkey}</p>
             <p>{DATA.chimp}</p>
           </div>
         )
