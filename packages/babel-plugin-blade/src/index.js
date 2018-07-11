@@ -104,13 +104,14 @@ export function handleCreateRazor(path, t) {
 		path.findParent(ppath => ppath.isVariableDeclaration()).remove();
 		if (refs.length > 0) {
 			let razorID = null;
-			const fragmentType = path.parent.arguments.length ? path.parent.arguments[0].value : null;
+			const fragmentType = isCreateFragment(path) && maybeGetSimpleString(queryArgs[0]); //getFragmentName(path)
 			const queryType = isCreateFragment(path) ? 'fragment' : 'query';
+			console.log({ queryArgs, fragmentType });
 			const razorData = new RazorData({
 				type: queryType,
 				name: identifier,
 				fragmentType,
-				args: queryArgs
+				args: isCreateQuery(path) && queryArgs
 			});
 			refs.forEach(razor => {
 				// go through all razors
@@ -221,7 +222,11 @@ function processReference(blade, razorData) {
 	let currentData = razorData;
 	RHS.forEach(({ args, name, aliasPath }) => {
 		// console.log({name, args, currentData})
-		currentData = currentData.add({ name, args: args }); // add fragments, directives later
+		currentData = currentData.add({
+			name,
+			args: args && args.slice(0, 1)
+			//                                   fragments: args && args.slice(1)
+		}); // add fragments, directives later
 		if (currentData._alias && aliasPath) aliasPath.parentPath.replaceWith(aliasPath);
 		if (aliasPath) aliasPath.node.property.name = currentData._alias;
 	});
@@ -315,17 +320,18 @@ function getObjectPropertyName(path) {
 	return path.container.property ? path.container.property.name : undefined;
 }
 
-// function getFragmentName(path) {
-//   if (
-//     path.parentPath.isAssignmentExpression() &&
-//     path.parent.left.type === 'MemberExpression' &&
-//     path.parent.left.property.name === 'fragment'
-//   ) {
-//     const name = path.parent.left.object.name
-//     return name[0].toLowerCase() + name.slice(1) + 'Fragment'
-//   }
-//   return null
-// }
+function getFragmentName(path) {
+	console.log('getfragname', { path });
+	if (
+		path.parentPath.isAssignmentExpression() &&
+		path.parent.left.type === 'MemberExpression' &&
+		path.parent.left.property.name === 'fragment'
+	) {
+		const name = path.parent.left.object.name;
+		return name[0].toLowerCase() + name.slice(1) + 'Fragment';
+	}
+	return null;
+}
 
 function isObject(path) {
 	return looksLike(path, { key: 'object' });
