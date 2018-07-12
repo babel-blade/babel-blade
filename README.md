@@ -12,6 +12,7 @@ this babel plugin/macro helps to generate graphql query strings inline and solve
 - first rewrite with datastructures: http://astexplorer.net/#/gist/4b72d63ecd01237e179c102f6df9c2b4/f2eec3f26b242f9ff025d9951121fb43bfdbf133
 - rewrote parser, added destructuring and arguments https://twitter.com/swyx/status/1016566204973113345
 - rewrote graphql compiler, added argument hashing/auto aliases https://twitter.com/swyx/status/1016865089251696642
+- split it out to helpers.js http://astexplorer.net/#/gist/01983f61e310f1eaf6b12a221556a937/b7025205ada19f5ff939047f5dc452430ea9d586 and still trying to get fragments to work
 
 # boilerplate
 
