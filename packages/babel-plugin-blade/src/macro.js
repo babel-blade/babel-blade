@@ -5,10 +5,19 @@ const { handleCreateRazor } = require('./index');
 module.exports = createMacro(bladeMacros);
 
 function bladeMacros({ references, state, babel: { types: t } }) {
-	const { JSXMacro = [], default: defaultImport = [], createQuery, createFragment } = references;
+  const {
+    JSXMacro = [],
+    default: defaultImport = [],
+    createQuery,
+    createFragment,
+  } = references;
 
-	createQuery.forEach(referencePath => handleCreateRazor(referencePath, t));
-	createFragment.forEach(referencePath => handleCreateRazor(referencePath, t));
+  createQuery &&
+    createQuery.forEach(referencePath => handleCreateRazor(referencePath, t));
+  createFragment &&
+    createFragment.forEach(referencePath =>
+      handleCreateRazor(referencePath, t),
+    );
 }
 
 // module.exports = createMacro(bladeMacros);

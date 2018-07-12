@@ -1,83 +1,66 @@
-const p = require('path')
-const fs = require('fs')
-const requireFromCodeString = require('require-from-string')
-
 module.exports = {
-  requireFromString,
-  getReplacement,
-  replace,
-  resolveModuleContents,
-  isCodegenComment,
   isPropertyCall,
   looksLike,
+  isObject,
+  isCallee,
+  isCreateQuery,
+  isCreateFragment,
+  getAssignTarget,
+  getObjectPropertyName,
+  getCalleeArgs,
+};
+
+/****
+ *
+ * HELPERS.JS
+ * Simple readable utils for navigating the path,
+ * pure functions w no significant logic
+ *
+ */
+
+function getAssignTarget(path) {
+  return path.parentPath.container.id
+    ? path.parentPath.container.id.name
+    : undefined;
 }
 
-function requireFromString(code, filename) {
-  // Execute the transformed code, as if it were required
-  const module = requireFromCodeString(String(code), filename)
-  // Allow for es modules (default export)
-  return module && module.__esModule ? module.default : module
+function getObjectPropertyName(path) {
+  return path.container.property ? path.container.property.name : undefined;
 }
 
-function getReplacement({code, fileOpts, args = []}, babel) {
-  let module = requireFromString(code, fileOpts.filename)
-
-  // If a function is epxorted, call it with args
-  if (typeof module === 'function') {
-    module = module(...args)
-  } else if (args.length) {
-    throw new Error(
-      `codegen module (${p.relative(
-        process.cwd(),
-        fileOpts.filename,
-      )}) cannot accept arguments because it does not export a function. You passed the arguments: ${args.join(
-        ', ',
-      )}`,
-    )
+// potentially useful function from devon to extract a colocated fragment's name
+function getFragmentName(path) {
+  // console.log('getfragname', { path });
+  if (
+    path.parentPath.isAssignmentExpression() &&
+    path.parent.left.type === 'MemberExpression' &&
+    path.parent.left.property.name === 'fragment'
+  ) {
+    const name = path.parent.left.object.name;
+    return name[0].toLowerCase() + name.slice(1) + 'Fragment';
   }
-
-  // Convert whatever we got now (hopefully a string) into AST form
-  if (typeof module !== 'string') {
-    throw new Error('codegen: Must module.exports a string.')
-  }
-  return babel.template(module, {
-    preserveComments: true,
-    placeholderPattern: false,
-    ...fileOpts.parserOpts,
-    sourceType: 'module',
-  })()
+  return null;
 }
 
-function applyReplacementToPath(replacement, path) {
-  if (!replacement) {
-    path.remove()
-  } else if (Array.isArray(replacement)) {
-    path.replaceWithMultiple(replacement)
-  } else {
-    path.replaceWith(replacement)
-  }
+function isObject(path) {
+  return looksLike(path, { key: 'object' });
 }
 
-function replace({path, code, fileOpts, args}, babel) {
-  const replacement = getReplacement({code, args, fileOpts}, babel)
-  applyReplacementToPath(replacement, path)
+function getCalleeArgs(calleePath) {
+  const arg = calleePath.container.arguments;
+  return arg;
 }
 
-function resolveModuleContents({filename, module}) {
-  const resolvedPath = p.resolve(p.dirname(filename), module)
-  const code = fs.readFileSync(require.resolve(resolvedPath))
-  return {code, resolvedPath}
+function isCallee(path) {
+  const parent = path.parentPath;
+  return parent.isCallExpression() && path.node === parent.node.callee;
 }
 
-function isCodegenComment(comment) {
-  const normalisedComment = comment.value
-    .trim()
-    .split(' ')[0]
-    .trim()
-  return (
-    normalisedComment.startsWith('codegen') ||
-    normalisedComment.startsWith('@codegen')
-  )
+function isCreateQuery(path) {
+  return looksLike(path, { node: { name: 'createQuery' } });
+}
+function isCreateFragment(path) {
+  return looksLike(path, { node: { name: 'createFragment' } });
 }
 
 function isPropertyCall(path, name) {
@@ -85,10 +68,10 @@ function isPropertyCall(path, name) {
     node: {
       type: 'CallExpression',
       callee: {
-        property: {name},
+        property: { name },
       },
     },
-  })
+  });
 }
 
 function looksLike(a, b) {
@@ -96,19 +79,19 @@ function looksLike(a, b) {
     a &&
     b &&
     Object.keys(b).every(bKey => {
-      const bVal = b[bKey]
-      const aVal = a[bKey]
+      const bVal = b[bKey];
+      const aVal = a[bKey];
       if (typeof bVal === 'function') {
-        return bVal(aVal)
+        return bVal(aVal);
       }
-      return isPrimitive(bVal) ? bVal === aVal : looksLike(aVal, bVal)
+      return isPrimitive(bVal) ? bVal === aVal : looksLike(aVal, bVal);
     })
-  )
+  );
 }
 
 function isPrimitive(val) {
   // eslint-disable-next-line
-  return val == null || /^[sbn]/.test(typeof val)
+  return val == null || /^[sbn]/.test(typeof val);
 }
 
 /*
