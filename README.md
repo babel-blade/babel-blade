@@ -6,7 +6,7 @@ this babel plugin/macro helps to generate graphql query strings inline and solve
 
 Check the youtube walkthrough for an explainer!
 
-[![babel blade walkthrough on youtube](https://img.youtube.com/vi/z9wKcRjNqlw/0.jpg)](https://www.youtube.com/watch?v=YOUTUBE_VIDEO_ID_HERE)
+[![babel blade walkthrough on youtube](https://img.youtube.com/vi/z9wKcRjNqlw/0.jpg)](https://www.youtube.com/watch?v=z9wKcRjNqlw)
 
 # brief history
 
