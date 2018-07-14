@@ -2,7 +2,11 @@
 
 # Babel-Blade
 
-this babel plugin/macro helps to generate graphql query strings inline and solves the double declaration problem
+this babel plugin/macro helps to generate graphql query strings inline and solves the double declaration problem.
+
+Check the youtube walkthrough for an explainer!
+
+[![babel blade walkthrough on youtube](https://img.youtube.com/vi/z9wKcRjNqlw/0.jpg)](https://www.youtube.com/watch?v=YOUTUBE_VIDEO_ID_HERE)
 
 # brief history
 
@@ -13,6 +17,7 @@ this babel plugin/macro helps to generate graphql query strings inline and solve
 - rewrote parser, added destructuring and arguments https://twitter.com/swyx/status/1016566204973113345
 - rewrote graphql compiler, added argument hashing/auto aliases https://twitter.com/swyx/status/1016865089251696642
 - split it out to helpers.js http://astexplorer.net/#/gist/01983f61e310f1eaf6b12a221556a937/b7025205ada19f5ff939047f5dc452430ea9d586 and still trying to get fragments to work
+- finished fragmnets http://astexplorer.net/#/gist/01983f61e310f1eaf6b12a221556a937/7e9ae4d3b406ed94d92f6931c0474f964e1ae990
 
 # boilerplate
 

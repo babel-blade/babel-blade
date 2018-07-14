@@ -121,7 +121,7 @@ export function handleCreateRazor(path, t) {
       // console.log({ queryArgs, fragmentType });
       const razorData = new RazorData({
         type: queryType,
-        name: identifier,
+        name: isCreateFragment(path) ? t.Identifier(identifier) : identifier,
         fragmentType,
         args: isCreateQuery(path) && queryArgs,
       });
@@ -142,13 +142,25 @@ export function handleCreateRazor(path, t) {
       refs.forEach(razor => {
         if (!isObject(razor)) {
           const { stringAccumulator, litAccumulator } = razorData.print();
-          console.log({ razorData });
-          razor.replaceWith(
-            t.templateLiteral(
-              stringAccumulator.map(str => t.templateElement({ raw: str })),
-              litAccumulator.map(lit => lit || t.nullLiteral()),
-            ),
+          const graphqlOutput = t.templateLiteral(
+            stringAccumulator.map(str => t.templateElement({ raw: str })),
+            litAccumulator.map(lit => {
+              if (lit.isFragment)
+                // we tagged this inside BladeData
+                return t.callExpression(lit, [
+                  t.stringLiteral(getSimpleFragmentName(lit)),
+                ]);
+              return lit || t.nullLiteral();
+            }),
           );
+          if (razorData._type === 'fragment') {
+            razor.replaceWith(
+              t.arrowFunctionExpression(
+                [t.identifier(identifier)],
+                graphqlOutput,
+              ),
+            );
+          } else razor.replaceWith(graphqlOutput);
         }
       });
     }
@@ -236,7 +248,9 @@ function processReference(blade, razorData) {
         args = getCalleeArgs(childpath); // fancy!
         aliasPath = childpath;
       }
-      RHS.push({ name: childpath.node.property.name, args, aliasPath });
+      if (childpath.parentKey !== 'arguments')
+        // else it will include membexps inside call arguments
+        RHS.push({ name: childpath.node.property.name, args, aliasPath });
     },
   };
   if (ctx) {
@@ -247,19 +261,20 @@ function processReference(blade, razorData) {
   }
   RHS = RHS.reverse(); // annoying bc of how the AST works
 
-  //console.log({ ctx, blade, LHS, RHS });
+  // pretty good place for debugging
+  // console.log('bbb', { ctx, blade, LHS, RHS });
 
   /***** processReference: MERGE LHS AND RHS *****/
 
   // MERGE RHS FIRST: rhs.foreach - call add, return child, call add again
   let currentData = razorData;
   RHS.forEach(({ args, name, aliasPath }) => {
-    // console.log({name, args, currentData})
+    //console.log({name, args, aliasPath})
     currentData = currentData.add({
       name,
       args: args && args.slice(0, 1),
-      //                                   fragments: args && args.slice(1)
-    }); // add fragments, directives later
+      fragments: args && args.slice(1),
+    });
     if (currentData._args && aliasPath)
       aliasPath.parentPath.replaceWith(aliasPath);
     if (currentData._alias && aliasPath)

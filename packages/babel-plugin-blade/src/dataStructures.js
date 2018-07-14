@@ -69,11 +69,13 @@ export class RazorData {
     );
     accumulators.forEach(TemplateLiteral.append);
     TemplateLiteral.addStr('}'); // cap off the string
-    // todo: append to accumulator
-    fragments.forEach(frag => TemplateLiteral.append(frag.print()));
-    const g = TemplateLiteral.get();
-    // console.log({ g });
-    return zipAccumulators(g);
+    if (fragments.length) {
+      fragments.forEach(frag => {
+        TemplateLiteral.addStr('\n\n');
+        TemplateLiteral.addLit(frag);
+      });
+    }
+    return zipAccumulators(TemplateLiteral.get());
   }
 }
 export class BladeData {
@@ -86,7 +88,10 @@ export class BladeData {
     let maybeArgs = coerceNullLiteralToNull(this._args && this._args[0]);
     this._alias =
       maybeArgs && `${this._name}_${hashCode(JSON.stringify(maybeArgs))}`;
-    this._fragments = fragments;
+    this._fragments = fragments.map(frag => {
+      frag.isFragment = true;
+      return frag;
+    }); // tagging the literal as fragment for printing
     this._directive = directive;
 
     // binding cos im too lazy to set up public class fields
@@ -134,7 +139,7 @@ export class BladeData {
       accumulators.forEach(TemplateLiteral.append);
       this._fragments.forEach(frag => {
         TemplateLiteral.addStr(
-          `${indent}  ...${frag.getFragmentData().name}\n`,
+          `${indent}  ...${getSimpleFragmentName(frag)}\n`,
         );
       });
       TemplateLiteral.addStr(`${indent}}\n`); // cap off the query
@@ -266,4 +271,8 @@ function maybeGetSimpleString(Literal) {
 
 function coerceNullLiteralToNull(lit) {
   return lit && lit.type === 'NullLiteral' ? null : lit;
+}
+
+function getSimpleFragmentName(frag) {
+  return `${frag.object.name}${frag.property.name}`;
 }

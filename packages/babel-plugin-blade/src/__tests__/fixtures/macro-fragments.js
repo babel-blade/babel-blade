@@ -1,6 +1,7 @@
 import { Connect, query } from 'urql';
-import { createQuery, createFragment } from 'sdlkj.macro';
+import { createQuery, createFragment } from 'blade.macro';
 
+// MovieComponent.js
 const movieFragment = createFragment('Movie');
 const Movie = ({ data }) => {
   let result = movieFragment(data);
@@ -11,11 +12,9 @@ const Movie = ({ data }) => {
         <p>Loading</p>
       ) : (
         <div>
-          <h2>{movie.test.title}</h2>
-          <p>{movie.test.chimp.field}</p>
-          <p>{movie.test.chimp.jank}</p>
-          <p>{movie.test.chimp.doop}</p>
-          <p>{movie.foo}</p>
+          <h2>{movie.title}</h2>
+          <p>{movie.actors.supporting}</p>
+          <p>{movie.actors.leading}</p>
           <button onClick={onClose}>Close</button>
         </div>
       )}
@@ -25,14 +24,21 @@ const Movie = ({ data }) => {
 
 Movie.fragment = movieFragment;
 
+// MoviePage.js
 const pageQuery = createQuery(); // create a top-level query
 const App = () => (
-  // rendering Movie automatically composes `Movie.fragment` into the query.
   <Connect
     query={query(pageQuery)}
     children={({ loaded, data }) => {
       let result = pageQuery(data);
-      return <Movie data={result.movie(null, Movie.fragment)} />;
+      // rendering Movie while adding
+      // `Movie.fragment` into the query.
+      // (could be automatic in future)
+      return (
+        <ul>
+          <Movie data={result.movie(null, Movie.fragment)} />
+        </ul>
+      );
     }}
   />
 );
