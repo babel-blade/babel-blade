@@ -15,7 +15,7 @@ const users = [
     // You will need to prepend the image path with your baseUrl
     // if it is not '/', like: '/test-site/img/docusaurus.svg'.
     image: '/img/docusaurus.svg',
-    infoLink: 'https://www.facebook.com',
+    infoLink: 'https://twitter.com/swyx',
     pinned: true,
   },
 ];
@@ -23,7 +23,7 @@ const users = [
 const siteConfig = {
   title: 'babel-blade docs' /* title for your website */,
   tagline: 'Solving the Double Declaration problem in GraphQL',
-  url: 'https://sw-yx.github.io/babel-blade' /* your website url */,
+  url: 'https://babel-blade.netlify.com/' /* your website url */,
   baseUrl: '/' /* base url for your project */,
   // For github.io type URLs, you would set the url and baseUrl like:
   //   url: 'https://facebook.github.io',
@@ -39,7 +39,7 @@ const siteConfig = {
   // For no header links in the top nav bar -> headerLinks: [],
   headerLinks: [
     {doc: 'index', label: 'Docs'},
-    {doc: 'doc4', label: 'API'},
+    {doc: 'graphql-spec', label: 'API'},
     {page: 'help', label: 'Help'},
     {blog: true, label: 'Blog'},
   ],

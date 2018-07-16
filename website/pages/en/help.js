@@ -23,17 +23,17 @@ class Help extends React.Component {
     const supportLinks = [
       {
         content: `Learn more using the [documentation on this site.](${docUrl(
-          'doc1.html',
+          'index.html',
           language
         )})`,
         title: 'Browse Docs',
       },
       {
-        content: 'Ask questions about the documentation and project',
+        content: 'Ask questions about the documentation and project on [Github](https://github.com/sw-yx/babel-blade)',
         title: 'Join the community',
       },
       {
-        content: "Find out what's new with this project",
+        content: "Check in with [@swyx](https://twitter.com/swyx) on Twitter",
         title: 'Stay up to date',
       },
     ];
@@ -45,7 +45,7 @@ class Help extends React.Component {
             <header className="postHeader">
               <h1>Need help?</h1>
             </header>
-            <p>This project is maintained by a dedicated group of people.</p>
+            <p>This project is maintained by <a href="https://twitter.com/swyx">swyx</a> with help from contributors.</p>
             <GridBlock contents={supportLinks} layout="threeColumn" />
           </div>
         </Container>
