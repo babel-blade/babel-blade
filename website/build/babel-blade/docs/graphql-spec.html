@@ -1,0 +1,355 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>GraphQL Spec By Example · babel-blade docs</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="On this page we show by example how to do every thing in [the GraphQL query spec](https://graphql.org/learn/queries) with `babel-blade`. These are directly tested for in our snapshot tests."/><meta name="docsearch:language" content="en"/><meta property="og:title" content="GraphQL Spec By Example · babel-blade docs"/><meta property="og:type" content="website"/><meta property="og:url" content="https://sw-yx.github.io/babel-blade/index.html"/><meta property="og:description" content="On this page we show by example how to do every thing in [the GraphQL query spec](https://graphql.org/learn/queries) with `babel-blade`. These are directly tested for in our snapshot tests."/><meta property="og:image" content="https://sw-yx.github.io/babel-blade/img/docusaurus.png"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://sw-yx.github.io/babel-blade/img/docusaurus.png"/><link rel="shortcut icon" href="/img/favicon.png"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/darcula.min.css"/><link rel="alternate" type="application/atom+xml" href="https://sw-yx.github.io/babel-blade/blog/atom.xml" title="babel-blade docs Blog ATOM Feed"/><link rel="alternate" type="application/rss+xml" href="https://sw-yx.github.io/babel-blade/blog/feed.xml" title="babel-blade docs Blog RSS Feed"/><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><link rel="stylesheet" href="/css/main.css"/></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/"><img class="logo" src="/img/docusaurus.svg" alt="babel-blade docs"/><h2 class="headerTitleWithLogo">babel-blade docs</h2></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/docs/index.html" target="_self">Docs</a></li><li class=""><a href="/docs/doc4.html" target="_self">API</a></li><li class=""><a href="/en/help.html" target="_self">Help</a></li><li class=""><a href="/blog" target="_self">Blog</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="container docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><i></i></div><h2><i>›</i><span>Usage/API</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle">Introduction</h3><ul><li class="navListItem"><a class="navItem" href="/docs/index.html">What is Babel-Blade?</a></li><li class="navListItem"><a class="navItem" href="/docs/declarationdeclaration.html">The Double Declaration Problem</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Getting Started</h3><ul><li class="navListItem"><a class="navItem" href="/docs/babel-plugin-blade.html">As a babel plugin</a></li><li class="navListItem"><a class="navItem" href="/docs/blade-macro.html">As a babel macro</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Usage/API</h3><ul><li class="navListItem navListItemActive"><a class="navItem" href="/docs/graphql-spec.html">GraphQL Spec By Example</a></li></ul></div></div></section></div><script>
+            document.addEventListener('DOMContentLoaded', function() {
+              createToggler('#navToggler', '#docsNav', 'docsSliderActive');
+              createToggler('#tocToggler', 'body', 'tocActive');
+
+              const headings = document.querySelector('.toc-headings');
+              headings && headings.addEventListener('click', function(event) {
+                if (event.target.tagName === 'A') {
+                  document.body.classList.remove('tocActive');
+                }
+              }, false);
+
+              function createToggler(togglerSelector, targetSelector, className) {
+                var toggler = document.querySelector(togglerSelector);
+                var target = document.querySelector(targetSelector);
+
+                toggler.onclick = function(event) {
+                  event.preventDefault();
+
+                  target.classList.toggle(className);
+                };
+              }
+            });
+        </script></nav></div><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><h1 class="postHeaderTitle">GraphQL Spec By Example</h1></header><article><div><span><p>On this page we show by example how to do every thing in <a href="https://graphql.org/learn/queries">the GraphQL query spec</a> with <code>babel-blade</code>. These are directly tested for in our snapshot tests.</p>
+<p>After you have tagged a <code>data</code> object with your query created with <code>createQuery</code>, it becomes a blade:</p>
+<pre><code class="hljs css languages- jsx">
+<span class="hljs-keyword">import</span> {Connect, query} <span class="hljs-keyword">from</span> <span class="hljs-string">'urql'</span>
+<span class="hljs-keyword">import</span> { createQuery } <span class="hljs-keyword">from</span> <span class="hljs-string">'blade.macro'</span> <span class="hljs-comment">// if you are using as a babel macro</span>
+
+<span class="hljs-keyword">const</span> movieQuery = createQuery() <span class="hljs-comment">// create the query</span>
+<span class="hljs-keyword">const</span> Movie = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> (
+  <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Connect</span>
+      <span class="hljs-attr">query</span>=<span class="hljs-string">{query(movieQuery)}</span>
+      <span class="hljs-attr">children</span>=<span class="hljs-string">{({data})</span> =&gt;</span> {
+        const DATA = movieQuery(data) // `DATA` is a blade
+        const { schedule } = DATA // `schedule` is also a blade
+        return (
+          <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">h2</span>&gt;</span>{schedule.movie}<span class="hljs-tag">&lt;/<span class="hljs-name">h2</span>&gt;</span> 
+          <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+        )
+      }}
+    /&gt;
+  <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+)
+</span></code></pre>
+<h3><a class="anchor" aria-hidden="true" id="fields"></a><a href="#fields" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Fields</h3>
+<p>After you have tagged a <code>data</code> object with your query created with <code>createQuery</code>, any property you access (including with destructuring) will be included in the generated GraphQL query.</p>
+<p><em>Note: Known holes we intend to fix - array methods like .map and .forEach don't work yet.</em></p>
+<pre><code class="hljs css languages- jsx">
+<span class="hljs-keyword">import</span> {Connect, query} <span class="hljs-keyword">from</span> <span class="hljs-string">'urql'</span>
+<span class="hljs-keyword">import</span> { createQuery } <span class="hljs-keyword">from</span> <span class="hljs-string">'blade.macro'</span> <span class="hljs-comment">// if you are using as a babel macro</span>
+
+<span class="hljs-keyword">const</span> movieQuery = createQuery()
+<span class="hljs-keyword">const</span> Movie = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> (
+  &lt;div&gt;
+    &lt;Connect
+      query={query(movieQuery)}
+      children={({data}) =&gt; {
+        const DATA = movieQuery(data) // key step
+        return (
+          &lt;div&gt;
+            &lt;h2&gt;{DATA.movie.gorilla}&lt;/h2&gt;
+            &lt;p&gt;{DATA.movie.monkey}&lt;/p&gt;
+            &lt;p&gt;{DATA.chimp}&lt;/p&gt;
+          &lt;/div&gt;
+        )
+      }}
+    /&gt;
+  &lt;/div&gt;
+)
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+import { Connect, query } from 'urql';
+
+const Movie = () =&gt; &lt;div&gt;
+    &lt;Connect query={query(`
+query movieQuery{
+  movie {
+    gorilla
+    monkey
+  }
+  chimp
+}`)} children={({ data }) =&gt; {
+    const DATA = data;
+    return &lt;div&gt;
+            &lt;h2&gt;{DATA.movie.gorilla}&lt;/h2&gt;
+            &lt;p&gt;{DATA.movie.monkey}&lt;/p&gt;
+            &lt;p&gt;{DATA.chimp}&lt;/p&gt;
+          &lt;/div&gt;;
+  }} /&gt;
+  &lt;/div&gt;;
+
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="arguments"></a><a href="#arguments" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Arguments</h2>
+<p>Every blade property can take arguments as though it were a function call - this gets moved to the generated GraphQL.</p>
+<pre><code class="hljs css languages- jsx">
+<span class="hljs-keyword">import</span> {Connect, query} <span class="hljs-keyword">from</span> <span class="hljs-string">'urql'</span>
+<span class="hljs-keyword">import</span> { createQuery } <span class="hljs-keyword">from</span> <span class="hljs-string">'blade.macro'</span> <span class="hljs-comment">// if you are using as a babel macro</span>
+
+<span class="hljs-keyword">const</span> movieQuery = createQuery()
+<span class="hljs-keyword">const</span> Movie = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> (
+  &lt;div&gt;
+    &lt;Connect
+      query={query(movieQuery)}
+      children={({data}) =&gt; {
+        const DATA = movieQuery(data)
+        const film = DATA.movie('limit: 5')
+        const nestedQuery = film.schedule('schedule: true')
+        return (
+          &lt;div&gt;
+            &lt;Films data={film.titles} /&gt;
+            &lt;Schedule data={nestedQuery.data} /&gt;
+          &lt;/div&gt;
+        )
+      }}
+    /&gt;
+  &lt;/div&gt;
+)
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+import { Connect, query } from 'urql';
+
+const Movie = () =&gt; &lt;div&gt;
+    &lt;Connect query={query(`
+query movieQuery{
+  movie_19e8: movie(limit: 5) {
+    schedule_7d17: schedule(schedule: true) {
+      data
+    }
+    titles
+  }
+}`)} children={({ data }) =&gt; {
+    const DATA = data;
+    const film = DATA.movie_19e8;
+    const nestedQuery = film.schedule_7d17;
+    return &lt;div&gt;
+            &lt;Films data={film.titles} /&gt;
+            &lt;Schedule data={nestedQuery.data} /&gt;
+          &lt;/div&gt;;
+  }} /&gt;
+  &lt;/div&gt;;
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="aliases"></a><a href="#aliases" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Aliases</h2>
+<p><strong>Done for you!</strong></p>
+<p>Each arguments call gets an autogenerated 4 character hex alias to help distinguish between them. This way you don't have to manually assign aliases for multiple queries on the same fields but with different arguments.</p>
+<h2><a class="anchor" aria-hidden="true" id="fragments"></a><a href="#fragments" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Fragments</h2>
+<p>Use the <code>createFragment</code> pseudofunction to create the fragment, and then attach it as an argument to any blade property.</p>
+<pre><code class="hljs css languages- jsx"><span class="hljs-keyword">import</span> {Connect, query} <span class="hljs-keyword">from</span> <span class="hljs-string">'urql'</span>
+<span class="hljs-keyword">import</span> { createQuery } <span class="hljs-keyword">from</span> <span class="hljs-string">'blade.macro'</span> <span class="hljs-comment">// if you are using as a babel macro</span>
+
+<span class="hljs-comment">// MovieComponent.js</span>
+<span class="hljs-keyword">const</span> movieFragment = createFragment(<span class="hljs-string">'Movie'</span>);
+<span class="hljs-keyword">const</span> Movie = <span class="hljs-function">(<span class="hljs-params">{ data }</span>) =&gt;</span> {
+  <span class="hljs-keyword">let</span> result = movieFragment(data);
+  <span class="hljs-keyword">let</span> movie = result.movie;
+  <span class="hljs-keyword">return</span> (
+    <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"movie"</span>&gt;</span>
+      {loaded === false ? (
+        <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>Loading<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+      ) : (
+        <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">h2</span>&gt;</span>{movie.title}<span class="hljs-tag">&lt;/<span class="hljs-name">h2</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>{movie.actors.supporting}<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>{movie.actors.leading}<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">{onClose}</span>&gt;</span>Close<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+      )}
+    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
+  );
+};
+
+Movie.fragment = movieFragment;
+
+<span class="hljs-comment">// MoviePage.js</span>
+<span class="hljs-keyword">const</span> pageQuery = createQuery(); <span class="hljs-comment">// create a top-level query</span>
+<span class="hljs-keyword">const</span> App = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> (
+  &lt;Connect
+    query={query(pageQuery)}
+    children={({ loaded, data }) =&gt; {
+      let result = pageQuery(data);
+      // rendering Movie while adding
+      // `Movie.fragment` into the query.
+      // (could be automatic in future)
+      return (
+        &lt;ul&gt;
+          &lt;Movie data={result.movie(null, Movie.fragment)} /&gt;
+        &lt;/ul&gt;
+      );
+    }}
+  /&gt;
+);
+</code></pre>
+<p>This transpiles to:</p>
+<pre><code class="hljs css languages- jsx"><span class="hljs-keyword">import</span> {Connect, query} <span class="hljs-keyword">from</span> <span class="hljs-string">'urql'</span>
+<span class="hljs-keyword">const</span> Movie = <span class="hljs-function">(<span class="hljs-params">{ data }</span>) =&gt;</span> {
+  <span class="hljs-keyword">let</span> result = data;
+  <span class="hljs-keyword">let</span> movie = result.movie;
+  <span class="hljs-keyword">return</span> (
+    <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"movie"</span>&gt;</span>
+      {loaded === false ? (
+        <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>Loading<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+      ) : (
+        <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">h2</span>&gt;</span>{movie.title}<span class="hljs-tag">&lt;/<span class="hljs-name">h2</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>{movie.actors.supporting}<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>{movie.actors.leading}<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">{onClose}</span>&gt;</span>Close<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+      )}
+    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
+  );
+};
+
+Movie.fragment = <span class="hljs-function"><span class="hljs-params">movieFragment</span> =&gt;</span> <span class="hljs-string">`
+fragment <span class="hljs-subst">${movieFragment}</span> on Movie{
+  movie {
+    title
+    actors {
+      supporting
+      leading
+    }
+  }
+}`</span>;
+
+<span class="hljs-keyword">const</span> App = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> (
+  &lt;Connect
+    query={query(`
+query pageQuery{
+  movie {
+    ...Moviefragment
+  }
+}
+
+${Movie.fragment("Moviefragment")}`)}
+    children={({ loaded, data }) =&gt; {
+      let result = data;
+      // rendering Movie while adding
+      // `Movie.fragment` into the query.
+      // (could be automatic in future)
+      return (
+        &lt;ul&gt;
+          &lt;Movie data={result.movie} /&gt;
+        &lt;/ul&gt;
+      );
+    }}
+  /&gt;
+);
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="operation-name"></a><a href="#operation-name" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Operation Name</h2>
+<p>All queries are named by whatever variable identifier you assign.</p>
+<pre><code class="hljs css languages- jsx"><span class="hljs-keyword">import</span> {Connect, query} <span class="hljs-keyword">from</span> <span class="hljs-string">'urql'</span>
+<span class="hljs-keyword">import</span> { createQuery } <span class="hljs-keyword">from</span> <span class="hljs-string">'blade.macro'</span> <span class="hljs-comment">// if you are using as a babel macro</span>
+
+<span class="hljs-keyword">const</span> movieQuery = createQuery() <span class="hljs-comment">// movieQuery becomes the operation name</span>
+<span class="hljs-keyword">const</span> Movie = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> (
+  &lt;div&gt;
+    &lt;Connect
+      query={query(movieQuery)}
+      children={({data}) =&gt; {
+        const DATA = movieQuery(data)
+        return (
+          &lt;div&gt;
+            &lt;h2&gt;{DATA.movie.gorilla}&lt;/h2&gt;
+            &lt;p&gt;{DATA.movie.monkey}&lt;/p&gt;
+            &lt;p&gt;{DATA.chimp}&lt;/p&gt;
+          &lt;/div&gt;
+        )
+      }}
+    /&gt;
+  &lt;/div&gt;
+)
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+import { Connect, query } from 'urql';
+
+const Movie = () =&gt; &lt;div&gt;
+    &lt;Connect query={query(`
+query movieQuery{
+  movie {
+    gorilla
+    monkey
+  }
+  chimp
+}`)} children={({ data }) =&gt; {
+    const DATA = data;
+    return &lt;div&gt;
+            &lt;h2&gt;{DATA.movie.gorilla}&lt;/h2&gt;
+            &lt;p&gt;{DATA.movie.monkey}&lt;/p&gt;
+            &lt;p&gt;{DATA.chimp}&lt;/p&gt;
+          &lt;/div&gt;;
+  }} /&gt;
+  &lt;/div&gt;;
+
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="variables"></a><a href="#variables" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Variables</h2>
+<p>Supply variables as a string or template string to your <code>createQuery</code> call.</p>
+<pre><code class="hljs css languages- jsx">
+<span class="hljs-keyword">import</span> {Connect, query} <span class="hljs-keyword">from</span> <span class="hljs-string">'urql'</span>
+
+<span class="hljs-keyword">const</span> movieID = <span class="hljs-number">12</span>
+<span class="hljs-keyword">const</span> movieQuery = createQuery(<span class="hljs-string">`$movieID: <span class="hljs-subst">${movieID}</span>`</span>)
+<span class="hljs-keyword">const</span> Movie = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> (
+  &lt;div&gt;
+    &lt;Connect
+      query={query(movieQuery)}
+      children={({data}) =&gt; {
+        const DATA = movieQuery(data)
+        return (
+          &lt;div&gt;
+            &lt;h2&gt;{DATA.movie('id: movieID')}&lt;/h2&gt;
+            &lt;p&gt;{DATA.movie.monkey}&lt;/p&gt;
+            &lt;p&gt;{DATA.chimp}&lt;/p&gt;
+          &lt;/div&gt;
+        )
+      }}
+    /&gt;
+  &lt;/div&gt;
+)
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+import { Connect, query } from 'urql';
+
+const movieID = 12;
+
+const Movie = () =&gt; &lt;div&gt;
+    &lt;Connect query={query(`
+query movieQuery(${`$movieID: ${movieID}`}){
+  movie_3d71: movie(id: movieID)
+  movie {
+    monkey
+  }
+  chimp
+}`)} children={({ data }) =&gt; {
+    const DATA = data;
+    return &lt;div&gt;
+            &lt;h2&gt;{DATA.movie_3d71}&lt;/h2&gt;
+            &lt;p&gt;{DATA.movie.monkey}&lt;/p&gt;
+            &lt;p&gt;{DATA.chimp}&lt;/p&gt;
+          &lt;/div&gt;;
+  }} /&gt;
+  &lt;/div&gt;;
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="directives"></a><a href="#directives" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Directives</h2>
+<p>Sorry.. this is not implemented yet. Contact <a href="https://twitter.com/swyx">@swyx</a> or <a href="https://github.com/sw-yx/babel-blade/issues/new">file an issue!</a></p>
+<h2><a class="anchor" aria-hidden="true" id="mutations"></a><a href="#mutations" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Mutations</h2>
+<p>Sorry.. this is not implemented yet. Contact <a href="https://twitter.com/swyx">@swyx</a> or <a href="https://github.com/sw-yx/babel-blade/issues/new">file an issue!</a></p>
+<h2><a class="anchor" aria-hidden="true" id="inline-fragments"></a><a href="#inline-fragments" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Inline Fragments</h2>
+<p>Sorry.. this is not implemented yet. Contact <a href="https://twitter.com/swyx">@swyx</a> or <a href="https://github.com/sw-yx/babel-blade/issues/new">file an issue!</a></p>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/docs/blade-macro.html">← As a babel macro</a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#arguments">Arguments</a></li><li><a href="#aliases">Aliases</a></li><li><a href="#fragments">Fragments</a></li><li><a href="#operation-name">Operation Name</a></li><li><a href="#variables">Variables</a></li><li><a href="#directives">Directives</a></li><li><a href="#mutations">Mutations</a></li><li><a href="#inline-fragments">Inline Fragments</a></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/" class="nav-home"><img src="/img/docusaurus.svg" alt="babel-blade docs" width="66" height="58"/></a><div><h5>Docs</h5><a href="/docs/en/doc1.html">Getting Started (or other categories)</a><a href="/docs/en/doc2.html">Guides (or other categories)</a><a href="/docs/en/doc3.html">API Reference (or other categories)</a></div><div><h5>Community</h5><a href="/en/users.html">User Showcase</a><a href="http://stackoverflow.com/questions/tagged/" target="_blank" rel="noreferrer noopener">Stack Overflow</a><a href="https://discordapp.com/">Project Chat</a><a href="https://twitter.com/" target="_blank" rel="noreferrer noopener">Twitter</a></div><div><h5>More</h5><a href="/blog">Blog</a><a href="https://github.com/">GitHub</a><a class="github-button" data-icon="octicon-star" data-count-href="/facebook/docusaurus/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star this project on GitHub">Star</a></div></section><a href="https://code.facebook.com/projects/" target="_blank" rel="noreferrer noopener" class="fbOpenSource"><img src="/img/oss_logo.png" alt="Facebook Open Source" width="170" height="45"/></a><section class="copyright">Copyright © 2018 Your Name or Your Company Name</section></footer></div></body></html>
