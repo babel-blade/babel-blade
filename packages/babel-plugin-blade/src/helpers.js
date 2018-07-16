@@ -8,7 +8,8 @@ module.exports = {
   getAssignTarget,
   getObjectPropertyName,
   getCalleeArgs,
-};
+  maybeGetSimpleString,
+}
 
 /****
  *
@@ -21,11 +22,11 @@ module.exports = {
 function getAssignTarget(path) {
   return path.parentPath.container.id
     ? path.parentPath.container.id.name
-    : undefined;
+    : undefined
 }
 
 function getObjectPropertyName(path) {
-  return path.container.property ? path.container.property.name : undefined;
+  return path.container.property ? path.container.property.name : undefined
 }
 
 // potentially useful function from devon to extract a colocated fragment's name
@@ -36,31 +37,31 @@ function getFragmentName(path) {
     path.parent.left.type === 'MemberExpression' &&
     path.parent.left.property.name === 'fragment'
   ) {
-    const name = path.parent.left.object.name;
-    return name[0].toLowerCase() + name.slice(1) + 'Fragment';
+    const name = path.parent.left.object.name
+    return name[0].toLowerCase() + name.slice(1) + 'Fragment'
   }
-  return null;
+  return null
 }
 
 function isObject(path) {
-  return looksLike(path, { key: 'object' });
+  return looksLike(path, {key: 'object'})
 }
 
 function getCalleeArgs(calleePath) {
-  const arg = calleePath.container.arguments;
-  return arg;
+  const arg = calleePath.container.arguments
+  return arg
 }
 
 function isCallee(path) {
-  const parent = path.parentPath;
-  return parent.isCallExpression() && path.node === parent.node.callee;
+  const parent = path.parentPath
+  return parent.isCallExpression() && path.node === parent.node.callee
 }
 
 function isCreateQuery(path) {
-  return looksLike(path, { node: { name: 'createQuery' } });
+  return looksLike(path, {node: {name: 'createQuery'}})
 }
 function isCreateFragment(path) {
-  return looksLike(path, { node: { name: 'createFragment' } });
+  return looksLike(path, {node: {name: 'createFragment'}})
 }
 
 function isPropertyCall(path, name) {
@@ -68,10 +69,22 @@ function isPropertyCall(path, name) {
     node: {
       type: 'CallExpression',
       callee: {
-        property: { name },
+        property: {name},
       },
     },
-  });
+  })
+}
+
+function maybeGetSimpleString(Literal) {
+  if (Literal.type === 'StringLiteral') return Literal.value
+  if (
+    Literal.type === 'TemplateLiteral' &&
+    !Literal.expressions.length &&
+    Literal.quasis.length === 1
+  )
+    return Literal.quasis[0].value.raw
+  // else
+  return null
 }
 
 function looksLike(a, b) {
@@ -79,19 +92,19 @@ function looksLike(a, b) {
     a &&
     b &&
     Object.keys(b).every(bKey => {
-      const bVal = b[bKey];
-      const aVal = a[bKey];
+      const bVal = b[bKey]
+      const aVal = a[bKey]
       if (typeof bVal === 'function') {
-        return bVal(aVal);
+        return bVal(aVal)
       }
-      return isPrimitive(bVal) ? bVal === aVal : looksLike(aVal, bVal);
+      return isPrimitive(bVal) ? bVal === aVal : looksLike(aVal, bVal)
     })
-  );
+  )
 }
 
 function isPrimitive(val) {
   // eslint-disable-next-line
-  return val == null || /^[sbn]/.test(typeof val);
+  return val == null || /^[sbn]/.test(typeof val)
 }
 
 /*

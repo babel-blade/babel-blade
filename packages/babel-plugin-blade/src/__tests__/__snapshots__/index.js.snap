@@ -33,7 +33,7 @@ const Movie = ({ id, onClose }) => <div>
     <Connect query={query(\`
 query movieQuery($id: id){
   gorilla
-  movie_6caf: movie(count: id) {
+  movie_e107: movie(count: id) {
     monkey
   }
   chimp
@@ -41,7 +41,7 @@ query movieQuery($id: id){
   children={({ data }) => {
     const DATA = data;
     const core = DATA;
-    const film = DATA.movie_6caf;
+    const film = DATA.movie_e107;
     return <div>
             <h2>{core.gorilla}</h2>
             <p>{film.monkey}</p>
@@ -129,7 +129,7 @@ import { Connect, query } from 'urql';
 const Movie = ({ id, onClose }) => <div>
     <Connect query={query(\`
 query movieQuery($id: id){
-  movie_0f00: movie(id: 234) {
+  movie_3648: movie(id: 234) {
     credits {
       actors {
         leading
@@ -139,10 +139,157 @@ query movieQuery($id: id){
   }
 }\`, { id: id })} children={({ data }) => {
     const DATA = data;
-    const { actors } = DATA.movie_0f00.credits;
+    const { actors } = DATA.movie_3648.credits;
     return <div>
             <h2>{actors.leading}</h2>
             <h2>{actors.supporting}</h2>
+          </div>;
+  }} />
+  </div>;
+
+`;
+
+exports[`babel-blade docs: args: docs: args 1`] = `
+
+import {Connect, query} from 'urql'
+
+const movieQuery = createQuery()
+const Movie = () => (
+  <div>
+    <Connect
+      query={query(movieQuery)}
+      children={({data}) => {
+        const DATA = movieQuery(data)
+        const film = DATA.movie('limit: 5')
+        const nestedQuery = film.schedule('schedule: true')
+        return (
+          <div>
+            <Films data={film.titles} />
+            <Schedule data={nestedQuery.data} />
+          </div>
+        )
+      }}
+    />
+  </div>
+)
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+import { Connect, query } from 'urql';
+
+const Movie = () => <div>
+    <Connect query={query(\`
+query movieQuery{
+  movie_19e8: movie(limit: 5) {
+    schedule_7d17: schedule(schedule: true) {
+      data
+    }
+    titles
+  }
+}\`)} children={({ data }) => {
+    const DATA = data;
+    const film = DATA.movie_19e8;
+    const nestedQuery = film.schedule_7d17;
+    return <div>
+            <Films data={film.titles} />
+            <Schedule data={nestedQuery.data} />
+          </div>;
+  }} />
+  </div>;
+
+`;
+
+exports[`babel-blade docs: fields: docs: fields 1`] = `
+
+import {Connect, query} from 'urql'
+
+const movieQuery = createQuery()
+const Movie = () => (
+  <div>
+    <Connect
+      query={query(movieQuery)}
+      children={({data}) => {
+        const DATA = movieQuery(data)
+        return (
+          <div>
+            <h2>{DATA.movie.gorilla}</h2>
+            <p>{DATA.movie.monkey}</p>
+            <p>{DATA.chimp}</p>
+          </div>
+        )
+      }}
+    />
+  </div>
+)
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+import { Connect, query } from 'urql';
+
+const Movie = () => <div>
+    <Connect query={query(\`
+query movieQuery{
+  movie {
+    gorilla
+    monkey
+  }
+  chimp
+}\`)} children={({ data }) => {
+    const DATA = data;
+    return <div>
+            <h2>{DATA.movie.gorilla}</h2>
+            <p>{DATA.movie.monkey}</p>
+            <p>{DATA.chimp}</p>
+          </div>;
+  }} />
+  </div>;
+
+`;
+
+exports[`babel-blade docs: variables: docs: variables 1`] = `
+
+import {Connect, query} from 'urql'
+
+const movieID = 12
+const movieQuery = createQuery(\`$movieID: \${movieID}\`)
+const Movie = () => (
+  <div>
+    <Connect
+      query={query(movieQuery)}
+      children={({data}) => {
+        const DATA = movieQuery(data)
+        return (
+          <div>
+            <h2>{DATA.movie('id: movieID')}</h2>
+            <p>{DATA.movie.monkey}</p>
+            <p>{DATA.chimp}</p>
+          </div>
+        )
+      }}
+    />
+  </div>
+)
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+import { Connect, query } from 'urql';
+
+const movieID = 12;
+
+const Movie = () => <div>
+    <Connect query={query(\`
+query movieQuery(\${\`$movieID: \${movieID}\`}){
+  movie_3d71: movie(id: movieID)
+  movie {
+    monkey
+  }
+  chimp
+}\`)} children={({ data }) => {
+    const DATA = data;
+    return <div>
+            <h2>{DATA.movie_3d71}</h2>
+            <p>{DATA.movie.monkey}</p>
+            <p>{DATA.chimp}</p>
           </div>;
   }} />
   </div>;

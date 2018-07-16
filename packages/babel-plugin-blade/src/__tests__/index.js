@@ -27,6 +27,9 @@ pluginTester({
     'basic test of functionality': fixture('basic'),
     'assignments and aliases work': fixture('assignment'),
     'destructuring work': fixture('destructuring'),
+    'docs: fields': fixture('fields'),
+    'docs: args': fixture('arguments'),
+    'docs: variables': fixture('queryVariables'),
     // 'injection of fragments': fixture('fragment')
     // 'does not touch non-blade code': {
     //   snapshot: false,

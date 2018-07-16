@@ -1,13 +1,13 @@
 // for jsx/babel6-7 interop
-import semver from 'semver';
-import jsx from '@babel/plugin-syntax-jsx';
-import jsx6 from 'babel-plugin-syntax-jsx';
+import semver from 'semver'
+import jsx from '@babel/plugin-syntax-jsx'
+import jsx6 from 'babel-plugin-syntax-jsx'
 
 // data structure
-const { RazorData } = require('./dataStructures');
+const {RazorData} = require('./dataStructures')
 const {
-  isPropertyCall,
-  looksLike,
+  // isPropertyCall,
+  // looksLike,
   isObject,
   isCallee,
   isCreateQuery,
@@ -15,7 +15,8 @@ const {
   getAssignTarget,
   getObjectPropertyName,
   getCalleeArgs,
-} = require('./helpers');
+  maybeGetSimpleString,
+} = require('./helpers')
 
 /****
  *
@@ -80,116 +81,119 @@ const {
  *
  **/
 
+/* eslint-disable complexity */
+/* eslint-disable babel/new-cap */
+
 export default function(babel) {
   const {
     types: t,
     // template,
     // traverse,
     version,
-  } = babel;
-  const babel6 = semver.satisfies(version, '^6.0.0');
+  } = babel
+  const babel6 = semver.satisfies(version, '^6.0.0')
 
   return {
     name: 'babel-blade', // not required
     inherits: babel6 ? jsx6 : jsx, // for jsx/babel6-7 interop
     visitor: {
-      // eslint-disable-next-line complexity
       Identifier(path) {
-        handleCreateRazor(path, t);
+        handleCreateRazor(path, t)
       },
     },
-  };
+  }
 }
 
 export function handleCreateRazor(path, t) {
   if (isCreateQuery(path) || isCreateFragment(path)) {
     // get the identifier and available args
-    const identifier = getAssignTarget(path);
-    let queryArgs;
+    const identifier = getAssignTarget(path)
+    let queryArgs
     if (isCallee(path)) {
-      queryArgs = getCalleeArgs(path);
+      queryArgs = getCalleeArgs(path)
     }
     // traverse scope for identifier references
-    const refs = path.scope.bindings[identifier].referencePaths;
+    const refs = path.scope.bindings[identifier].referencePaths
     // clear the reference
-    path.findParent(ppath => ppath.isVariableDeclaration()).remove();
+    path.findParent(ppath => ppath.isVariableDeclaration()).remove()
     if (refs.length > 0) {
-      let razorID = null;
+      let razorID = null
       const fragmentType =
-        isCreateFragment(path) && maybeGetSimpleString(queryArgs[0]); //getFragmentName(path)
-      const queryType = isCreateFragment(path) ? 'fragment' : 'query';
+        isCreateFragment(path) && maybeGetSimpleString(queryArgs[0]) //getFragmentName(path)
+      const queryType = isCreateFragment(path) ? 'fragment' : 'query'
       // console.log({ queryArgs, fragmentType });
       const razorData = new RazorData({
         type: queryType,
         name: isCreateFragment(path) ? t.Identifier(identifier) : identifier,
         fragmentType,
         args: isCreateQuery(path) && queryArgs,
-      });
+      })
       refs.forEach(razor => {
         // go through all razors
         if (isCallee(razor)) {
           // we have been activated! time to make a blade!
-          razorID = getAssignTarget(razor);
+          razorID = getAssignTarget(razor)
           // clear the reference
           if (razor.container.arguments[0])
-            razor.parentPath.replaceWith(razor.container.arguments[0]);
-          else razor.parentPath.remove();
-          parseBlade(razor, razorID, razorData);
+            razor.parentPath.replaceWith(razor.container.arguments[0])
+          else razor.parentPath.remove()
+          parseBlade(razor, razorID, razorData)
         }
-      });
+      })
 
       // insert query
       refs.forEach(razor => {
         if (!isObject(razor)) {
-          const { stringAccumulator, litAccumulator } = razorData.print();
+          const {stringAccumulator, litAccumulator} = razorData.print()
           const graphqlOutput = t.templateLiteral(
-            stringAccumulator.map(str => t.templateElement({ raw: str })),
+            stringAccumulator.map(str => t.templateElement({raw: str})),
             litAccumulator.map(lit => {
               if (lit.isFragment)
                 // we tagged this inside BladeData
                 return t.callExpression(lit, [
                   t.stringLiteral(getSimpleFragmentName(lit)),
-                ]);
-              return lit || t.nullLiteral();
+                ])
+              return lit || t.nullLiteral()
             }),
-          );
+          )
           if (razorData._type === 'fragment') {
             razor.replaceWith(
               t.arrowFunctionExpression(
                 [t.identifier(identifier)],
                 graphqlOutput,
               ),
-            );
-          } else razor.replaceWith(graphqlOutput);
+            )
+          } else razor.replaceWith(graphqlOutput)
         }
-      });
+      })
     }
   }
 }
 
 function parseBlade(path, id, razorData, slice = 0) {
-  let refs = path.scope.bindings[id] && path.scope.bindings[id].referencePaths;
+  let refs = path.scope.bindings[id] && path.scope.bindings[id].referencePaths
   // console.log('parseblade', { refs, id, razorData, path });
-  if (slice) refs = refs.slice(slice);
+  if (slice) refs = refs.slice(slice)
   if (refs && refs.length > 0) {
     // there has been an assignment and it has been used
     refs.forEach(blade => {
-      const LHS = processReference(blade, razorData);
+      // const LHS = processReference(blade, razorData);
+      processReference(blade, razorData)
       // call parseblade on all LHS
-    });
+    })
   } else {
     // there has been no assignment or it has not been used
-    const bladeID = getObjectPropertyName(path);
+    const bladeID = getObjectPropertyName(path)
     if (bladeID) {
-      const propID = getObjectPropertyName(path);
-      const child = razorData.add({ name: propID });
-      parseBlade(path.parentPath, propID, child);
+      const propID = getObjectPropertyName(path)
+      const child = razorData.add({name: propID})
+      parseBlade(path.parentPath, propID, child)
     }
   }
 }
 
 function processReference(blade, razorData) {
-  let LHS, RHS;
+  let LHS, RHS
 
   /***** processReference: PROCESS LHS *****/
   // for now LHS processing goes a maximum of one level.
@@ -199,40 +203,41 @@ function processReference(blade, razorData) {
   const ctx = blade.findParent(
     ppath =>
       ppath.isVariableDeclarator() && ppath.scope.uid === blade.scope.uid,
-  );
+  )
   if (ctx) {
     // then there is assignment
     // if it is a top level assign, its a plain alias
     if (ctx.node.id.name) {
-      LHS = ctx.node.id.name;
+      LHS = ctx.node.id.name
     } else {
-      LHS = processLHS(ctx);
+      LHS = processLHS(ctx)
     }
   }
 
   function processLHS(ctx) {
     // if it is an object destructure, push and recurse
-    let lhs = [];
-    const props = ctx.node.id.properties;
+    let lhs = []
+    const props = ctx.node.id.properties
     if (props) {
       props.forEach(prop => {
-        const k = prop.key.name;
-        const maybeV = prop.value.properties;
+        const k = prop.key.name
+        const maybeV = prop.value.properties
         if (maybeV) {
           // multilayers, recurse
-          throw new Error('multilayer destructure not implemented yet');
+          throw new Error('multilayer destructure not implemented yet')
         } else {
           // lhs and rhs, no multilayer
           lhs.push({
             name: k,
             alias: prop.value.name,
-          });
+          })
         }
-      });
-      return lhs; // normal terminate
+      })
+      return lhs // normal terminate
     }
     // shouldnt get here
-    console.log('please examine this', ctx);
+    // eslint-disable-next-line
+    console.log('please examine this', ctx)
   }
 
   /***** processReference: PROCESS RHS *****/
@@ -240,26 +245,26 @@ function processReference(blade, razorData) {
   // doing this just to read chained objects (eg foo.bar.baz)
   // from left to right instead of
   // babel AST which makes us read from right to left
-  RHS = [];
+  RHS = []
   const RHSVisitor = {
     MemberExpression(childpath) {
-      let aliasPath, args;
+      let aliasPath, args
       if (isCallee(childpath)) {
-        args = getCalleeArgs(childpath); // fancy!
-        aliasPath = childpath;
+        args = getCalleeArgs(childpath) // fancy!
+        aliasPath = childpath
       }
       if (childpath.parentKey !== 'arguments')
         // else it will include membexps inside call arguments
-        RHS.push({ name: childpath.node.property.name, args, aliasPath });
+        RHS.push({name: childpath.node.property.name, args, aliasPath})
     },
-  };
+  }
   if (ctx) {
-    ctx.traverse(RHSVisitor);
+    ctx.traverse(RHSVisitor)
   } else {
     // even if there is no assignment, still need to traverse the kids
-    blade.findParent(ppath => !ppath.isMemberExpression()).traverse(RHSVisitor);
+    blade.findParent(ppath => !ppath.isMemberExpression()).traverse(RHSVisitor)
   }
-  RHS = RHS.reverse(); // annoying bc of how the AST works
+  RHS = RHS.reverse() // annoying bc of how the AST works
 
   // pretty good place for debugging
   // console.log('bbb', { ctx, blade, LHS, RHS });
@@ -267,33 +272,33 @@ function processReference(blade, razorData) {
   /***** processReference: MERGE LHS AND RHS *****/
 
   // MERGE RHS FIRST: rhs.foreach - call add, return child, call add again
-  let currentData = razorData;
-  RHS.forEach(({ args, name, aliasPath }) => {
+  let currentData = razorData
+  RHS.forEach(({args, name, aliasPath}) => {
     //console.log({name, args, aliasPath})
     currentData = currentData.add({
       name,
       args: args && args.slice(0, 1),
       fragments: args && args.slice(1),
-    });
+    })
     if (currentData._args && aliasPath)
-      aliasPath.parentPath.replaceWith(aliasPath);
+      aliasPath.parentPath.replaceWith(aliasPath)
     if (currentData._alias && aliasPath)
-      aliasPath.node.property.name = currentData._alias;
-  });
+      aliasPath.node.property.name = currentData._alias
+  })
 
   // MERGE LHS second: lhs.foreach
   if (typeof LHS === 'string') {
     // simple assignment
-    parseBlade(blade.parentPath, LHS, currentData);
+    parseBlade(blade.parentPath, LHS, currentData)
   } else if (Array.isArray(LHS)) {
     // there has been a destructuring!
-    let LHSpointer = currentData;
-    LHS.forEach(({ name, alias }) => {
-      LHSpointer = currentData.add({ name });
+    let LHSpointer = currentData
+    LHS.forEach(({name, alias}) => {
+      LHSpointer = currentData.add({name})
       //const temp = blade.scope.bindings[alias]
       //console.log(alias, blade, temp)
-      parseBlade(blade.parentPath, alias, LHSpointer, 1);
-    });
+      parseBlade(blade.parentPath, alias, LHSpointer, 1)
+    })
   }
 
   /***** processReference: DONE *****/

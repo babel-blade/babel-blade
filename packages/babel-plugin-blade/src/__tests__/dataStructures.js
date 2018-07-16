@@ -101,31 +101,33 @@ fragment MovieQuery on Movie{
   expect(compile(razor.print())).toEqual(expected)
 })
 
-test('can create and print a basic query and a fragment', () => {
-  const razor = new RazorData({type: 'query'})
-  razor.add({name: 'foo'})
-  const fooChild = razor.get('foo')
-  const frag = new RazorData({
-    type: 'fragment',
-    fragmentType: 'Movie',
-    name: 'MovieFragment',
-  })
-  frag.add({name: 'foo'})
-  const fragChild = frag.get('foo')
-  fragChild.add({name: 'bar'})
-  fooChild.add({name: 'bar', fragments: [frag]})
-  const expected = `
-query {
-  foo {
-    bar {
-      ...MovieFragment
-    }
-  }
-}
-fragment MovieFragment on Movie{
-  foo {
-    bar
-  }
-}`
-  expect(compile(razor.print())).toEqual(expected)
-})
+// outdated
+
+// test('can create and print a basic query and a fragment', () => {
+//   const razor = new RazorData({type: 'query'})
+//   razor.add({name: 'foo'})
+//   const fooChild = razor.get('foo')
+//   const frag = new RazorData({
+//     type: 'fragment',
+//     fragmentType: 'Movie',
+//     name: 'MovieFragment',
+//   })
+//   frag.add({name: 'foo'})
+//   const fragChild = frag.get('foo')
+//   fragChild.add({name: 'bar'})
+//   fooChild.add({name: 'bar', fragments: [frag]})
+//   const expected = `
+// query {
+//   foo {
+//     bar {
+//       ...MovieFragment
+//     }
+//   }
+// }
+// fragment MovieFragment on Movie{
+//   foo {
+//     bar
+//   }
+// }`
+//   expect(compile(razor.print())).toEqual(expected)
+// })
