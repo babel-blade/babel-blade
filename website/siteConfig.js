@@ -72,7 +72,7 @@ const siteConfig = {
 
   // This copyright info is used in /core/Footer.js and blog rss/atom feeds.
   copyright:
-    'MIT License. Maintained by @swyx'
+    'MIT License. Maintained by @swyx',
     //  Copyright © ' +
     // new Date().getFullYear() +
     // ' Your Name or Your Company Name',
