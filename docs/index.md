@@ -12,3 +12,7 @@ title: What is Babel-Blade?
 ## Try it out on ASTExplorer
 
 The quickest, zero-install way to try it out is on [astexplorer](http://astexplorer.net/#/gist/01983f61e310f1eaf6b12a221556a937/7e9ae4d3b406ed94d92f6931c0474f964e1ae990). If you like it, head over to our **Getting Started** docs to see how to install the babel plugin in your app.
+
+## Official Emoji
+
+It is the ⛸️. Basically when I explained this idea to coworkers they said "oh it's just **inline** GraphQL". My boss at the time liked inline skating, which is commonly known as Roller Blading, and so the name stuck.
