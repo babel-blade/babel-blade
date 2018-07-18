@@ -1,5 +1,5 @@
 <div align="center">
-<h1>babel-plugin-blade 🔪</h1>
+<h1>babel-plugin-blade ⛸️</h1>
 
 <p>inline GraphQL</p>
 </div>
@@ -7,7 +7,6 @@
 <hr />
 
 <!-- prettier-ignore-start -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-4-orange.svg?style=flat-square)](#contributors)
 [![PRs Welcome][prs-badge]][prs]
 [![Code of Conduct][coc-badge]][coc]
 [![Babel Macro](https://img.shields.io/badge/babel--macro-%F0%9F%8E%A3-f5da55.svg?style=flat-square)](https://github.com/kentcdodds/babel-plugin-macros)
@@ -15,9 +14,9 @@
 
 ## The problem
 
-This is a plugin for solving the "double declaration problem" in GraphQL queries.
+This is a plugin for solving the [double declaration problem](https://babel-blade.netlify.com/docs/declarationdeclaration.html) in GraphQL queries.
 
-> **What is the "double declaration problem"?** Simply it is the bad developer experience of having to declare what you want to query in the GraphQL template string, and then again when you are using the data in your application. Ommissions are confusing to debug and overfetching due to stale queries is also a problem.
+> **What is the "double declaration problem"?** Simply it is the bad developer experience of first having to declare what you want to query in the GraphQL template string, and then *again* when you are using the data in your application. Ommissions are confusing to debug and overfetching due to stale queries is also a problem.
 
 ## This solution
 
@@ -44,7 +43,6 @@ This is accomplished by hooking in to Babel to building up a tree of downstream 
 - [Examples](#examples)
 - [Inspiration](#inspiration)
 - [Other Solutions](#other-solutions)
-- [Contributors](#contributors)
 - [LICENSE](#license)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -178,53 +176,74 @@ you can import/require the blade macro at `babel-plugin-blade/macro`. For
 example:
 
 ```javascript
-import yourmacro from 'babel-plugin-blade/macro'
+import { createQuery } from 'babel-plugin-blade/macro'
+import {Connect, query} from 'urql'
 
-// user yourmacro
+const movieQuery = createQuery()
+const Movie = () => (
+  <div>
+    <Connect
+      query={query(movieQuery)}
+      children={({data}) => {
+        const DATA = movieQuery(data)
+        return (
+          <div>
+            <h2>{DATA.movie.gorilla}</h2>
+            <p>{DATA.movie.monkey}</p>
+            <p>{DATA.chimp}</p>
+          </div>
+        )
+      }}
+    />
+  </div>
+)
 
       ↓ ↓ ↓ ↓ ↓ ↓
 
-// output
+import { Connect, query } from 'urql';
+
+const Movie = () => <div>
+    <Connect query={query(`
+query movieQuery{
+  movie {
+    gorilla
+    monkey
+  }
+  chimp
+}`)} children={({ data }) => {
+    const DATA = data;
+    return <div>
+            <h2>{DATA.movie.gorilla}</h2>
+            <p>{DATA.movie.monkey}</p>
+            <p>{DATA.chimp}</p>
+          </div>;
+  }} />
+  </div>;
 ```
 
 ### APIs not supported by the macro
 
-- one
-- two
+- none! the macro has full coverage of the babel-plugin
 
-> You could also use [`blade.macro`][blade.macro] if you'd prefer to type
-> less 😀
+> You could also use [`blade.macro`][blade.macro] if you'd prefer to type less 😀
 
 ## Caveats
 
-any caveats you like to say
+This plugin is still very new, please don't use in production unless you are willing to help me out on fixing any bugs you find!
 
 ## Examples
 
-- Some examples and links here
+- To be written
 
 ## Inspiration
 
-This is based on [babel-plugin-blade](https://github.com/kentcdodds/babel-plugin-blade).
+This is based on [babel-plugin-macros](https://github.com/kentcdodds/babel-plugin-macros).
 
 ## Other Solutions
 
 I'm not aware of any, if you are please [make a pull request][prs] and add it
 here!
 
-## Contributors
-
-Thanks goes to these people ([emoji key][emojis]):
-
-<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-<!-- prettier-ignore -->
-| [<img src="https://avatars.githubusercontent.com/u/1500684?v=3" width="100px;"/><br /><sub><b>Kent C. Dodds</b></sub>](https://kentcdodds.com)<br />[💻](https://github.com/sw-yx/babel-plugin-blade/commits?author=kentcdodds "Code") [📖](https://github.com/sw-yx/babel-plugin-blade/commits?author=kentcdodds "Documentation") [🚇](#infra-kentcdodds "Infrastructure (Hosting, Build-Tools, etc)") [⚠️](https://github.com/sw-yx/babel-plugin-blade/commits?author=kentcdodds "Tests") | [<img src="https://avatars1.githubusercontent.com/u/1958812?v=4" width="100px;"/><br /><sub><b>Michael Rawlings</b></sub>](https://github.com/mlrawlings)<br />[💻](https://github.com/sw-yx/babel-plugin-blade/commits?author=mlrawlings "Code") [📖](https://github.com/sw-yx/babel-plugin-blade/commits?author=mlrawlings "Documentation") [⚠️](https://github.com/sw-yx/babel-plugin-blade/commits?author=mlrawlings "Tests") | [<img src="https://avatars3.githubusercontent.com/u/5230863?v=4" width="100px;"/><br /><sub><b>Jan Willem Henckel</b></sub>](https://jan.cologne)<br />[💻](https://github.com/sw-yx/babel-plugin-blade/commits?author=djfarly "Code") [📖](https://github.com/sw-yx/babel-plugin-blade/commits?author=djfarly "Documentation") [⚠️](https://github.com/sw-yx/babel-plugin-blade/commits?author=djfarly "Tests") | [<img src="https://avatars3.githubusercontent.com/u/1824298?v=4" width="100px;"/><br /><sub><b>Karan Thakkar</b></sub>](https://twitter.com/geekykaran)<br />[📖](https://github.com/sw-yx/babel-plugin-blade/commits?author=karanjthakkar "Documentation") |
-| :---: | :---: | :---: | :---: |
-
-<!-- ALL-CONTRIBUTORS-LIST:END -->
-
-This project follows the [all-contributors][all-contributors] specification.
-Contributions of any kind welcome!
 
 ## LICENSE
 
@@ -249,8 +268,6 @@ MIT
 [donate-badge]: https://img.shields.io/badge/$-support-green.svg?style=flat-square
 [coc-badge]: https://img.shields.io/badge/code%20of-conduct-ff69b4.svg?style=flat-square
 [coc]: https://github.com/kentcdodds/babel-plugin-blade/blob/master/other/CODE_OF_CONDUCT.md
-[emojis]: https://github.com/kentcdodds/all-contributors#emoji-key
-[all-contributors]: https://github.com/kentcdodds/all-contributors
 [glamorous]: https://github.com/paypal/glamorous
 [preval]: https://github.com/kentcdodds/babel-plugin-preval
 [blade.macro]: https://www.npmjs.com/package/blade.macro
