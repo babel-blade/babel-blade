@@ -41,7 +41,10 @@ const siteConfig = {
     {doc: 'index', label: 'Docs'},
     {doc: 'graphql-spec', label: 'API'},
     {page: 'help', label: 'Help'},
+    { href: 'https://github.com/sw-yx/babel-blade', label: 'GitHub', external: true },
+    { href: 'https://github.com/sw-yx/babel-blade/projects/1', label: 'Roadmap', external: true },
     {blog: true, label: 'Blog'},
+    // { search: true }, // probably not needed
   ],
 
   // If you have users set above, you add it here:
@@ -56,6 +59,13 @@ const siteConfig = {
   colors: {
     primaryColor: '#2E8555',
     secondaryColor: '#205C3B',
+  },
+
+  // https://docusaurus.io/docs/en/search
+  algolia: {
+    apiKey: 'my-api-key',
+    indexName: 'my-index-name',
+    algoliaOptions: {} // Optional, if provided by Algolia
   },
 
   /* custom fonts for website */
