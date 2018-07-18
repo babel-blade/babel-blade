@@ -8,8 +8,15 @@ Check **[our new Docs site](https://babel-blade.netlify.com/)** or view the yout
 
 [![babel blade walkthrough on youtube](https://user-images.githubusercontent.com/6764957/42730215-f92fc024-87bc-11e8-9929-c614710920ee.png)](https://www.youtube.com/watch?v=z9wKcRjNqlw)
 
+# Seriously check out our  ---> **[our new Docs site](https://babel-blade.netlify.com/) <---** 
 
-# boilerplate
+Have you heard that we have a **[new Docs site](https://babel-blade.netlify.com/)**? It's in Docusaurus and it's great!
+
+---
+
+# For developers of plugins/contributors
+
+## boilerplate
 
 This monorepo was bootstrapped from [babel-plugin-macro-boilerplate](https://github.com/sw-yx/babel-plugin-macro-boilerplate). Check it out if you want to make one!
 
@@ -17,9 +24,9 @@ This monorepo was bootstrapped from [babel-plugin-macro-boilerplate](https://git
 
 ---
 
-For contributors/swyx only
+## For contributors/swyx only
 
-# publishing check list
+## publishing check list
 
 1. `npm run build` on `packages/babel-plugin-blade`
 2. `lerna publish`
