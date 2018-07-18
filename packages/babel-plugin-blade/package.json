@@ -1,6 +1,6 @@
 {
 	"name": "babel-plugin-blade",
-	"version": "0.0.10",
+	"version": "0.0.11",
 	"description": "generate inline graphql",
 	"main": "dist/index.js",
 	"engines": {
