@@ -16,6 +16,7 @@ const {
   getObjectPropertyName,
   getCalleeArgs,
   maybeGetSimpleString,
+  getSimpleFragmentName
 } = require('./helpers')
 
 /****
@@ -146,7 +147,7 @@ export function handleCreateRazor(path, t) {
         if (!isObject(razor)) {
           const {stringAccumulator, litAccumulator} = razorData.print()
           const graphqlOutput = t.templateLiteral(
-            stringAccumulator.map(str => t.templateElement({raw: str})),
+            stringAccumulator.map(str => t.templateElement({raw: str, cooked: str})),
             litAccumulator.map(lit => {
               if (lit.isFragment)
                 // we tagged this inside BladeData
@@ -214,9 +215,10 @@ function processReference(blade, razorData) {
     }
   }
 
+        /* eslint-disable-next-line */
   function processLHS(ctx) {
     // if it is an object destructure, push and recurse
-    let lhs = []
+    const lhs = []
     const props = ctx.node.id.properties
     if (props) {
       props.forEach(prop => {

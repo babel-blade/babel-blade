@@ -4,6 +4,7 @@ dist
 .opt-in
 .opt-out
 *.log
+parceldemo
 
 package-lock.json
 yarn.lock

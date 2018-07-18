@@ -14,3 +14,12 @@ Check **[our new Docs site](https://babel-blade.netlify.com/)** or view the yout
 This monorepo was bootstrapped from [babel-plugin-macro-boilerplate](https://github.com/sw-yx/babel-plugin-macro-boilerplate). Check it out if you want to make one!
 
 **if you spot something that could be a better practice, PLEASE open an issue or [tell me I'm wrong!](https://twitter.com/swyx)**
+
+---
+
+For contributors/swyx only
+
+# publishing check list
+
+1. `npm run build` on `packages/babel-plugin-blade`
+2. `lerna publish`

@@ -1,6 +1,9 @@
 // attempt at making a standalone testable data structure
 
-const {maybeGetSimpleString} = require('./helpers')
+const {
+  maybeGetSimpleString,
+  getSimpleFragmentName
+} = require('./helpers')
 
 // we could make razordata and bladedata inherit from a common class
 // but honestly didnt want to prematurely optimize
@@ -54,6 +57,7 @@ export class RazorData {
     let fields = this._children
     if (!fields.length)
       return (
+        /* eslint-disable-next-line */
         console.log(
           'babel-blade Warning: razor with no children, doublecheck',
         ) || null
@@ -114,8 +118,9 @@ export class BladeData {
   }
   add(val) {
     let child = this.get(val.name)
-    if (child && child._alias == val.alias) {
-      // child = child.add(val);
+
+    /* eslint-disable-next-line */
+    if (child && child._alias == val.alias) { // intentional ==
     } else {
       child = new BladeData(val)
       this._children.push(child)
@@ -141,6 +146,7 @@ export class BladeData {
     if (fields.length || this._fragments.length) {
       TemplateLiteral.addStr(' {\n')
       let accumulators = Object.keys(fields).map(key =>
+        /* eslint-disable-next-line */
         fields[key].print(indent + '  ', fragments),
       )
       accumulators.forEach(TemplateLiteral.append)
@@ -155,33 +161,33 @@ export class BladeData {
   }
 }
 
-function generateFields(obj, references, indent = '  ') {
-  return (
-    indent +
-    Object.keys(obj)
-      .map(key => {
-        let name = key
-        if (
-          obj[key] &&
-          obj[key] &&
-          Object.keys(obj[key]).length &&
-          obj[key].isReference()
-        ) {
-          name = `...${key[0].toLowerCase() + key.slice(1) + 'Fragment'}`
-          references.add(key)
-        }
-        return (
-          `${name}` +
-          (obj[key] && obj[key] && Object.keys(obj[key]).length
-            ? ` {\n` +
-              generateFields(obj[key], references, indent + '  ') +
-              `\n${indent}}`
-            : '')
-        )
-      })
-      .join(`\n${indent}`)
-  )
-}
+// function generateFields(obj, references, indent = '  ') {
+//   return (
+//     indent +
+//     Object.keys(obj)
+//       .map(key => {
+//         let name = key
+//         if (
+//           obj[key] &&
+//           obj[key] &&
+//           Object.keys(obj[key]).length &&
+//           obj[key].isReference()
+//         ) {
+//           name = `...${key[0].toLowerCase() + key.slice(1) + 'Fragment'}`
+//           references.add(key)
+//         }
+//         return (
+//           `${name}` +
+//           (obj[key] && obj[key] && Object.keys(obj[key]).length
+//             ? ` {\n` +
+//               generateFields(obj[key], references, indent + '  ') +
+//               `\n${indent}}`
+//             : '')
+//         )
+//       })
+//       .join(`\n${indent}`)
+//   )
+// }
 
 // function generateTemplate(s, references) {
 // 	return t.templateLiteral(
@@ -193,13 +199,17 @@ function generateFields(obj, references, indent = '  ') {
 
 // https://stackoverflow.com/a/8831937/1106414
 function hashCode(str) {
-  var hash = 0
-  if (str.length == 0) {
+  let hash = 0
+  if (str.length === 0) {
     return hash
   }
-  for (var i = 0; i < str.length; i++) {
-    var char = str.charCodeAt(i)
+  for (let i = 0; i < str.length; i++) {
+    let char = str.charCodeAt(i)
+
+        /* eslint-disable-next-line */
     hash = (hash << 5) - hash + char
+
+        /* eslint-disable-next-line */
     hash = hash & hash // Convert to 32bit integer
   }
   return hash.toString(16).slice(-4) // last4hex
@@ -238,10 +248,12 @@ function appendLiterals() {
 
 function zipAccumulators({stringAccumulator, litAccumulator}) {
   // cannot have any spare
+
+  /* eslint-disable-next-line */
   let str = '',
     newStrAcc = [],
     newLitAcc = []
-  for (var i = 0; i < stringAccumulator.length; i++) {
+  for (let i = 0; i < stringAccumulator.length; i++) {
     if (litAccumulator[i]) {
       let maybeSimpleString = maybeGetSimpleString(litAccumulator[i])
       if (maybeSimpleString) {
@@ -266,6 +278,3 @@ function coerceNullLiteralToNull(lit) {
   return lit && lit.type === 'NullLiteral' ? null : lit
 }
 
-function getSimpleFragmentName(frag) {
-  return `${frag.object.name}${frag.property.name}`
-}

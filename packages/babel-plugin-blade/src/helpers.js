@@ -9,6 +9,7 @@ module.exports = {
   getObjectPropertyName,
   getCalleeArgs,
   maybeGetSimpleString,
+  getSimpleFragmentName
 }
 
 /****
@@ -18,6 +19,10 @@ module.exports = {
  * pure functions w no significant logic
  *
  */
+
+function getSimpleFragmentName(frag) {
+  return `${frag.object.name}${frag.property.name}`
+}
 
 function getAssignTarget(path) {
   return path.parentPath.container.id
