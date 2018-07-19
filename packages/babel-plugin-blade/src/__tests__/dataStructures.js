@@ -1,8 +1,8 @@
-const {BladeData, RazorData} = require('../dataStructures')
+const {RazorData} = require('../dataStructures')
 
 function compile({stringAccumulator, litAccumulator}) {
   let str = ''
-  for (var i = 0; i < stringAccumulator.length; i++) {
+  for (let i = 0; i < stringAccumulator.length; i++) {
     str += stringAccumulator[i] || ''
     if (litAccumulator[i]) str += litAccumulator[i]
   }
@@ -54,7 +54,7 @@ test('can create and print a query with args', () => {
   expect(razor.get('foo').get('bar')._children).toEqual([])
   const expected = `
 query Movie($id: String){
-  foo_5b2e: foo(id: $id) {
+  foo_42e6: foo(id: $id) {
     bar
   }
 }`
@@ -71,10 +71,10 @@ test('can create and print a query with aliases', () => {
   fooChild2.add({name: 'dee'})
   const expected = `
 query Movie{
-  foo_0dbc: foo(id: 1) {
+  foo_3e0c: foo(id: 1) {
     bar
   }
-  foo_09fb: foo(id: 2) {
+  foo_3ded: foo(id: 2) {
     dee
   }
 }`

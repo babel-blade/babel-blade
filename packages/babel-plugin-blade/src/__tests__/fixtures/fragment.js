@@ -1,31 +1,42 @@
+/* eslint-disable */
 import {Connect, query} from 'urql'
 
-// const movieFragment = createFragment('Movie');
-// const Movie = ({ data }) => {
-// 	let result = movieFragment(data);
-// 	let movie = result.movie;
-// 	return (
-// 		<div>
-// 			<h2>{movie.test.title}</h2>
-// 			<p>{movie.foo}</p>
-// 		</div>
-// 	);
-// };
-// Movie.fragment = fragment;
+// MovieComponent.js
+const movieFragment = createFragment('Movie')
+const Movie = ({data}) => {
+  let result = movieFragment(data)
+  let movie = result.movie
+  return (
+    <div className="movie">
+      {loaded === false ? (
+        <p>Loading</p>
+      ) : (
+        <div>
+          <h2>{movie.title}</h2>
+          <p>{movie.actors.supporting}</p>
+          <p>{movie.actors.leading}</p>
+          <button onClick={onClose}>Close</button>
+        </div>
+      )}
+    </div>
+  )
+}
+
+Movie.fragment = movieFragment
 
 const pageQuery = createQuery() // create a top-level query
 const App = () => (
-  // rendering Movie automatically composes `Movie.fragment` into the query.
-  // <Movie data={result2.movie({ fragments: [Movie.fragment] })} />
   <Connect
     query={query(pageQuery)}
     children={({loaded, data}) => {
-      let result2 = pageQuery(data)
+      let result = pageQuery(data)
+      // rendering Movie while adding
+      // `Movie.fragment` into the query.
+      // (could be automatic in future)
       return (
-        <div>
-          <h1>{result2.monkey}</h1>
-          <Movie data={result2.movie} />
-        </div>
+        <ul>
+          <Movie data={result.movie(null, Movie.fragment)} />
+        </ul>
       )
     }}
   />

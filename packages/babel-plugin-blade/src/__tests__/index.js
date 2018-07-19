@@ -13,8 +13,8 @@ expect.addSnapshotSerializer({
   },
 })
 
-const error = code => ({code, error: true})
-const noSnapshot = code => ({code, snapshot: false})
+// const error = code => ({code, error: true})
+// const noSnapshot = code => ({code, snapshot: false})
 const fixture = filename => ({
   fixture: require.resolve(`./fixtures/${filename}`),
 })
@@ -30,7 +30,7 @@ pluginTester({
     'docs: fields': fixture('fields'),
     'docs: args': fixture('arguments'),
     'docs: variables': fixture('queryVariables'),
-    // 'injection of fragments': fixture('fragment')
+    'injection of fragments': fixture('fragment'),
     // 'does not touch non-blade code': {
     //   snapshot: false,
     //   code: 'const x = notblade`module.exports = "nothing"`;',
