@@ -16,7 +16,7 @@
 
 This is a plugin for solving the [double declaration problem](https://babel-blade.netlify.com/docs/declarationdeclaration.html) in GraphQL queries.
 
-> **What is the "double declaration problem"?** Simply it is the bad developer experience of first having to declare what you want to query in the GraphQL template string, and then *again* when you are using the data in your application. Ommissions are confusing to debug and overfetching due to stale queries is also a problem.
+> **What is the "double declaration problem"?** Simply it is the bad developer experience of first having to declare what you want to query in the GraphQL template string, and then _again_ when you are using the data in your application. Ommissions are confusing to debug and overfetching due to stale queries is also a problem.
 
 ## This solution
 
@@ -32,7 +32,6 @@ This is accomplished by hooking in to Babel to building up a tree of downstream 
 - [Installation](#installation)
 - [Usage](#usage)
   - [first usage style](#first-usage-style)
-  - [usage style 2](#usage-style-2)
 - [Configure with Babel](#configure-with-babel)
   - [Via `.babelrc` (Recommended)](#via-babelrc-recommended)
   - [Via CLI](#via-cli)
@@ -90,31 +89,42 @@ const Movie = ({id, onClose}) => (
 **After**:
 
 ```javascript
+import {Connect, query} from 'urql'
 
-import { Connect, query } from 'urql';
-
-const Movie = ({ id, onClose }) => <div>
-    <Connect query={query(`
+const Movie = ({id, onClose}) => (
+  <div>
+    <Connect
+      query={query(
+        `
 query movieQuery{
   movie {
     gorilla
     monkey
   }
   chimp
-}`, { id: id })}
-  children={({ data }) => {
-    const DATA = data;
-    return <div>
+}`,
+        {id: id},
+      )}
+      children={({data}) => {
+        const DATA = data
+        return (
+          <div>
             <h2>{DATA.movie.gorilla}</h2>
             <p>{DATA.movie.monkey}</p>
             <p>{DATA.chimp}</p>
-          </div>;
-  }} />
-  </div>;
-
+          </div>
+        )
+      }}
+    />
+  </div>
+)
 ```
 
-##### [For more usage examples please see our full API docs here.](https://babel-blade.netlify.com/docs/graphql-spec.html)
+---
+
+#### [For more usage examples please see our full API docs here.](https://babel-blade.netlify.com/docs/graphql-spec.html)
+
+---
 
 ## Configure with Babel
 
@@ -217,7 +227,6 @@ This is based on [babel-plugin-macros](https://github.com/kentcdodds/babel-plugi
 
 I'm not aware of any, if you are please [make a pull request][prs] and add it
 here!
-
 
 ## LICENSE
 
