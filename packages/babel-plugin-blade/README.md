@@ -114,33 +114,7 @@ query movieQuery{
 
 ```
 
-more notes here!
-
-**Before**:
-
-```javascript
-// before
-```
-
-**After** more notes here:
-
-```javascript
-// after
-```
-
-### usage style 2
-
-**Before**:
-
-```javascript
-// before
-```
-
-**After** more notes here:
-
-```javascript
-// after
-```
+##### [For more usage examples please see our full API docs here.](https://babel-blade.netlify.com/docs/graphql-spec.html)
 
 ## Configure with Babel
 
