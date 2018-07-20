@@ -9,7 +9,7 @@ module.exports = {
   getObjectPropertyName,
   getCalleeArgs,
   maybeGetSimpleString,
-  getSimpleFragmentName
+  getSimpleFragmentName,
 }
 
 /****
@@ -34,19 +34,19 @@ function getObjectPropertyName(path) {
   return path.container.property ? path.container.property.name : undefined
 }
 
-// potentially useful function from devon to extract a colocated fragment's name
-function getFragmentName(path) {
-  // console.log('getfragname', { path });
-  if (
-    path.parentPath.isAssignmentExpression() &&
-    path.parent.left.type === 'MemberExpression' &&
-    path.parent.left.property.name === 'fragment'
-  ) {
-    const name = path.parent.left.object.name
-    return name[0].toLowerCase() + name.slice(1) + 'Fragment'
-  }
-  return null
-}
+// // potentially useful function from devon to extract a colocated fragment's name
+// function getFragmentName(path) {
+//   // console.log('getfragname', { path });
+//   if (
+//     path.parentPath.isAssignmentExpression() &&
+//     path.parent.left.type === 'MemberExpression' &&
+//     path.parent.left.property.name === 'fragment'
+//   ) {
+//     const name = path.parent.left.object.name
+//     return name[0].toLowerCase() + name.slice(1) + 'Fragment'
+//   }
+//   return null
+// }
 
 function isObject(path) {
   return looksLike(path, {key: 'object'})

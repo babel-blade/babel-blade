@@ -18,4 +18,4 @@ Hello world! This is the first docs site for babel-blade!
 - rewrote graphql compiler, added argument hashing/auto aliases https://twitter.com/swyx/status/1016865089251696642
 - split it out to helpers.js http://astexplorer.net/#/gist/01983f61e310f1eaf6b12a221556a937/b7025205ada19f5ff939047f5dc452430ea9d586 and still trying to get fragments to work
 - finished fragments http://astexplorer.net/#/gist/01983f61e310f1eaf6b12a221556a937/7e9ae4d3b406ed94d92f6931c0474f964e1ae990
-
+- directives done http://astexplorer.net/#/gist/01983f61e310f1eaf6b12a221556a937/d49f96cce3db32e0d78b9338ae0a12a20612d268

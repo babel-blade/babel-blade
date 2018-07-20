@@ -31,7 +31,7 @@ test('can create basic query twice and still only print one', () => {
   razor.add({name: 'foo'})
   const fooChild = razor.get('foo')
   fooChild.add({name: 'bar'})
-  razor.add({name: 'foo'}) // second time
+  razor.add({name: 'foo', alias: []}) // second time
   const expected = `
 query {
   foo {
@@ -54,7 +54,77 @@ test('can create and print a query with args', () => {
   expect(razor.get('foo').get('bar')._children).toEqual([])
   const expected = `
 query Movie($id: String){
-  foo_42e6: foo(id: $id) {
+  foo_5b2e: foo(id: $id) {
+    bar
+  }
+}`
+  const temp = razor.print()
+  // console.log({ temp });
+  expect(compile(temp)).toEqual(expected)
+})
+
+test('can create and print a query with multiple args', () => {
+  const razor = new RazorData({
+    type: 'query',
+    name: 'Movie',
+    args: ['$id: String'],
+  })
+  razor.add({name: 'foo', args: ['id: $id', 'sort: 23']})
+  expect(razor.get('foo')._children).toEqual([])
+  const fooChild = razor.get('foo')
+  fooChild.add({name: 'bar'})
+  expect(razor.get('foo').get('bar')._children).toEqual([])
+  const expected = `
+query Movie($id: String){
+  foo_1bdf: foo(id: $id, sort: 23) {
+    bar
+  }
+}`
+  const temp = razor.print()
+  // console.log({ temp });
+  expect(compile(temp)).toEqual(expected)
+})
+
+test('can create and print a query with directives', () => {
+  const razor = new RazorData({
+    type: 'query',
+    name: 'Movie',
+    args: ['$id: String'],
+  })
+  razor.add({name: 'foo', directives: ['@test', '@this']})
+  expect(razor.get('foo')._children).toEqual([])
+  const fooChild = razor.get('foo')
+  fooChild.add({name: 'bar'})
+  expect(razor.get('foo').get('bar')._children).toEqual([])
+  const expected = `
+query Movie($id: String){
+  foo @test @this {
+    bar
+  }
+}`
+  const temp = razor.print()
+  // console.log({ temp });
+  expect(compile(temp)).toEqual(expected)
+})
+
+test('can create and print a query with args and directives', () => {
+  const razor = new RazorData({
+    type: 'query',
+    name: 'Movie',
+    args: ['$id: String'],
+  })
+  razor.add({
+    name: 'foo',
+    args: ['id: $id'],
+    directives: ['@test', '@this'],
+  })
+  expect(razor.get('foo')._children).toEqual([])
+  const fooChild = razor.get('foo')
+  fooChild.add({name: 'bar'})
+  expect(razor.get('foo').get('bar')._children).toEqual([])
+  const expected = `
+query Movie($id: String){
+  foo_5b2e: foo(id: $id) @test @this {
     bar
   }
 }`
@@ -71,10 +141,10 @@ test('can create and print a query with aliases', () => {
   fooChild2.add({name: 'dee'})
   const expected = `
 query Movie{
-  foo_3e0c: foo(id: 1) {
+  foo_0dbc: foo(id: 1) {
     bar
   }
-  foo_3ded: foo(id: 2) {
+  foo_09fb: foo(id: 2) {
     dee
   }
 }`

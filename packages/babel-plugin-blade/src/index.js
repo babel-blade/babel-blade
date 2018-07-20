@@ -16,7 +16,7 @@ const {
   getObjectPropertyName,
   getCalleeArgs,
   maybeGetSimpleString,
-  getSimpleFragmentName
+  getSimpleFragmentName,
 } = require('./helpers')
 
 /****
@@ -147,7 +147,7 @@ export function handleCreateRazor(path, t) {
         if (!isObject(razor)) {
           const {stringAccumulator, litAccumulator} = razorData.print()
           const graphqlOutput = t.templateLiteral(
-            stringAccumulator.map(str => t.templateElement({raw: str, cooked: str})),
+            stringAccumulator.map(str => t.templateElement({raw: str})),
             litAccumulator.map(lit => {
               if (lit.isFragment)
                 // we tagged this inside BladeData
@@ -178,7 +178,6 @@ function parseBlade(path, id, razorData, slice = 0) {
   if (refs && refs.length > 0) {
     // there has been an assignment and it has been used
     refs.forEach(blade => {
-      // const LHS = processReference(blade, razorData);
       processReference(blade, razorData)
       // call parseblade on all LHS
     })
@@ -215,7 +214,7 @@ function processReference(blade, razorData) {
     }
   }
 
-        /* eslint-disable-next-line */
+  /* eslint-disable-next-line */
   function processLHS(ctx) {
     // if it is an object destructure, push and recurse
     const lhs = []
@@ -250,14 +249,20 @@ function processReference(blade, razorData) {
   RHS = []
   const RHSVisitor = {
     MemberExpression(childpath) {
-      let aliasPath, args
+      let aliasPath, calleeArguments
       if (isCallee(childpath)) {
-        args = getCalleeArgs(childpath) // fancy!
+        // if its a callee, extract its args and push it into RHS
+        // will parse out fragments/args/directives later
+        calleeArguments = getCalleeArgs(childpath)
         aliasPath = childpath
       }
       if (childpath.parentKey !== 'arguments')
         // else it will include membexps inside call arguments
-        RHS.push({name: childpath.node.property.name, args, aliasPath})
+        RHS.push({
+          name: childpath.node.property.name,
+          calleeArguments,
+          aliasPath,
+        })
     },
   }
   if (ctx) {
@@ -275,12 +280,29 @@ function processReference(blade, razorData) {
 
   // MERGE RHS FIRST: rhs.foreach - call add, return child, call add again
   let currentData = razorData
-  RHS.forEach(({args, name, aliasPath}) => {
-    //console.log({name, args, aliasPath})
+  RHS.forEach(({calleeArguments, name, aliasPath}) => {
+    const args = []
+    const fragments = []
+    const directives = []
+
+    if (calleeArguments) {
+      for (const x of calleeArguments) {
+        if (x.type === 'StringLiteral' || x.type === 'TemplateLiteral') {
+          // its an arg or a directive; peek at first character to decide
+          const peek = x.quasis ? x.quasis[0].value.raw[0] : x.value[0]
+          peek === '@' ? directives.push(x) : args.push(x)
+        } else {
+          // its a fragment
+          fragments.push(x)
+        }
+      }
+    }
+
     currentData = currentData.add({
       name,
-      args: args && args.slice(0, 1),
-      fragments: args && args.slice(1),
+      args,
+      directives,
+      fragments,
     })
     if (currentData._args && aliasPath)
       aliasPath.parentPath.replaceWith(aliasPath)

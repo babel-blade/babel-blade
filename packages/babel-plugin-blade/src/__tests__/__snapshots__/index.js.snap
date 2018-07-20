@@ -33,7 +33,7 @@ const Movie = ({ id, onClose }) => <div>
     <Connect query={query(\`
 query movieQuery($id: id){
   gorilla
-  movie_e107: movie(count: id) {
+  movie_6caf: movie(count: id) {
     monkey
   }
   chimp
@@ -41,7 +41,7 @@ query movieQuery($id: id){
   children={({ data }) => {
     const DATA = data;
     const core = DATA;
-    const film = DATA.movie_e107;
+    const film = DATA.movie_6caf;
     return <div>
             <h2>{core.gorilla}</h2>
             <p>{film.monkey}</p>
@@ -84,6 +84,8 @@ const Movie = ({ id, onClose }) => <div>
 query movieQuery($id: id){
   movie {
     gorilla
+  }
+  movie {
     monkey
   }
   chimp
@@ -129,7 +131,7 @@ import { Connect, query } from 'urql';
 const Movie = ({ id, onClose }) => <div>
     <Connect query={query(\`
 query movieQuery($id: id){
-  movie_3648: movie(id: 234) {
+  movie_0f00: movie(id: 234) {
     credits {
       actors {
         leading
@@ -139,7 +141,7 @@ query movieQuery($id: id){
   }
 }\`, { id: id })} children={({ data }) => {
     const DATA = data;
-    const { actors } = DATA.movie_3648.credits;
+    const { actors } = DATA.movie_0f00.credits;
     return <div>
             <h2>{actors.leading}</h2>
             <h2>{actors.supporting}</h2>
@@ -180,16 +182,68 @@ import { Connect, query } from 'urql';
 const Movie = () => <div>
     <Connect query={query(\`
 query movieQuery{
-  movie_19e8: movie(limit: 5) {
-    schedule_7d17: schedule(schedule: true) {
+  movie_27f6: movie(limit: 5) {
+    schedule_2655: schedule(schedule: true) {
       data
     }
     titles
   }
 }\`)} children={({ data }) => {
     const DATA = data;
-    const film = DATA.movie_19e8;
-    const nestedQuery = film.schedule_7d17;
+    const film = DATA.movie_27f6;
+    const nestedQuery = film.schedule_2655;
+    return <div>
+            <Films data={film.titles} />
+            <Schedule data={nestedQuery.data} />
+          </div>;
+  }} />
+  </div>;
+
+`;
+
+exports[`babel-blade docs: directives: docs: directives 1`] = `
+
+/* eslint-disable */
+import {Connect, query} from 'urql'
+
+const movieQuery = createQuery()
+const Movie = () => (
+  <div>
+    <Connect
+      query={query(movieQuery)}
+      children={({data}) => {
+        const DATA = movieQuery(data)
+        const film = DATA.movie('limit: 5')
+        const nestedQuery = film.schedule('@sort', 'id: 23', '@ping')
+        return (
+          <div>
+            <Films data={film.titles} />
+            <Schedule data={nestedQuery.data} />
+          </div>
+        )
+      }}
+    />
+  </div>
+)
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+/* eslint-disable */
+import { Connect, query } from 'urql';
+
+const Movie = () => <div>
+    <Connect query={query(\`
+query movieQuery{
+  movie_b3f6: movie(limit: 5) {
+    schedule_57cb: schedule(id: 23) @sort @ping {
+      data
+    }
+    titles
+  }
+}\`)} children={({ data }) => {
+    const DATA = data;
+    const film = DATA.movie_b3f6;
+    const nestedQuery = film.schedule_57cb;
     return <div>
             <Films data={film.titles} />
             <Schedule data={nestedQuery.data} />
@@ -231,6 +285,8 @@ const Movie = () => <div>
 query movieQuery{
   movie {
     gorilla
+  }
+  movie {
     monkey
   }
   chimp
@@ -279,7 +335,7 @@ const movieID = 12;
 const Movie = () => <div>
     <Connect query={query(\`
 query movieQuery(\${\`$movieID: \${movieID}\`}){
-  movie_3d71: movie(id: movieID)
+  movie_3c19: movie(id: movieID)
   movie {
     monkey
   }
@@ -287,7 +343,7 @@ query movieQuery(\${\`$movieID: \${movieID}\`}){
 }\`)} children={({ data }) => {
     const DATA = data;
     return <div>
-            <h2>{DATA.movie_3d71}</h2>
+            <h2>{DATA.movie_3c19}</h2>
             <p>{DATA.movie.monkey}</p>
             <p>{DATA.chimp}</p>
           </div>;
@@ -335,7 +391,7 @@ const App = () => (
       // (could be automatic in future)
       return (
         <ul>
-          <Movie data={result.movie(null, Movie.fragment)} />
+          <Movie data={result.movie(Movie.fragment)} />
         </ul>
       )
     }}
@@ -368,6 +424,8 @@ fragment [object Object] on Movie{
     title
     actors {
       supporting
+    }
+    actors {
       leading
     }
   }

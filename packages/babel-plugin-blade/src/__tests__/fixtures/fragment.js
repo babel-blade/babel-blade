@@ -35,7 +35,7 @@ const App = () => (
       // (could be automatic in future)
       return (
         <ul>
-          <Movie data={result.movie(null, Movie.fragment)} />
+          <Movie data={result.movie(Movie.fragment)} />
         </ul>
       )
     }}

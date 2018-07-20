@@ -30,6 +30,7 @@ pluginTester({
     'docs: fields': fixture('fields'),
     'docs: args': fixture('arguments'),
     'docs: variables': fixture('queryVariables'),
+    'docs: directives': fixture('directives'),
     'injection of fragments': fixture('fragment'),
     // 'does not touch non-blade code': {
     //   snapshot: false,

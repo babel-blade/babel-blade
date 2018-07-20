@@ -1,9 +1,6 @@
 // attempt at making a standalone testable data structure
 
-const {
-  maybeGetSimpleString,
-  getSimpleFragmentName
-} = require('./helpers')
+const {maybeGetSimpleString, getSimpleFragmentName} = require('./helpers')
 
 // we could make razordata and bladedata inherit from a common class
 // but honestly didnt want to prematurely optimize
@@ -90,25 +87,20 @@ export class RazorData {
   }
 }
 export class BladeData {
-  constructor({name = null, args = null, fragments = [], directive = null}) {
+  constructor({name = null, args = [], fragments = [], directives = []}) {
     if (!name) throw new Error('new Blade must have name')
     if (!Array.isArray(fragments)) throw new Error('fragments must be array')
     this._children = [] // store of child blades
     this._name = name // a string for now
     this._args = args // array
-    let maybeArgs = coerceNullLiteralToNull(this._args && this._args[0])
     this._alias =
-      maybeArgs && `${this._name}_${hashCode(JSON.stringify(maybeArgs))}`
+      this._args.length &&
+      `${this._name}_${hashCode(JSON.stringify(this._args))}`
     this._fragments = fragments.map(frag => {
       frag.isFragment = true
       return frag
     }) // tagging the literal as fragment for printing
-    this._directive = directive
-
-    // binding cos im too lazy to set up public class fields
-    // this.get = this.get.bind(this);
-    // this.add = this.add.bind(this);
-    // this.print = this.print.bind(this);
+    this._directives = directives
   }
   get(id) {
     for (let i = 0; i < this._children.length; i++) {
@@ -120,7 +112,8 @@ export class BladeData {
     let child = this.get(val.name)
 
     /* eslint-disable-next-line */
-    if (child && child._alias == val.alias) { // intentional ==
+    if (child && child._alias == val.alias) {
+      // intentional ==
     } else {
       child = new BladeData(val)
       this._children.push(child)
@@ -129,19 +122,29 @@ export class BladeData {
   }
   // TODO: potential problem here if blade has args/alias but no children
   print(indent, fragments) {
-    let maybeArgs = coerceNullLiteralToNull(this._args && this._args[0])
+    let maybeArgs = this._args.length && this._args
+    let maybeDirs = this._directives.length && this._directives
     let alias = this._alias
     let printName = alias ? `${alias}: ${this._name}` : this._name
-    let printDirectives = this._directive ? ` ${this._directive}` : ''
     if (this._fragments.length)
       this._fragments.map(frag => fragments.push(frag)) // mutates fragments!
-    // let GraphQLString = `${indent}${printName}${maybeArgs}${printDirectives}`;
     let TemplateLiteral = appendLiterals()
       .addStr(`${indent}${printName}`)
       .addStr(maybeArgs ? '(' : '')
-      .addLit(maybeArgs)
-      .addStr(maybeArgs ? ')' : '')
-      .addStr(printDirectives)
+    if (maybeArgs) {
+      maybeArgs.forEach((arg, i) => {
+        if (i !== 0) TemplateLiteral.addStr(', ')
+        TemplateLiteral.addLit(arg)
+      })
+    }
+    TemplateLiteral.addStr(maybeArgs ? ')' : '')
+    if (maybeDirs) {
+      TemplateLiteral.addStr(' ')
+      maybeDirs.forEach((dir, i) => {
+        if (i !== 0) TemplateLiteral.addStr(' ')
+        TemplateLiteral.addLit(dir)
+      })
+    }
     let fields = this._children
     if (fields.length || this._fragments.length) {
       TemplateLiteral.addStr(' {\n')
@@ -161,42 +164,6 @@ export class BladeData {
   }
 }
 
-// function generateFields(obj, references, indent = '  ') {
-//   return (
-//     indent +
-//     Object.keys(obj)
-//       .map(key => {
-//         let name = key
-//         if (
-//           obj[key] &&
-//           obj[key] &&
-//           Object.keys(obj[key]).length &&
-//           obj[key].isReference()
-//         ) {
-//           name = `...${key[0].toLowerCase() + key.slice(1) + 'Fragment'}`
-//           references.add(key)
-//         }
-//         return (
-//           `${name}` +
-//           (obj[key] && obj[key] && Object.keys(obj[key]).length
-//             ? ` {\n` +
-//               generateFields(obj[key], references, indent + '  ') +
-//               `\n${indent}}`
-//             : '')
-//         )
-//       })
-//       .join(`\n${indent}`)
-//   )
-// }
-
-// function generateTemplate(s, references) {
-// 	return t.templateLiteral(
-// 		//[t.templateElement({raw: '\n'}), t.templateElement({raw: s})],
-// 		[t.templateElement({ raw: s })],
-// 		[...references].map(ref => t.memberExpression(t.identifier(ref), t.identifier('fragment')))
-// 	);
-// }
-
 // https://stackoverflow.com/a/8831937/1106414
 function hashCode(str) {
   let hash = 0
@@ -206,10 +173,10 @@ function hashCode(str) {
   for (let i = 0; i < str.length; i++) {
     let char = str.charCodeAt(i)
 
-        /* eslint-disable-next-line */
+    /* eslint-disable-next-line */
     hash = (hash << 5) - hash + char
 
-        /* eslint-disable-next-line */
+    /* eslint-disable-next-line */
     hash = hash & hash // Convert to 32bit integer
   }
   return hash.toString(16).slice(-4) // last4hex
@@ -277,4 +244,3 @@ function zipAccumulators({stringAccumulator, litAccumulator}) {
 function coerceNullLiteralToNull(lit) {
   return lit && lit.type === 'NullLiteral' ? null : lit
 }
-

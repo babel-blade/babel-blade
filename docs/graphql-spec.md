@@ -361,7 +361,57 @@ query movieQuery(${`$movieID: ${movieID}`}){
 
 ## Directives
 
-Sorry.. this is not implemented yet. Contact [@swyx](https://twitter.com/swyx) or [file an issue!](https://github.com/sw-yx/babel-blade/issues/new)
+You can add directives just like any other argument. You just have to make sure to use '@' as the first character in a template string or string literal.
+
+```jsx
+import {Connect, query} from 'urql'
+
+const movieQuery = createQuery()
+const Movie = () => (
+  <div>
+    <Connect
+      query={query(movieQuery)}
+      children={({data}) => {
+        const DATA = movieQuery(data)
+        const film = DATA.movie('limit: 5')
+        const nestedQuery = film.schedule('@sort', 'id: 23', '@ping')
+        return (
+          <div>
+            <Films data={film.titles} />
+            <Schedule data={nestedQuery.data} />
+          </div>
+        )
+      }}
+    />
+  </div>
+)
+```
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+```jsx
+import { Connect, query } from 'urql';
+
+const Movie = () => <div>
+    <Connect query={query(`
+query movieQuery{
+  movie_27f6: movie(limit: 5) {
+    schedule_1c35: schedule(id: 23) @sort @ping {
+      data
+    }
+    titles
+  }
+}`)} children={({ data }) => {
+    const DATA = data;
+    const film = DATA.movie_27f6;
+    const nestedQuery = film.schedule_1c35;
+    return <div>
+            <Films data={film.titles} />
+            <Schedule data={nestedQuery.data} />
+          </div>;
+  }} />
+  </div>;
+```
 
 ## Mutations
 
