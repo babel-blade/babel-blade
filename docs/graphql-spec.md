@@ -31,9 +31,11 @@ const Movie = () => (
 )
 ```
 
-> **PLEASE NOTE: If your field names coincide with array method names**
+## Please note
 
-blades don't know if you are accessing an array property or an object property, so we have just gone ahead and blacklisted [all the array prototype methods](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/prototype) for now until we can write iterator blade logic. This will only affect you if you happen to have GraphQL fields named things like "forEach" or "map", which is possible but probably rare.
+> **If your GraphQL field names coincide with array method names**
+
+Blades don't know if you are accessing an array property or an object property, so we have just gone ahead and blacklisted [all the array prototype methods](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/prototype) for now until we can write iterator blade logic. This will only affect you if you happen to have GraphQL fields named things like "forEach" or "map", which is possible but probably rare.
 
 If you do actually want a field called "map" for example, destructure it:
 
@@ -44,7 +46,7 @@ const { map } = blade
 const temp = blade.map // we won't know if this is an array or an object property
 ```
 
-### Fields
+## Fields
 
 After you have tagged a `data` object with your query created with `createQuery`, any property you access (including with destructuring) will be included in the generated GraphQL query.
 
@@ -114,8 +116,8 @@ const Movie = () => (
       query={query(movieQuery)}
       children={({data}) => {
         const DATA = movieQuery(data)
-        const film = DATA.movie('limit: 5')
-        const nestedQuery = film.schedule('schedule: true')
+        const film = DATA.movie('limit: 5') // like this
+        const nestedQuery = film.schedule('schedule: true') // or this
         return (
           <div>
             <Films data={film.titles} />
@@ -187,7 +189,7 @@ const Movie = ({ data }) => {
   );
 };
 
-Movie.fragment = movieFragment;
+Movie.fragment = movieFragment; // like this
 
 // MoviePage.js
 const pageQuery = createQuery(); // create a top-level query
@@ -326,9 +328,10 @@ Supply variables as a string or template string to your `createQuery` call.
 ```jsx
 
 import {Connect, query} from 'urql'
+import { createQuery } from 'blade.macro' // if you are using as a babel macro
 
 const movieID = 12
-const movieQuery = createQuery(`$movieID: ${movieID}`)
+const movieQuery = createQuery(`$movieID: ${movieID}`) // like this
 const Movie = () => (
   <div>
     <Connect
@@ -378,6 +381,7 @@ You can add directives just like any other argument. You just have to make sure 
 
 ```jsx
 import {Connect, query} from 'urql'
+import { createQuery } from 'blade.macro' // if you are using as a babel macro
 
 const movieQuery = createQuery()
 const Movie = () => (
@@ -387,7 +391,7 @@ const Movie = () => (
       children={({data}) => {
         const DATA = movieQuery(data)
         const film = DATA.movie('limit: 5')
-        const nestedQuery = film.schedule('@sort', 'id: 23', '@ping')
+        const nestedQuery = film.schedule('@sort', 'id: 23', '@ping') // like this
         return (
           <div>
             <Films data={film.titles} />
@@ -398,11 +402,9 @@ const Movie = () => (
     />
   </div>
 )
-```
 
       ↓ ↓ ↓ ↓ ↓ ↓
 
-```jsx
 import { Connect, query } from 'urql';
 
 const Movie = () => <div>
