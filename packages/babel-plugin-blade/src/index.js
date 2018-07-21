@@ -119,6 +119,10 @@ export function handleCreateRazor(path, t) {
     path.findParent(ppath => ppath.isVariableDeclaration()).remove()
     if (refs.length > 0) {
       let razorID = null
+      if (isCreateFragment(path) && !queryArgs[0])
+        throw new Error(
+          'createFragment must have one argument to specify the graphql type they are on',
+        )
       const fragmentType =
         isCreateFragment(path) && maybeGetSimpleString(queryArgs[0]) //getFragmentName(path)
       const queryType = isCreateFragment(path) ? 'fragment' : 'query'
@@ -147,7 +151,9 @@ export function handleCreateRazor(path, t) {
         if (!isObject(razor)) {
           const {stringAccumulator, litAccumulator} = razorData.print()
           const graphqlOutput = t.templateLiteral(
-            stringAccumulator.map(str => t.templateElement({raw: str})),
+            stringAccumulator.map(str =>
+              t.templateElement({raw: str, cooked: str}),
+            ),
             litAccumulator.map(lit => {
               if (lit.isFragment)
                 // we tagged this inside BladeData
@@ -179,7 +185,6 @@ function parseBlade(path, id, razorData, slice = 0) {
     // there has been an assignment and it has been used
     refs.forEach(blade => {
       processReference(blade, razorData)
-      // call parseblade on all LHS
     })
   } else {
     // there has been no assignment or it has not been used
@@ -193,6 +198,12 @@ function parseBlade(path, id, razorData, slice = 0) {
 }
 
 function processReference(blade, razorData) {
+  if (
+    blade.parentPath.isLogicalExpression() ||
+    blade.parentPath.isIfStatement()
+  )
+    return // naked reference, nothing interesting here
+
   let LHS, RHS
 
   /***** processReference: PROCESS LHS *****/
@@ -256,7 +267,10 @@ function processReference(blade, razorData) {
         calleeArguments = getCalleeArgs(childpath)
         aliasPath = childpath
       }
-      if (childpath.parentKey !== 'arguments')
+      if (
+        childpath.parentKey !== 'arguments' &&
+        childpath.node.property.name !== 'length' // hacky for now
+      )
         // else it will include membexps inside call arguments
         RHS.push({
           name: childpath.node.property.name,
