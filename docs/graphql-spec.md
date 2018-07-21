@@ -31,6 +31,19 @@ const Movie = () => (
 )
 ```
 
+> **PLEASE NOTE: If your field names coincide with array method names**
+
+blades don't know if you are accessing an array property or an object property, so we have just gone ahead and blacklisted [all the array prototype methods](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/prototype) for now until we can write iterator blade logic. This will only affect you if you happen to have GraphQL fields named things like "forEach" or "map", which is possible but probably rare.
+
+If you do actually want a field called "map" for example, destructure it:
+
+```js
+// do this, will be in the GraphQL
+const { map } = blade
+// don't do this, won't be captured in the generated graphql
+const temp = blade.map // we won't know if this is an array or an object property
+```
+
 ### Fields
 
 After you have tagged a `data` object with your query created with `createQuery`, any property you access (including with destructuring) will be included in the generated GraphQL query.
