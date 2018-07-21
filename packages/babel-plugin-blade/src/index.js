@@ -197,6 +197,43 @@ function parseBlade(path, id, razorData, slice = 0) {
   }
 }
 
+// this is a hacky dodge but it will work for now
+// these properties will just all be ignored by us
+// (untested) destructure if your graphql field is really named one of these
+const arrayPrototype = [
+  'length',
+  'copyWithin',
+  'fill',
+  'pop',
+  'push',
+  'reverse',
+  'shift',
+  'unshift',
+  'sort',
+  'splice',
+  'concat',
+  'includes',
+  'indexOf',
+  'join',
+  'lastIndexOf',
+  'slice',
+  'toSource',
+  'toString',
+  'toLocaleString',
+  'entries',
+  'every',
+  'filter',
+  'find',
+  'findIndex',
+  'forEach',
+  'keys',
+  'map',
+  'reduce',
+  'reduceRight',
+  'some',
+  'values',
+]
+
 function processReference(blade, razorData) {
   if (
     blade.parentPath.isLogicalExpression() ||
@@ -267,10 +304,12 @@ function processReference(blade, razorData) {
         calleeArguments = getCalleeArgs(childpath)
         aliasPath = childpath
       }
-      if (
-        childpath.parentKey !== 'arguments' &&
-        childpath.node.property.name !== 'length' // hacky for now
-      )
+      // hacky dodge for array methods; just ignores them for now
+      // we will have to make iteration methods also count as blades
+      for (const prop of arrayPrototype) {
+        if (childpath.node.property.name === prop) return
+      }
+      if (childpath.parentKey !== 'arguments')
         // else it will include membexps inside call arguments
         RHS.push({
           name: childpath.node.property.name,
