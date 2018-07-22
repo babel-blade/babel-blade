@@ -432,6 +432,6 @@ query movieQuery{
 
 Sorry.. this is not implemented yet. Contact [@swyx](https://twitter.com/swyx) or [file an issue!](https://github.com/sw-yx/babel-blade/issues/new)
 
-## Inline Fragments
+## Inline Fragments and Union Types
 
 Sorry.. this is not implemented yet. Contact [@swyx](https://twitter.com/swyx) or [file an issue!](https://github.com/sw-yx/babel-blade/issues/new)
