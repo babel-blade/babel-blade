@@ -16,3 +16,9 @@ The quickest, zero-install way to try it out is on [astexplorer](http://astexplo
 ## Official Emoji
 
 It is the ⛸️. Basically when I explained this idea to coworkers they said "oh it's just **inline** GraphQL". My boss at the time liked inline skating, which is commonly known as Roller Blading, and so the name stuck.
+
+## Internal stucture
+
+Here is a chart of how the package is set up:
+
+![test](/img/dependencygraph.svg)
