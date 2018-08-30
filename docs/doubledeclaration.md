@@ -3,17 +3,19 @@ id: declarationdeclaration
 title: The Double Declaration Problem
 ---
 
+> **obligatory note**: babel-blade is not yet production ready! Please proceed only if you are an early adopter.
+
 ## What is the double declaration problem?
 
-Simply, it is the bad developer experience of 
+Simply, it is the bad developer experience of
 
 - having to declare what you want to query in the GraphQL template string
-- and then again when you are using the data in your application. 
+- and then again when you are using the data in your application.
 - Curly braces also have to match up.
 
 When you don't do it just right:
 
-- Ommissions are confusing to debug and 
+- Ommissions are confusing to debug and
 - overfetching due to stale queries is also a problem.
 
 ## Problem Statement
@@ -62,4 +64,4 @@ const Movie = ({ id, onClose }) => (
 );
 ```
 
-You see how `title` and `description` are specified twice, while `poster` and `genre` aren't even used. 
+You see how `title` and `description` are specified twice, while `poster` and `genre` aren't even used.
