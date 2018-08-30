@@ -13,7 +13,7 @@ export { default as theme } from './theme'
 </Head>
 
 # babel-blade
-## solving the double declaration problem in clientside GraphQL
+## solving the GraphQL double declaration problem
 
 by [@swyx](https://twitter.com/swyx)
 
@@ -21,67 +21,393 @@ by [@swyx](https://twitter.com/swyx)
 
 ## Double Declaration
 
-import {SideBySideProvider, StyledEditor} from './components/StyledLive'
-import {
-  // LiveProvider,
-  LiveEditor,
-  LiveError,
-  LivePreview
-} from 'react-live'
-import {Header, Wrapper, Photo, Search, DogOfTheDay, ApolloProvider, ApolloClient} from './components/Demo'
-import {Autocomplete, Input, Downshift} from './components/Autocomplete'
-
-<SideBySideProvider 
-  scope={{
-    Header, Wrapper, Photo, Search, ApolloProvider, ApolloClient, 
-    Autocomplete, Input, Downshift
-    }}
-  noInline={true}
-  code={`
-  class DogOfTheDay extends React.Component {
-    constructor() {
-      this.state = { selectedDog: null }
-      this.onDogSelected = this.onDogSelected.bind(this)
-    }
-    onDogSelected(selectedDog) {
-      this.setState({ selectedDog });
-    };
-    render() {
-      return (
-        <Wrapper>
-          <Header>Dog of the Day! 🐶</Header>
-          <Photo breed={this.state.selectedDog} />
-          <Search onDogSelected={this.onDogSelected} />
-        </Wrapper>
-      );
-    };
-  }
-  const client = new ApolloClient({
-    uri: "https://dog-suspense-demo.glitch.me/graphql"
-  })
-  render(<ApolloProvider client={client}>
-    <DogOfTheDay />
-  </ApolloProvider>)
-  `}>
-    <StyledEditor />
-    <LiveError />
-    <LivePreview />
-</SideBySideProvider>
+- Demo <https://codesandbox.io/s/7y04wj2lz1>
+- Playground <https://dog-suspense-demo.glitch.me/>
 
 ---
 
-## Edit this file
+import { CodeSurfer } from "mdx-deck-code-surfer"
+import ShadesOfPurple from "prism-react-renderer/themes/shadesOfPurple"
 
-To create your presentation
+<CodeSurfer
+  title="Double Declaration"
+  theme={ShadesOfPurple}
+  code={require("!raw-loader!./snippets/apollo-dog.js")}
+  lang="javascript"
+  showNumbers={false}
+  dark={true}
+  steps={[
+    { lines: [5, 14] },
+    { lines: [4] },
+  ]}
+/>
 
-```notes
-- Create speaker notes in fenced code blocks
+---
+
+## Three definitions of Metaprogramming 
+
+> "a program can be designed to read, generate, analyse or transform other programs, and even modify itself while running."
+
+([Wikipedia](https://en.wikipedia.org/wiki/Metaprogramming))
+
+---
+
+## Three definitions of Metaprogramming 
+
+> "a program can be ~~designed~~ impossible to read, ~~generate,~~ or analyse ~~or transform other programs, and even modify itself while running.~~"
+
+(Haters of Metaprogramming)
+
+---
+
+## Three definitions of Metaprogramming 
+
+> "code that writes code"
+
+(me)
+
+---
+
+## Must-Watch Talks on Metaprogramming 
+
+- [📺 Brendan Eich: Proxies are Awesome!](https://www.youtube.com/watch?v=sClk6aB_CPk)
+- [📺 Guy Steele: Growing a Language](https://www.youtube.com/watch?v=_ahvzDzKdB0)
+
+---
+
+<CodeSurfer
+  title="Proxies"
+  theme={ShadesOfPurple}
+  code={require("!raw-loader!./snippets/proxy.js")}
+  lang="javascript"
+  showNumbers={false}
+  dark={true}
+  steps={[
+    { range: [5, 9] },
+    { range: [1, 5] },
+    { range: [10, 12] },
+    { range: [1, 12] },
+  ]}
+/>
+
+---
+
+## Runtime Metaprogramming
+
+### New GraphQL Client with Proxies? 
+
+---
+
+<CodeSurfer
+  title="React-Blade API"
+  theme={ShadesOfPurple}
+  code={require("!raw-loader!./snippets/react-blade.js")}
+  lang="javascript"
+  showNumbers={false}
+  dark={true}
+  steps={[]}
+/>
+
+---
+️
+## Why "Blade" ⛸
+
+"Blade" = inline GraphQL meta-object
+
+---
+
+## Runtime Metaprogramming with React Suspense
+
+**Render Attempt 1**
+
+- Try to read `data.dog` from cache
+- Suspend: GraphQL query for `{ dog }`
+
+**Render Attempt 2**
+
+- Try to read `data.dog.displayImage` from cache
+- Suspend: GraphQL query for `{ dog { displayImage } }`
+
+**Render Attempt 3**
+
+- Try to read `data.dog.displayImage` from cache
+- Success!
+
+export default Invert
+
+
+---
+
+## Runtime Metaprogramming
+
+### New GraphQL Client with Proxies? 
+
+- Inefficient
+- Hard to debug
+- Requires maintaining a new GraphQL client
+
+---
+
+## ~~Runtime Metaprogramming~~
+
+### ~~New GraphQL Client with Proxies?~~
+
+💩
+
+## AOT Metaprogramming
+
+### AOT compilation for **ANY** GraphQL Client
+
+🎉
+
+---
+
+## babel as metaprogramming tool
+
+```jsx
+<div>
+  hello world
+</div>
 ```
 
+👇👇👇
+
+```js
+React.createElement(
+  "div",
+  null,
+  "hello world"
+);
+```
+
+
 ---
 
-<https://github.com/sw-yx/babel-blade>
+## problems with babel as metaprogram
 
-Credits:
+- implicit dependency (action at a distance)
+- global configuration
+- unpredictable order (single runthru)
 
-- <https://github.com/peggyrayzis/react-europe-apollo>
+---
+
+## babel-plugin-macros
+
+- [Intro blogpost](https://babeljs.io/blog/2017/09/11/zero-config-with-babel-macros)
+- [List of macros](https://github.com/kentcdodds/babel-plugin-macros/blob/master/other/docs/macros.md)
+- [Tutorial](https://blog.kentcdodds.com/write-your-own-code-transform-for-fun-and-profit-140abde9c5c6)
+- [ASTExplorer](http://astexplorer.net/#/gist/07b795bf2be92a9926eb76c41dd3e039/28fea15b005d5fd71af5bfe8a9af55e1f52461ea)
+- (if writing) [babel-handbook](https://github.com/jamiebuilds/babel-handbook/blob/master/translations/en/plugin-handbook.md)
+- [create-react-app v2 RFC and PR](https://github.com/facebook/create-react-app/issues/2730)
+
+---
+
+## babel-blade
+
+- [babeljs.io repl](https://babeljs.io/repl#?babili=false&browsers=&build=&builtIns=false&spec=false&loose=false&code_lz=FAYw9gdgzgLgBDAprAigV0QJwJ5wLxwiaICGS6W2AFAJTCiSxwDiAogCoD6AIgPLOcACgAle7XvjgBzAI4AbKklQYcdBtHiCAFmBhhJVAN5wARsUQATOAF8a-AHxwqwAJAAeCjjgyV2PIbYuPgERMV5rOAA3EkwASxITOWR_M0RLOAAyDLhjVPTra3tXF0MjOAsyEgAaODkwEgtYiCkbOzxHQ2A4bp6XF3ANOG4AQXZhySUYT2oKmBI6HsWlgaYLMBaCEbGAOjWpYpdYgDMnOoamqTtiGDRMCDg3ABl6xua4AHp7AG4D69v75x9PpuRqRIpA4EASQAtiQpIg4FBMCB_HtdrEoAAHOQkbAwuGICKfA59QxoqBoEx5CxQawktzvUHgvo0H59AquBnTIqs4BAA&debug=false&forceAllTransforms=false&shippedProposals=false&circleciRepo=&evaluate=false&fileSize=false&timeTravel=false&sourceType=module&lineWrap=false&presets=react&prettier=false&targets=&version=6.26.0&envVersion=)
+- [astexplorer: babel-blade demo](http://astexplorer.net/#/gist/01983f61e310f1eaf6b12a221556a937/a4345dd04f1f7504ef00360f29b2666272765fff)
+- Docs: <https://babel-blade.netlify.com/>
+
+---
+
+## Our Goal
+
+Do everything [the GraphQL spec](https://graphql.github.io/learn/queries/) can do, but inline
+
+- Fields
+- Arguments
+- Operation Name
+- Aliases
+- Variables
+- Directives
+- Fragments
+
+---
+
+<CodeSurfer
+  title="Fields and Operation Name"
+  theme={ShadesOfPurple}
+  code={require("!raw-loader!./snippets/babel-blade-1.js")}
+  lang="javascript"
+  showNumbers={false}
+  dark={true}
+  steps={[
+    { range: [1, 22] },
+    { range: [25, 51] },
+  ]}
+/>
+
+---
+
+## Our Goal
+
+Do everything [the GraphQL spec](https://graphql.github.io/learn/queries/) can do, but inline
+
+- ✅ Fields
+- Arguments
+- ✅Operation Name
+- Aliases
+- Variables
+- Directives
+- Fragments
+
+---
+
+<CodeSurfer
+  title="Arguments and Aliases"
+  theme={ShadesOfPurple}
+  code={require("!raw-loader!./snippets/babel-blade-2.js")}
+  lang="javascript"
+  showNumbers={false}
+  dark={true}
+  steps={[
+    { range: [1, 23] },
+    { range: [26, 54] },
+  ]}
+/>
+
+---
+
+## AOT !== static
+
+Especially where babel-macros are concerned
+
+
+---
+
+<CodeSurfer
+  title="Arguments and Aliases (dynamic)"
+  theme={ShadesOfPurple}
+  code={require("!raw-loader!./snippets/babel-blade-2-2.js")}
+  lang="javascript"
+  showNumbers={false}
+  dark={true}
+  steps={[
+    { range: [1, 23] },
+    { lines: [5, 11] },
+    { range: [26, 54] },
+    { lines: [28, 33] },
+  ]}
+/>
+
+---
+
+## Our Goal
+
+Do everything [the GraphQL spec](https://graphql.github.io/learn/queries/) can do, but inline
+
+- ✅ Fields
+- ✅Arguments
+- ✅Operation Name
+- ✅Aliases
+- Variables
+- Directives
+- Fragments
+
+---
+
+<CodeSurfer
+  title="Query Variables"
+  theme={ShadesOfPurple}
+  code={require("!raw-loader!./snippets/babel-blade-3.js")}
+  lang="javascript"
+  showNumbers={false}
+  dark={true}
+  steps={[
+    { range: [1, 23] },
+    { lines: [5, 12] },
+    { range: [26, 51] },
+    { lines: [34, 35, 42] },
+  ]}
+/>
+
+---
+
+## Our Goal
+
+Do everything [the GraphQL spec](https://graphql.github.io/learn/queries/) can do, but inline
+
+- ✅ Fields
+- ✅Arguments
+- ✅Operation Name
+- ✅Aliases
+- ✅Variables
+- Directives
+- Fragments
+
+---
+
+<CodeSurfer
+  title="Directives"
+  theme={ShadesOfPurple}
+  code={require("!raw-loader!./snippets/babel-blade-4.js")}
+  lang="javascript"
+  showNumbers={false}
+  dark={true}
+  steps={[
+    { range: [1, 23] },
+    { lines: [12] },
+    { range: [26, 54] },
+    { lines: [34, 43] },
+  ]}
+/>
+
+---
+
+## Our Goal
+
+Do everything [the GraphQL spec](https://graphql.github.io/learn/queries/) can do, but inline
+
+- ✅ Fields
+- ✅Arguments
+- ✅Operation Name
+- ✅Aliases
+- ✅Variables
+- ✅Directives
+- Fragments
+
+---
+
+<CodeSurfer
+  title="Fragments"
+  theme={ShadesOfPurple}
+  code={require("!raw-loader!./snippets/babel-blade-5.js")}
+  lang="javascript"
+  showNumbers={false}
+  dark={true}
+  steps={[
+    { range: [1, 7] },
+    { range: [7, 22] },
+    { lines: [5, 25] },
+    { range: [27, 45] },
+    { lines: [25, 39] },
+    { range: [48, 78] },
+    { range: [68, 78] },
+    { range: [79, 102] },
+    { range: [79, 88] },
+  ]}
+/>
+
+---
+
+## Our Goal
+
+Do everything [the GraphQL spec](https://graphql.github.io/learn/queries/) can do, but inline
+
+- ✅ Fields
+- ✅Arguments
+- ✅Operation Name
+- ✅Aliases
+- ✅Variables
+- ✅Directives
+- ✅Fragments
+
+---
+
+## Thank you!
+
+- Docs: <https://babel-blade.netlify.com/>
+- Slides: <https://github.com/sw-yx/babel-blade/tree/master/talks>
+- *Note: Not production ready! [Known issues here](https://github.com/sw-yx/babel-blade/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc)*
+
+[@swyx](https://twitter.com/swyx)

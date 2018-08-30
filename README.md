@@ -1,4 +1,4 @@
-> Welcome! This project is **STILL A WORK IN PROGRESS** - but I appreciate you trying this out and [giving feedback!](https://twitter.com/swyx)
+> Welcome! This project is **STILL A WORK IN PROGRESS** and not yet production ready - but I appreciate you trying this out and [giving feedback!](https://twitter.com/swyx)
 
 # Babel-Blade ⛸️
 
@@ -8,7 +8,7 @@ Check **[our new Docs site](https://babel-blade.netlify.com/)** or view the yout
 
 [![babel blade walkthrough on youtube](https://user-images.githubusercontent.com/6764957/42730215-f92fc024-87bc-11e8-9929-c614710920ee.png)](https://www.youtube.com/watch?v=z9wKcRjNqlw)
 
-# Seriously check out our  ---> **[our new Docs site](https://babel-blade.netlify.com/) <---** 
+# Seriously check out our ---> **[our new Docs site](https://babel-blade.netlify.com/) <---**
 
 Have you heard that we have a **[new Docs site](https://babel-blade.netlify.com/)**? It's in Docusaurus and it's great!
 
@@ -22,12 +22,11 @@ Have you heard that we have a **[new Docs site](https://babel-blade.netlify.com/
 <a href="https://twitter.com/devongovett/status/1018896944977010688">Devon Govett, creator of Parcel</a>
 </div>
 
-> "Just took a look at babel-blade.  Oh man, does that reverse engineer your gql queries from your usages?????? 👏👏👏"
+> "Just took a look at babel-blade. Oh man, does that reverse engineer your gql queries from your usages?????? 👏👏👏"
 
 <div align="right">
 <a href="https://twitter.com/AdamRackis/status/1020070216024449027">Adam Rackis, creator of Micrographql-React</a>
 </div>
-
 
 > "Fucking great"
 

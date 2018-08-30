@@ -3,6 +3,8 @@ id: index
 title: What is Babel-Blade?
 ---
 
+> **obligatory note**: babel-blade is not yet production ready! Please proceed only if you are an early adopter.
+
 `babel-blade` is a babel plugin (or [macro](https://github.com/kentcdodds/babel-plugin-macros)) that helps to **generate graphql query strings inline** and solves **[the double declaration problem](declarationdeclaration)** in clientside GraphQL.
 
 ## See 7 minute introductory video

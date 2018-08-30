@@ -3,6 +3,7 @@ id: blade-macro
 title: As a babel macro
 ---
 
+> **obligatory note**: babel-blade is not yet production ready! Please proceed only if you are an early adopter.
 
 ## Installation
 
@@ -35,9 +36,9 @@ and then in `.babelrc`:
 
 ```js
 import { createQuery } from "blade.macro";
-// or 
+// or
 import { createFragment } from "blade.macro";
-// or 
+// or
 import { createQuery, createFragment } from "blade.macro";
 ```
 

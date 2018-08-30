@@ -1,5 +1,5 @@
 // import theme from 'mdx-deck/themes'
-import { yellow as theme } from "mdx-deck/themes";
+import { swiss as theme } from "mdx-deck/themes";
 export default {
   ...theme
 
