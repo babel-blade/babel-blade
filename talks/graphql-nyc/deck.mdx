@@ -1,0 +1,87 @@
+import { Head, Appear } from 'mdx-deck'
+import { Invert, Split, SplitRight } from 'mdx-deck/layouts'
+
+export { default as theme } from './theme'
+
+<Head>
+  <title>Intro to babel-blade</title>
+  <meta name='twitter:card' content='summary_large_image' />
+  <meta name='twitter:site' content='@swyx' />
+  <meta name='twitter:title' content='Intro to babel-blade' />
+  <meta name='twitter:description' content='Solving the double declaration problem in clientside GraphQL' />
+  <meta name='twitter:image' content='https://babel-blade.netlify.com/slides/card.png' />
+</Head>
+
+# babel-blade
+## solving the double declaration problem in clientside GraphQL
+
+by [@swyx](https://twitter.com/swyx)
+
+---
+
+## Double Declaration
+
+import {SideBySideProvider, StyledEditor} from './components/StyledLive'
+import {
+  // LiveProvider,
+  LiveEditor,
+  LiveError,
+  LivePreview
+} from 'react-live'
+import {Header, Wrapper, Photo, Search, DogOfTheDay, ApolloProvider, ApolloClient} from './components/Demo'
+import {Autocomplete, Input, Downshift} from './components/Autocomplete'
+
+<SideBySideProvider 
+  scope={{
+    Header, Wrapper, Photo, Search, ApolloProvider, ApolloClient, 
+    Autocomplete, Input, Downshift
+    }}
+  noInline={true}
+  code={`
+  class DogOfTheDay extends React.Component {
+    constructor() {
+      this.state = { selectedDog: null }
+      this.onDogSelected = this.onDogSelected.bind(this)
+    }
+    onDogSelected(selectedDog) {
+      this.setState({ selectedDog });
+    };
+    render() {
+      return (
+        <Wrapper>
+          <Header>Dog of the Day! 🐶</Header>
+          <Photo breed={this.state.selectedDog} />
+          <Search onDogSelected={this.onDogSelected} />
+        </Wrapper>
+      );
+    };
+  }
+  const client = new ApolloClient({
+    uri: "https://dog-suspense-demo.glitch.me/graphql"
+  })
+  render(<ApolloProvider client={client}>
+    <DogOfTheDay />
+  </ApolloProvider>)
+  `}>
+    <StyledEditor />
+    <LiveError />
+    <LivePreview />
+</SideBySideProvider>
+
+---
+
+## Edit this file
+
+To create your presentation
+
+```notes
+- Create speaker notes in fenced code blocks
+```
+
+---
+
+<https://github.com/sw-yx/babel-blade>
+
+Credits:
+
+- <https://github.com/peggyrayzis/react-europe-apollo>
