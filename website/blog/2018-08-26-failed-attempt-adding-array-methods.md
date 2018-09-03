@@ -246,3 +246,7 @@ generates:
 ```
 
 so its not robust to `console.log`. i need to fix that first.
+
+---
+
+[semantic traversal exploration](http://astexplorer.net/#/gist/0d97e2d0355fcf096212b5fc96ca60a5/b4298c1d38e6c9b3c16c776424d48196c9118f04)

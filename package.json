@@ -24,7 +24,7 @@
   },
   "scripts": {
     "start:talk": "mdx-deck talks/graphql-nyc/deck.mdx",
-    "build:talk": "npm run image:talk && mdx-deck build talks/graphql-nyc/deck.mdx",
+    "build:talk": "npm run image:talk && mdx-deck build --no-html talks/graphql-nyc/deck.mdx",
     "pdf:talk": "mdx-deck pdf talks/graphql-nyc/deck.mdx",
     "image:talk": "mdx-deck screenshot talks/graphql-nyc/deck.mdx"
   }
