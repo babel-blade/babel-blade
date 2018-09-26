@@ -373,3 +373,7 @@ and that generates this trace: `["foo", "bar", "child1", "child11", "baz", "food
 Now i need to do array properties!
 
 ---
+
+## stopped for the day at here
+
+<https://latest.astexplorer.net/#/gist/01983f61e310f1eaf6b12a221556a937/7986b05e19b997db99754a777746df0a617c0d17>
