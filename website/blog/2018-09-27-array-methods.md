@@ -143,3 +143,149 @@ function TraceRHS(ref, semanticPath, semanticVisitor) {
 so LHS gets short circuited as does RHS post an array method call.
 
 current state: https://latest.astexplorer.net/#/gist/01983f61e310f1eaf6b12a221556a937/adec3bd3874c7c28df5f648bea71733ee52b37ef
+
+---
+
+## final prep before integrating babel-blade
+
+now we clean up all the console logs, and do some manipulation to see what happens.
+
+ok that was a success.. heres a simple replacement:
+
+```js
+const semanticVisitor = {
+  default(...args) {
+    console.log("[debugging callback]", ...args);
+  },
+  CallExpression(...args) {
+    const [hand, ref, semPath, ...rest] = args;
+    const callee = ref.get("callee");
+    console.log("CallExpression", hand, semPath, ref, callee);
+    ref.replaceWith(callee);
+  },
+  VariableDeclarator(...args) {
+    console.log("VariableDeclarator", ...args);
+  },
+  ArrowFunctionExpression(...args) {
+    console.log("ArrowFunctionExpression", ...args);
+  }
+};
+```
+
+it turns `abc.foo('@test','poo').foo1` into `abc.foo.foo1`.
+
+now i have to integrate the rest of the thingy.
+
+https://latest.astexplorer.net/#/gist/01983f61e310f1eaf6b12a221556a937/4ec4d2ebbcbaca04be21435930a1b4dddd2421f7
+
+---
+
+ok that was tricky but wasnt too bad. i have a working reconstituted babel-blade!
+
+inside of `handleCreateRazor` i now use:
+
+```js
+refs.forEach(razor => {
+  // define visitor
+  const semanticVisitor = {
+    default(...args) {
+      console.log("[debugging callback]", ...args);
+    },
+    CallExpression(...args) {
+      const [hand, ref, semPath, ...rest] = args;
+      const callee = ref.get("callee");
+      console.log("CallExpression", hand, semPath, ref, callee);
+      ref.replaceWith(callee);
+    },
+    MemberExpression(...args) {
+      const [hand, ref, semPath, ...rest] = args;
+      console.log("MemberExpression", hand, semPath, ref);
+      let currentRazor = razorData;
+      semPath.forEach(chunk => {
+        currentRazor = currentRazor.add({ name: chunk });
+      });
+    },
+    VariableDeclarator(...args) {
+      console.log("VariableDeclarator", ...args);
+    },
+    ArrowFunctionExpression(...args) {
+      console.log("ArrowFunctionExpression", ...args);
+    }
+  };
+  // go through all razors
+  if (isCallee(razor)) {
+    // we have been activated! time to make a blade!
+    razorID = getAssignTarget(razor);
+    // clear the reference
+    if (razor.container.arguments[0])
+      razor.parentPath.replaceWith(razor.container.arguments[0]);
+    else razor.parentPath.remove();
+    // parseBlade(razor, razorID, razorData)
+    semanticTrace(razor, razorID, semanticVisitor);
+  }
+});
+```
+
+phew. https://latest.astexplorer.net/#/gist/01983f61e310f1eaf6b12a221556a937/213eda76de287dffef1fb899596e8c89262fa422
+
+now this does the basic macro example:
+
+```js
+import { Connect, query } from "urql";
+import { createQuery } from "blade.macro";
+
+const movieQuery = createQuery("$id: id");
+const Movie = ({ id, onClose }) => (
+  <div>
+    <Connect
+      query={query(movieQuery, { id: id })}
+      children={({ data }) => {
+        const DATA = movieQuery(data);
+        return (
+          <div>
+            <h2>{DATA.movie.gorilla}</h2>
+            <p>{DATA.movie.monkey}</p>
+            <p>{DATA.chimp}</p>
+          </div>
+        );
+      }}
+    />
+  </div>
+);
+```
+
+and produces
+
+```js
+import { Connect, query } from "urql";
+
+const Movie = ({ id, onClose }) => (
+  <div>
+    <Connect
+      query={query(
+        `
+query movieQuery($id: id){
+  movie {
+    gorilla
+    monkey
+  }
+  chimp
+}`,
+        {
+          id: id
+        }
+      )}
+      children={({ data }) => {
+        const DATA = data;
+        return (
+          <div>
+            <h2>{DATA.movie.gorilla}</h2>
+            <p>{DATA.movie.monkey}</p>
+            <p>{DATA.chimp}</p>
+          </div>
+        );
+      }}
+    />
+  </div>
+);
+```
