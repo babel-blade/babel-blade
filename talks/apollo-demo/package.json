@@ -6,11 +6,12 @@
     "apollo-boost": "^0.1.16",
     "apollo-server-lambda": "^2.1.0",
     "graphql": "^14.0.2",
+    "http-proxy-middleware": "^0.19.0",
     "netlify-lambda": "^0.4.0",
     "react": "^16.3.1",
     "react-apollo": "^2.2.2",
     "react-dom": "^16.3.1",
-    "react-scripts": "1.1.4"
+    "react-scripts": "2.0.1"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -20,12 +21,13 @@
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   },
-  "proxy": {
-    "/.netlify/functions": {
-      "target": "http://localhost:9000",
-      "pathRewrite": {
-        "^/\\.netlify/functions": ""
-      }
-    }
-  }
+  "devDependencies": {
+    "blade.macro": "^0.1.0"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
 }

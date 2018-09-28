@@ -1,10 +1,14 @@
-This project is based on [Create React App](https://github.com/facebookincubator/create-react-app). (For more information about Create react App, check their full [documentation](https://github.com/facebookincubator/create-react-app#create-react-app).)
+# JAMStack demo of Apollo and babel-blade
 
-The main addition is a new folder: `src/lambda`. Each JavaScript file in there will automatically be prepared for Lambda function deployment.
+this is a demo of how babel blade could work, with apollo engine in a netlify functions "backend". This is set up according to [Apollo's guide](https://blog.apollographql.com/deploy-a-fullstack-apollo-app-with-netlify-45a7dfd51b0b) and upgrading to [react-scripts v2](https://github.com/facebook/create-react-app/issues/5103) for access to babel-macros.
 
-As an example, we've included a small `src/lambda/hello.js` function, which will be deployed to `/.netlify/functions/hello`.
+we then install blade.macro and use it inside `src/App.js`
 
-[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/netlify/create-react-app-lambda)
+---
+
+## From create-react-app-lambda
+
+This project is based on [Create React App Lambda](https://github.com/netlify/create-react-app-lambda). (For more information about it, check the readme.)
 
 ## Babel/webpack compilation
 

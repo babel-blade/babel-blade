@@ -6,22 +6,28 @@ import "./App.css";
 import ApolloClient from "apollo-boost";
 import { gql } from "apollo-boost";
 import { ApolloProvider, Query } from "react-apollo";
+import { createQuery } from "blade.macro";
 
 const client = new ApolloClient({
   uri: "/.netlify/functions/graphql"
 });
 
+const dogQuery = createQuery();
 // Replace the previous LambdaDemo with the code below:
 const LambdaDemo = () => (
   <ApolloProvider client={client}>
-    <Query
-      query={gql`
-        {
-          hello
-        }
-      `}
-    >
-      {({ data }) => <div>A greeting from the server: {data.hello}</div>}
+    <Query query={gql(dogQuery)}>
+      {({ data }) => {
+        console.log("dogQuery", dogQuery);
+        const DATA = dogQuery(data); // creates a blade
+        return (
+          <div>
+            A greeting from the server: {DATA.hello}
+            <br />
+            <img src={DATA.dogPhotoUrl} />
+          </div>
+        );
+      }}
     </Query>
   </ApolloProvider>
 );
