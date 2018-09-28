@@ -8,3 +8,6 @@ parceldemo
 
 package-lock.json
 yarn.lock
+
+## blanking it out for now
+vscode-extension
