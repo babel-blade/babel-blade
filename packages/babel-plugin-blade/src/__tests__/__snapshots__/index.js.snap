@@ -84,8 +84,6 @@ const Movie = ({ id, onClose }) => <div>
 query movieQuery($id: id){
   movie {
     gorilla
-  }
-  movie {
     monkey
   }
   chimp
@@ -285,8 +283,6 @@ const Movie = () => <div>
 query movieQuery{
   movie {
     gorilla
-  }
-  movie {
     monkey
   }
   chimp
@@ -314,10 +310,11 @@ const Movie = () => (
       query={query(movieQuery)}
       children={({data}) => {
         const DATA = movieQuery(data)
+        const film = DATA.movie('id: movieID')
         return (
           <div>
-            <h2>{DATA.movie('id: movieID')}</h2>
-            <p>{DATA.movie.monkey}</p>
+            <h2>{film}</h2>
+            <p>{film.monkey}</p>
             <p>{DATA.chimp}</p>
           </div>
         )
@@ -335,16 +332,16 @@ const movieID = 12;
 const Movie = () => <div>
     <Connect query={query(\`
 query movieQuery(\${\`$movieID: \${movieID}\`}){
-  movie_3c19: movie(id: movieID)
-  movie {
+  movie_803c: movie(id: movieID) {
     monkey
   }
   chimp
 }\`)} children={({ data }) => {
     const DATA = data;
+    const film = DATA.movie_803c;
     return <div>
-            <h2>{DATA.movie_3c19}</h2>
-            <p>{DATA.movie.monkey}</p>
+            <h2>{film}</h2>
+            <p>{film.monkey}</p>
             <p>{DATA.chimp}</p>
           </div>;
   }} />
@@ -419,13 +416,11 @@ const Movie = ({ data }) => {
 };
 
 Movie.fragment = movieFragment => \`
-fragment [object Object] on Movie{
+fragment \${movieFragment} on Movie{
   movie {
     title
     actors {
       supporting
-    }
-    actors {
       leading
     }
   }
@@ -445,7 +440,7 @@ query pageQuery{
   // \`Movie.fragment\` into the query.
   // (could be automatic in future)
   return <ul>
-          <Movie data={result.movie} />
+          <Movie data={result.movie(Movie.fragment)} />
         </ul>;
 }} />;
 

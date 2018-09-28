@@ -8,6 +8,7 @@ const {maybeGetSimpleString, getSimpleFragmentName} = require('./helpers')
 /* eslint-disable complexity */
 /* eslint-disable prefer-const */
 /* eslint-disable no-use-before-define */
+
 export class RazorData {
   constructor({args = null, name = null, type = null, fragmentType = null}) {
     if (!type) throw new Error('type must be either fragment or query')
@@ -39,12 +40,15 @@ export class RazorData {
     return null
   }
   add(val) {
-    let child = this.get(val.name)
+    let preferredNameOrAlias =
+      val.args && val.args.length ? hashArgs(val.args, val.name) : val.name
+    let child = this.get(preferredNameOrAlias)
     // eslint-disable-next-line
-    if (child && child._alias == val.alias) {
+    if (child && child._alias == hashArgs(val.args, val.name)) {
       // intentional == here
       // child = child;
     } else {
+      // console.log('adding new child ', val.name, 'because', child && child._alias, 'vs', hashArgs(val.args, val.name))
       child = new BladeData(val)
       this._children.push(child)
     }
@@ -61,12 +65,15 @@ export class RazorData {
       ) // really shouldnt happen, should we throw an error?
     let maybeArgs = coerceNullLiteralToNull(this._args && this._args[0])
     let TemplateLiteral = appendLiterals()
-      .addStr(
-        this._type === 'query'
-          ? `\nquery ${this._name || ''}`
-          : `\nfragment ${this._name} on ${this._fragmentType}`,
-      )
-      .addStr(maybeArgs ? '(' : '')
+    if (this._type === 'query') {
+      TemplateLiteral.addStr(`\nquery ${this._name || ''}`)
+    } else {
+      // have to make fragment name parametric
+      TemplateLiteral.addStr(`\nfragment `)
+      TemplateLiteral.addLit(this._name)
+      TemplateLiteral.addStr(` on ${this._fragmentType}`)
+    }
+    TemplateLiteral.addStr(maybeArgs ? '(' : '')
       .addLit(maybeArgs)
       .addStr(maybeArgs ? ')' : '')
       .addStr('{\n')
@@ -93,9 +100,7 @@ export class BladeData {
     this._children = [] // store of child blades
     this._name = name // a string for now
     this._args = args // array
-    this._alias =
-      this._args.length &&
-      `${this._name}_${hashCode(JSON.stringify(this._args))}`
+    this._alias = hashArgs(this._args, this._name)
     this._fragments = fragments.map(frag => {
       frag.isFragment = true
       return frag
@@ -105,6 +110,7 @@ export class BladeData {
   get(id) {
     for (let i = 0; i < this._children.length; i++) {
       if (this._children[i]._name === id) return this._children[i]
+      if (this._children[i]._alias === id) return this._children[i]
     }
     return null
   }
@@ -112,9 +118,11 @@ export class BladeData {
     let child = this.get(val.name)
 
     /* eslint-disable-next-line */
-    if (child && child._alias == val.alias) {
-      // intentional ==
+    if (child && child._alias == hashArgs(val.args, val.name)) {
+      // if (child && child._alias == val.alias) { // intentional ==
+      // if (child) { // intentional ==
     } else {
+      // console.log('adding new child2 because', child && child._alias, val.alias)
       child = new BladeData(val)
       this._children.push(child)
     }
@@ -162,6 +170,10 @@ export class BladeData {
     }
     return TemplateLiteral.get()
   }
+}
+
+export function hashArgs(args = [], name) {
+  return args.length ? `${name}_${hashCode(JSON.stringify(args))}` : null
 }
 
 // https://stackoverflow.com/a/8831937/1106414

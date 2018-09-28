@@ -1,11 +1,11 @@
-import { Connect, query } from 'urql';
-import { createQuery, createFragment } from 'blade.macro';
+import {Connect, query} from 'urql'
+import {createQuery, createFragment} from 'blade.macro'
 
 // MovieComponent.js
-const movieFragment = createFragment('Movie');
-const Movie = ({ data }) => {
-  let result = movieFragment(data);
-  let movie = result.movie;
+const movieFragment = createFragment('Movie')
+const Movie = ({data}) => {
+  let result = movieFragment(data)
+  let movie = result.movie
   return (
     <div className="movie">
       {loaded === false ? (
@@ -19,26 +19,26 @@ const Movie = ({ data }) => {
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-Movie.fragment = movieFragment;
+Movie.fragment = movieFragment
 
 // MoviePage.js
-const pageQuery = createQuery(); // create a top-level query
+const pageQuery = createQuery() // create a top-level query
 const App = () => (
   <Connect
     query={query(pageQuery)}
-    children={({ loaded, data }) => {
-      let result = pageQuery(data);
+    children={({loaded, data}) => {
+      let result = pageQuery(data)
       // rendering Movie while adding
       // `Movie.fragment` into the query.
       // (could be automatic in future)
       return (
         <ul>
-          <Movie data={result.movie(null, Movie.fragment)} />
+          <Movie data={result.movie(Movie.fragment)} />
         </ul>
-      );
+      )
     }}
   />
-);
+)

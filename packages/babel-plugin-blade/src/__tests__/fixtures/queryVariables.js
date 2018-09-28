@@ -8,10 +8,11 @@ const Movie = () => (
       query={query(movieQuery)}
       children={({data}) => {
         const DATA = movieQuery(data)
+        const film = DATA.movie('id: movieID')
         return (
           <div>
-            <h2>{DATA.movie('id: movieID')}</h2>
-            <p>{DATA.movie.monkey}</p>
+            <h2>{film}</h2>
+            <p>{film.monkey}</p>
             <p>{DATA.chimp}</p>
           </div>
         )
