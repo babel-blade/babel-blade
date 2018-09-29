@@ -23,8 +23,10 @@
     "styled-components": "^3.4.5"
   },
   "scripts": {
-    "start:talk": "mdx-deck talks/graphql-nyc/deck.mdx",
-    "build:talk": "mdx-deck build --no-html talks/graphql-nyc/deck.mdx",
+    "start:nyctalk": "mdx-deck talks/graphql-nyc/deck.mdx",
+    "start:talk": "mdx-deck talks/react-boston/deck.mdx",
+    "build:nyctalk": "mdx-deck build --no-html talks/graphql-nyc/deck.mdx",
+    "build:talk": "mdx-deck build --no-html talks/react-boston/deck.mdx",
     "pdf:talk": "mdx-deck pdf talks/graphql-nyc/deck.mdx",
     "image:talk": "mdx-deck screenshot talks/graphql-nyc/deck.mdx"
   }
