@@ -1,6 +1,6 @@
 # JAMStack demo of Apollo and babel-blade
 
-this is a demo of how babel blade could work, with apollo engine in a netlify functions "backend". This is set up according to [Apollo's guide](https://blog.apollographql.com/deploy-a-fullstack-apollo-app-with-netlify-45a7dfd51b0b) and upgrading to [react-scripts v2](https://github.com/facebook/create-react-app/issues/5103) for access to babel-macros.
+this is a demo of how babel blade could work, with apollo engine in a netlify functions "backend". This is set up according to [Apollo's guide](https://blog.apollographql.com/deploy-a-fullstack-apollo-app-with-netlify-45a7dfd51b0b) and upgrading to [react-scripts v2](https://github.com/facebook/create-react-app/issues/5103) for access to babel-macros. The dog CEO api code is taken from [Peggy Rayzis' React Europe talk](https://github.com/peggyrayzis/react-europe-apollo).
 
 we then install blade.macro and use it inside `src/App.js`
 

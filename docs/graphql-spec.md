@@ -164,7 +164,7 @@ Use the `createFragment` pseudofunction to create the fragment, and then attach 
 
 ```jsx
 import { Connect, query } from "urql";
-import { createQuery } from "blade.macro"; // if you are using as a babel macro
+import { createQuery, createFragment } from "blade.macro"; // if you are using as a babel macro
 
 // MovieComponent.js
 const movieFragment = createFragment("Movie");

@@ -26,6 +26,7 @@ pluginTester({
   tests: {
     'basic test of functionality': fixture('basic'),
     'assignments and aliases work': fixture('assignment'),
+    'overlapping assignments work': fixture('assignment-overlapping'),
     'destructuring work': fixture('destructuring'),
     'docs: fields': fixture('fields'),
     'docs: args': fixture('arguments'),
