@@ -24,7 +24,7 @@ const LambdaDemo = () => (
           <div>
             A greeting from the server: {DATA.hello}
             <br />
-            <img src={DATA.dogPhotoUrl} />
+            <img alt="dog" src={DATA.dogPhotoUrl} />
           </div>
         );
       }}

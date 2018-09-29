@@ -6,7 +6,7 @@ we then install blade.macro and use it inside `src/App.js`
 
 ---
 
-## From create-react-app-lambda
+## Everything below is just further notes from create-react-app-lambda
 
 This project is based on [Create React App Lambda](https://github.com/netlify/create-react-app-lambda). (For more information about it, check the readme.)
 

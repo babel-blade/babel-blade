@@ -32,13 +32,43 @@ const Movie = () => (
 );
 ```
 
-## Please note
+## Please note: Array prototype methods
 
-> **If your GraphQL field names coincide with array method names**
+> **If your GraphQL field names coincide with array prototype method names**
 
-Blades don't know if you are accessing an array property or an object property, so we have just gone ahead and blacklisted [all the array prototype methods](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/prototype) for now until we can write iterator blade logic. This will only affect you if you happen to have GraphQL fields named things like "forEach" or "map", which is possible but probably rare.
+Blades will propagate through the following array methods:
 
-If you do actually want a field called "map" for example, destructure it:
+- map
+- every
+- filter
+- find
+- findIndex
+- forEach
+- reduce
+- reduceRight
+- some
+
+so this will work:
+
+```js
+import { Connect, query } from 'urql';
+
+const movieQuery = createQuery()
+const App = () => <Connect query={query(movieQuery)} children={({ data }) => {
+  let result = movieQuery(data);
+  let {actors} = result.movie;
+  return <div>
+          {actors.map(actor => (
+            <Actor data={actor.supporting} />
+            <Actor data={actor.leading} />
+          ))}
+        </div>;
+}} />;
+```
+
+For the rest of the Array prototype methods, babel-blade simply "stops tracking" so you will need to stub out the rest of the dependencies with fragments on in a no-op assignment somewhere.
+
+If you do actually have a field called "map" for example, destructure it:
 
 ```js
 // do this, will be in the GraphQL
