@@ -33,6 +33,9 @@ Have you heard that we have a **[new Docs site](https://babel-blade.netlify.com/
 <div align="right">
 Ken Wheeler, probably</div>
 
+<div align="right">
+- Michael Scott</div>
+
 ---
 
 # For developers of plugins/contributors
