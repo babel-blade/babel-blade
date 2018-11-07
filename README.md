@@ -4,11 +4,11 @@
 
 `babel-blade` is the collective name for the babel plugin/macro that helps to generate graphql query strings inline and solves [the double declaration problem](https://babel-blade.netlify.com/docs/declarationdeclaration.html).
 
-Check **[our new Docs site](https://babel-blade.netlify.com/)** or view the youtube walkthrough for an explainer!
+Check **[our new Docs site](https://babel-blade.netlify.com/)** or view [the youtube walkthrough](https://www.youtube.com/watch?v=z9wKcRjNqlw) for an explainer!
 
 [![babel blade walkthrough on youtube](https://user-images.githubusercontent.com/6764957/48116756-ef34a800-e21b-11e8-9d4f-049362c25b23.gif)](https://www.youtube.com/watch?v=z9wKcRjNqlw)
 
-# Seriously check out our ---> **[our new Docs site](https://babel-blade.netlify.com/) <---**
+# Seriously check out our 👉 [our new Docs site](https://babel-blade.netlify.com/) 👈
 
 Have you heard that we have a **[new Docs site](https://babel-blade.netlify.com/)**? It's in Docusaurus and it's great!
 
