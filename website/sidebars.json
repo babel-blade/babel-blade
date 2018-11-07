@@ -1,8 +1,8 @@
 {
   "docs": {
     "Introduction": ["index", "declarationdeclaration"],
-    "Getting Started": ["babel-plugin-blade", "blade-macro"],
-    "Usage/API": ["graphql-spec"]
+    "Usage/API": ["graphql-spec"],
+    "Getting Started": ["babel-plugin-blade", "blade-macro"]
   },
   "docs-other": {
     "First Category": ["doc4", "doc5"]

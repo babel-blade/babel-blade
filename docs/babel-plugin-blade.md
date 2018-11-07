@@ -3,7 +3,7 @@ id: babel-plugin-blade
 title: As a babel plugin
 ---
 
-> **obligatory note**: babel-blade is not yet production ready! Please proceed only if you are an early adopter.
+> **obligatory note**: babel-blade is not yet production ready! Please proceed only if you are an early adopter. Feel free to chat with [@swyx](https://twitter.com/swyx) or [check our issues!](https://github.com/sw-yx/babel-blade/issues/)
 
 ## Installation
 
@@ -34,7 +34,7 @@ babel --plugins babel-plugin-blade script.js
 ### Via Node API
 
 ```javascript
-require("babel-core").transform("code", {
-  plugins: ["babel-plugin-blade"]
+require('babel-core').transform('code', {
+  plugins: ['babel-plugin-blade']
 });
 ```

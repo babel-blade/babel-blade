@@ -3,7 +3,7 @@ id: declarationdeclaration
 title: The Double Declaration Problem
 ---
 
-> **obligatory note**: babel-blade is not yet production ready! Please proceed only if you are an early adopter.
+> **obligatory note**: babel-blade is not yet production ready! Please proceed only if you are an early adopter. Feel free to chat with [@swyx](https://twitter.com/swyx) or [check our issues!](https://github.com/sw-yx/babel-blade/issues/)
 
 ## What is the double declaration problem?
 
@@ -23,7 +23,7 @@ When you don't do it just right:
 Here is a typical graphql query using [urql](https://codesandbox.io/s/p5n69p23x0) (taken [straight from urql's docs](https://github.com/FormidableLabs/urql#getting-started)):
 
 ```jsx
-import { Connect, query } from "urql";
+import { Connect, query } from 'urql';
 
 const QueryString = `
   query Movie($id: String) {

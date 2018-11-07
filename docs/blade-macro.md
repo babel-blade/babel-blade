@@ -3,7 +3,7 @@ id: blade-macro
 title: As a babel macro
 ---
 
-> **obligatory note**: babel-blade is not yet production ready! Please proceed only if you are an early adopter.
+> **obligatory note**: babel-blade is not yet production ready! Please proceed only if you are an early adopter. Feel free to chat with [@swyx](https://twitter.com/swyx) or [check our issues!](https://github.com/sw-yx/babel-blade/issues/)
 
 ## Installation
 
@@ -35,11 +35,11 @@ and then in `.babelrc`:
 ## in your JS file:
 
 ```js
-import { createQuery } from "blade.macro";
+import { createQuery } from 'blade.macro';
 // or
-import { createFragment } from "blade.macro";
+import { createFragment } from 'blade.macro';
 // or
-import { createQuery, createFragment } from "blade.macro";
+import { createQuery, createFragment } from 'blade.macro';
 ```
 
 you can then use these pseudofunctions in your app.

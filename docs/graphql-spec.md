@@ -3,15 +3,15 @@ id: graphql-spec
 title: GraphQL Spec By Example
 ---
 
-> **obligatory note**: babel-blade is not yet production ready! Please proceed only if you are an early adopter.
+> **obligatory note**: babel-blade is not yet production ready! Please proceed only if you are an early adopter. Feel free to chat with [@swyx](https://twitter.com/swyx) or [check our issues!](https://github.com/sw-yx/babel-blade/issues/)
 
 On this page we show by example how to do every thing in [the GraphQL query spec](https://graphql.org/learn/queries) with `babel-blade`. These are directly tested for in our snapshot tests.
 
 After you have tagged a `data` object with your query created with `createQuery`, it becomes a blade:
 
 ```jsx
-import { Connect, query } from "urql";
-import { createQuery } from "blade.macro"; // if you are using as a babel macro
+import { Connect, query } from 'urql';
+import { createQuery } from 'blade.macro'; // if you are using as a babel macro
 
 const movieQuery = createQuery(); // create the query
 const Movie = () => (
@@ -32,9 +32,14 @@ const Movie = () => (
 );
 ```
 
-## Please note: Array prototype methods
+<details>
+<summary>
+<em>
+Special note on using Array prototype methods
+</em>
+</summary>
 
-> **If your GraphQL field names coincide with array prototype method names**
+**Only applies if your GraphQL field names coincide with array prototype method names.**
 
 Blades will propagate through the following array methods:
 
@@ -77,92 +82,125 @@ const { map } = blade;
 const temp = blade.map; // we won't know if this is an array or an object property
 ```
 
+</details>
+
 ## Fields
 
 After you have tagged a `data` object with your query created with `createQuery`, any property you access (including with destructuring) will be included in the generated GraphQL query.
 
-_Note: Known holes we intend to fix - array methods like .map and .forEach don't work yet._
+<details>
+<summary>
+<b>
+Code Example
+</b>
+</summary>
+
+Before:
 
 ```jsx
-import {Connect, query} from 'urql'
-import { createQuery } from 'blade.macro' // if you are using as a babel macro
+import { Connect, query } from 'urql';
+import { createQuery } from 'blade.macro'; // if you are using as a babel macro
 
-const movieQuery = createQuery()
+const movieQuery = createQuery();
 const Movie = () => (
   <div>
     <Connect
       query={query(movieQuery)}
-      children={({data}) => {
-        const DATA = movieQuery(data) // key step
+      children={({ data }) => {
+        const DATA = movieQuery(data); // key step
         return (
           <div>
             <h2>{DATA.movie.gorilla}</h2>
             <p>{DATA.movie.monkey}</p>
             <p>{DATA.chimp}</p>
           </div>
-        )
+        );
       }}
     />
   </div>
-)
+);
+```
 
-      ↓ ↓ ↓ ↓ ↓ ↓
+After:
 
+```jsx
 import { Connect, query } from 'urql';
 
-const Movie = () => <div>
-    <Connect query={query(`
+const Movie = () => (
+  <div>
+    <Connect
+      query={query(`
 query movieQuery{
   movie {
     gorilla
     monkey
   }
   chimp
-}`)} children={({ data }) => {
-    const DATA = data;
-    return <div>
+}`)}
+      children={({ data }) => {
+        const DATA = data;
+        return (
+          <div>
             <h2>{DATA.movie.gorilla}</h2>
             <p>{DATA.movie.monkey}</p>
             <p>{DATA.chimp}</p>
-          </div>;
-  }} />
-  </div>;
+          </div>
+        );
+      }}
+    />
+  </div>
+);
 ```
+
+</details>
 
 ## Arguments
 
 Every blade property can take arguments as though it were a function call - this gets moved to the generated GraphQL.
 
-```jsx
-import {Connect, query} from 'urql'
-import { createQuery } from 'blade.macro' // if you are using as a babel macro
+<details>
+<summary>
+<b>
+Code Example
+</b>
+</summary>
 
-const movieQuery = createQuery()
+Before
+
+```jsx
+import { Connect, query } from 'urql';
+import { createQuery } from 'blade.macro'; // if you are using as a babel macro
+
+const movieQuery = createQuery();
 const Movie = () => (
   <div>
     <Connect
       query={query(movieQuery)}
-      children={({data}) => {
-        const DATA = movieQuery(data)
-        const film = DATA.movie('limit: 5') // like this
-        const nestedQuery = film.schedule('schedule: true') // or this
+      children={({ data }) => {
+        const DATA = movieQuery(data);
+        const film = DATA.movie('limit: 5'); // like this
+        const nestedQuery = film.schedule('schedule: true'); // or this
         return (
           <div>
             <Films data={film.titles} />
             <Schedule data={nestedQuery.data} />
           </div>
-        )
+        );
       }}
     />
   </div>
-)
+);
+```
 
-      ↓ ↓ ↓ ↓ ↓ ↓
+After:
 
+```jsx
 import { Connect, query } from 'urql';
 
-const Movie = () => <div>
-    <Connect query={query(`
+const Movie = () => (
+  <div>
+    <Connect
+      query={query(`
 query movieQuery{
   movie_19e8: movie(limit: 5) {
     schedule_7d17: schedule(schedule: true) {
@@ -170,17 +208,24 @@ query movieQuery{
     }
     titles
   }
-}`)} children={({ data }) => {
-    const DATA = data;
-    const film = DATA.movie_19e8;
-    const nestedQuery = film.schedule_7d17;
-    return <div>
+}`)}
+      children={({ data }) => {
+        const DATA = data;
+        const film = DATA.movie_19e8;
+        const nestedQuery = film.schedule_7d17;
+        return (
+          <div>
             <Films data={film.titles} />
             <Schedule data={nestedQuery.data} />
-          </div>;
-  }} />
-  </div>;
+          </div>
+        );
+      }}
+    />
+  </div>
+);
 ```
+
+</details>
 
 ## Aliases
 
@@ -192,12 +237,21 @@ Each arguments call gets an autogenerated 4 character hex alias to help distingu
 
 Use the `createFragment` pseudofunction to create the fragment, and then attach it as an argument to any blade property.
 
+<details>
+<summary>
+<b>
+Code Example
+</b>
+</summary>
+
+Before:
+
 ```jsx
-import { Connect, query } from "urql";
-import { createQuery, createFragment } from "blade.macro"; // if you are using as a babel macro
+import { Connect, query } from 'urql';
+import { createQuery, createFragment } from 'blade.macro'; // if you are using as a babel macro
 
 // MovieComponent.js
-const movieFragment = createFragment("Movie");
+const movieFragment = createFragment('Movie');
 const Movie = ({ data }) => {
   let result = movieFragment(data);
   let movie = result.movie;
@@ -242,7 +296,7 @@ const App = () => (
 This transpiles to:
 
 ```jsx
-import { Connect, query } from "urql";
+import { Connect, query } from 'urql';
 const Movie = ({ data }) => {
   let result = data;
   let movie = result.movie;
@@ -282,7 +336,7 @@ query pageQuery{
   }
 }
 
-${Movie.fragment("Moviefragment")}`)}
+${Movie.fragment('Moviefragment')}`)}
     children={({ loaded, data }) => {
       let result = data;
       // rendering Movie while adding
@@ -298,143 +352,198 @@ ${Movie.fragment("Moviefragment")}`)}
 );
 ```
 
+</details>
+
 ## Operation Name
 
 All queries are named by whatever variable identifier you assign.
 
-```jsx
-import {Connect, query} from 'urql'
-import { createQuery } from 'blade.macro' // if you are using as a babel macro
+<details>
+<summary>
+<b>
+Code Example
+</b>
+</summary>
 
-const movieQuery = createQuery() // movieQuery becomes the operation name
+Before
+
+```jsx
+import { Connect, query } from 'urql';
+import { createQuery } from 'blade.macro'; // if you are using as a babel macro
+
+const movieQuery = createQuery(); // movieQuery becomes the operation name
 const Movie = () => (
   <div>
     <Connect
       query={query(movieQuery)}
-      children={({data}) => {
-        const DATA = movieQuery(data)
+      children={({ data }) => {
+        const DATA = movieQuery(data);
         return (
           <div>
             <h2>{DATA.movie.gorilla}</h2>
             <p>{DATA.movie.monkey}</p>
             <p>{DATA.chimp}</p>
           </div>
-        )
+        );
       }}
     />
   </div>
-)
+);
+```
 
-      ↓ ↓ ↓ ↓ ↓ ↓
+After:
 
+```jsx
 import { Connect, query } from 'urql';
 
-const Movie = () => <div>
-    <Connect query={query(`
+const Movie = () => (
+  <div>
+    <Connect
+      query={query(`
 query movieQuery{
   movie {
     gorilla
     monkey
   }
   chimp
-}`)} children={({ data }) => {
-    const DATA = data;
-    return <div>
+}`)}
+      children={({ data }) => {
+        const DATA = data;
+        return (
+          <div>
             <h2>{DATA.movie.gorilla}</h2>
             <p>{DATA.movie.monkey}</p>
             <p>{DATA.chimp}</p>
-          </div>;
-  }} />
-  </div>;
+          </div>
+        );
+      }}
+    />
+  </div>
+);
 ```
+
+</details>
 
 ## Variables
 
 Supply variables as a string or template string to your `createQuery` call.
 
-```jsx
-import {Connect, query} from 'urql'
-import { createQuery } from 'blade.macro' // if you are using as a babel macro
+<details>
+<summary>
+<b>
+Code Example
+</b>
+</summary>
 
-const movieID = 12
-const movieQuery = createQuery(`$movieID: ${movieID}`) // like this
+Before:
+
+```jsx
+import { Connect, query } from 'urql';
+import { createQuery } from 'blade.macro'; // if you are using as a babel macro
+
+const movieID = 12;
+const movieQuery = createQuery(`$movieID: ${movieID}`); // like this
 const Movie = () => (
   <div>
     <Connect
       query={query(movieQuery)}
-      children={({data}) => {
-        const DATA = movieQuery(data)
+      children={({ data }) => {
+        const DATA = movieQuery(data);
         return (
           <div>
             <h2>{DATA.movie('id: movieID')}</h2>
             <p>{DATA.movie.monkey}</p>
             <p>{DATA.chimp}</p>
           </div>
-        )
+        );
       }}
     />
   </div>
-)
+);
+```
 
-      ↓ ↓ ↓ ↓ ↓ ↓
+After:
 
+```jsx
 import { Connect, query } from 'urql';
 
 const movieID = 12;
 
-const Movie = () => <div>
-    <Connect query={query(`
+const Movie = () => (
+  <div>
+    <Connect
+      query={query(`
 query movieQuery(${`$movieID: ${movieID}`}){
   movie_3d71: movie(id: movieID)
   movie {
     monkey
   }
   chimp
-}`)} children={({ data }) => {
-    const DATA = data;
-    return <div>
+}`)}
+      children={({ data }) => {
+        const DATA = data;
+        return (
+          <div>
             <h2>{DATA.movie_3d71}</h2>
             <p>{DATA.movie.monkey}</p>
             <p>{DATA.chimp}</p>
-          </div>;
-  }} />
-  </div>;
+          </div>
+        );
+      }}
+    />
+  </div>
+);
 ```
+
+</details>
 
 ## Directives
 
 You can add directives just like any other argument. You just have to make sure to use '@' as the first character in a template string or string literal.
 
-```jsx
-import {Connect, query} from 'urql'
-import { createQuery } from 'blade.macro' // if you are using as a babel macro
+<details>
+<summary>
+<b>
+Code Example
+</b>
+</summary>
 
-const movieQuery = createQuery()
+Before:
+
+```jsx
+import { Connect, query } from 'urql';
+import { createQuery } from 'blade.macro'; // if you are using as a babel macro
+
+const movieQuery = createQuery();
 const Movie = () => (
   <div>
     <Connect
       query={query(movieQuery)}
-      children={({data}) => {
-        const DATA = movieQuery(data)
-        const film = DATA.movie('limit: 5')
-        const nestedQuery = film.schedule('@sort', 'id: 23', '@ping') // like this
+      children={({ data }) => {
+        const DATA = movieQuery(data);
+        const film = DATA.movie('limit: 5');
+        const nestedQuery = film.schedule('@sort', 'id: 23', '@ping'); // like this
         return (
           <div>
             <Films data={film.titles} />
             <Schedule data={nestedQuery.data} />
           </div>
-        )
+        );
       }}
     />
   </div>
-)
+);
+```
 
-      ↓ ↓ ↓ ↓ ↓ ↓
+After:
 
+```jsx
 import { Connect, query } from 'urql';
 
-const Movie = () => <div>
-    <Connect query={query(`
+const Movie = () => (
+  <div>
+    <Connect
+      query={query(`
 query movieQuery{
   movie_27f6: movie(limit: 5) {
     schedule_1c35: schedule(id: 23) @sort @ping {
@@ -442,17 +551,24 @@ query movieQuery{
     }
     titles
   }
-}`)} children={({ data }) => {
-    const DATA = data;
-    const film = DATA.movie_27f6;
-    const nestedQuery = film.schedule_1c35;
-    return <div>
+}`)}
+      children={({ data }) => {
+        const DATA = data;
+        const film = DATA.movie_27f6;
+        const nestedQuery = film.schedule_1c35;
+        return (
+          <div>
             <Films data={film.titles} />
             <Schedule data={nestedQuery.data} />
-          </div>;
-  }} />
-  </div>;
+          </div>
+        );
+      }}
+    />
+  </div>
+);
 ```
+
+</details>
 
 ## Mutations
 

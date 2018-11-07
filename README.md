@@ -6,7 +6,7 @@
 
 Check **[our new Docs site](https://babel-blade.netlify.com/)** or view the youtube walkthrough for an explainer!
 
-[![babel blade walkthrough on youtube](https://user-images.githubusercontent.com/6764957/42730215-f92fc024-87bc-11e8-9929-c614710920ee.png)](https://www.youtube.com/watch?v=z9wKcRjNqlw)
+[![babel blade walkthrough on youtube](https://user-images.githubusercontent.com/6764957/48116756-ef34a800-e21b-11e8-9d4f-049362c25b23.gif)](https://www.youtube.com/watch?v=z9wKcRjNqlw)
 
 # Seriously check out our ---> **[our new Docs site](https://babel-blade.netlify.com/) <---**
 
