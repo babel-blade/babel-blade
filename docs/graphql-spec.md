@@ -441,25 +441,23 @@ Before:
 import { Connect, query } from 'urql';
 import { createQuery } from 'blade.macro'; // if you are using as a babel macro
 
-const movieID = 12;
-const movieQuery = createQuery(`$movieID: ${movieID}`); // like this
-const Movie = () => (
-  <div>
+const App = ({ movieID }) => {
+  const pageQuery = createQuery(`$movieID: ${movieID}`);
+  return (
     <Connect
-      query={query(movieQuery)}
+      query={query(pageQuery)}
       children={({ data }) => {
-        const DATA = movieQuery(data);
+        let result = pageQuery(data);
+        const stuff = result.movie('id: $movieID');
         return (
-          <div>
-            <h2>{DATA.movie('id: movieID')}</h2>
-            <p>{DATA.movie.monkey}</p>
-            <p>{DATA.chimp}</p>
-          </div>
+          <ul>
+            <div>{stuff.title}</div>
+          </ul>
         );
       }}
     />
-  </div>
-);
+  );
+};
 ```
 
 After:
@@ -467,32 +465,27 @@ After:
 ```jsx
 import { Connect, query } from 'urql';
 
-const movieID = 12;
-
-const Movie = () => (
-  <div>
+const App = ({ movieID }) => {
+  return (
     <Connect
       query={query(`
-query movieQuery(${`$movieID: ${movieID}`}){
-  movie_3d71: movie(id: movieID)
-  movie {
-    monkey
+query pageQuery(${`$movieID: ${movieID}`}){
+  movie_d076: movie(id: $movieID) {
+    title
   }
-  chimp
 }`)}
       children={({ data }) => {
-        const DATA = data;
+        let result = data;
+        const stuff = result.movie_d076;
         return (
-          <div>
-            <h2>{DATA.movie_3d71}</h2>
-            <p>{DATA.movie.monkey}</p>
-            <p>{DATA.chimp}</p>
-          </div>
+          <ul>
+            <div>{stuff.title}</div>
+          </ul>
         );
       }}
     />
-  </div>
-);
+  );
+};
 ```
 
 </details>
