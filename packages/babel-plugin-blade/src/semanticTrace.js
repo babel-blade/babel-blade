@@ -43,7 +43,6 @@ const arrayPrototypeIgnores = [
   'values', // TODO: may want to revisit
 ]
 
-// eslint-disable-next-line
 export function semanticTrace(
   referencePath,
   origin,
@@ -54,6 +53,13 @@ export function semanticTrace(
     ref => ref.parent !== referencePath.parent,
   )
   // console.log('==', {origin, refs, semanticVisitor})
+  conditionalCall(
+    semanticVisitor,
+    referencePath.type,
+    'origin',
+    referencePath,
+    semanticPath,
+  )
   refs.forEach(ref => {
     const [newRef, newSemanticPath, hasHitArrayMethod] = traceRHS(
       ref,
@@ -65,12 +71,12 @@ export function semanticTrace(
   conditionalCall(semanticVisitor, 'default', semanticPath)
 }
 
-function traceLHS(topRef, topSemanticPath, semanticVisitor) {
-  const topPointer = topRef
-  const newTopSemanticPath = [...topSemanticPath]
-  if (topPointer.parentPath.type === 'VariableDeclarator') {
-    const LHS = topPointer.parentPath.get('id')
-    parseObjectPattern(LHS, newTopSemanticPath)
+function traceLHS(ref, semanticPath, semanticVisitor) {
+  const ptr = ref
+  const newSemanticPath = [...semanticPath]
+  if (ptr.parentPath.type === 'VariableDeclarator') {
+    const LHS = ptr.parentPath.get('id')
+    parseObjectPattern(LHS, newSemanticPath)
   }
 
   // hoisted up
@@ -94,16 +100,18 @@ function traceLHS(topRef, topSemanticPath, semanticVisitor) {
   }
 }
 
-function traceRHS(ref, semanticPath, topSemanticVisitor) {
-  let topPointer = ref
-  const newTopSemanticPath = [...semanticPath]
+function traceRHS(ref, semanticPath, semanticVisitor) {
+  let ptr = ref
+  const newSemanticPath = [...semanticPath]
   let hasHitArrayMethod = false
 
-  while (isValidRHSParent(topPointer)) {
-    topPointer = topPointer.parentPath
-    workOnRHSParent(topPointer, newTopSemanticPath, topSemanticVisitor)
+  while (isValidRHSParent(ptr)) {
+    ptr = ptr.parentPath
+    if (ptr.get('property').type !== 'NumericLiteral')
+      // skip number acccess
+      workOnRHSParent(ptr, newSemanticPath, semanticVisitor)
   }
-  return [topPointer, newTopSemanticPath, hasHitArrayMethod]
+  return [ptr, newSemanticPath, hasHitArrayMethod]
 
   // hoisted up
   function isValidRHSParent(ptr) {
@@ -125,32 +133,60 @@ function traceRHS(ref, semanticPath, topSemanticVisitor) {
           arrayPrototypeEnables[newPath] &&
           isValidArrayPrototypeInternal(ptr)
         ) {
-          const internalFunctionIndex = arrayPrototypeEnables[newPath]
+          const internalFunctionIndex = arrayPrototypeEnables[newPath] // get our hardcoded index of supported array methods
           const internalFunction = ptr.parentPath.get('arguments')[0] // arrow fn
           const paramRef = internalFunction.get('params')[
             internalFunctionIndex - 1
           ] // 1-indexed param just to make it null checkable
-          semanticTrace(
-            paramRef,
-            paramRef.get('name').node,
-            semanticVisitor,
-            newSemanticPath,
-          )
+          const newblade = paramRef.get('name').node // new blade sits inside the internal function
+          if (!newblade && paramRef.type === 'ObjectPattern') {
+            // destructuring!
+            // *******this is new*******
+            parseObjectPattern(paramRef, newSemanticPath)
+            // hoisted up
+            function parseObjectPattern(ref, semanticPath) {
+              /* --- we do conCall but the semanticVisitor should ideally perform no actions apart from rename  */
+              conditionalCall(
+                semanticVisitor,
+                ref.type,
+                'LHS',
+                ref,
+                semanticPath,
+              )
+              /* --- we do conCall but should have no actions performed on it  */
+              if (ref.type === 'ObjectPattern') {
+                const properties = ref.get('properties')
+                properties.forEach(property => {
+                  const newSemanticPath = [...semanticPath]
+                  const key = property.get('key')
+                  newSemanticPath.push([key.node.name, property])
+                  const value = property.get('value')
+                  parseObjectPattern(value, newSemanticPath)
+                })
+              } else if (ref.type === 'Identifier') {
+                const idname = ref.get('name')
+                semanticTrace(ref, idname.node, semanticVisitor, semanticPath)
+              }
+            }
+            // *******this is new*******
+          } else {
+            // kick off the traversal inside the internal function
+            semanticTrace(paramRef, newblade, semanticVisitor, newSemanticPath)
+          }
         }
       } else {
         newSemanticPath.push([newPath, ptr])
-        //        const parent = ptr.parentPath
-        //        conditionalCall(semanticVisitor, parent.type, 'RHS', parent, newSemanticPath)
         conditionalCall(semanticVisitor, ptr.type, 'RHS', ptr, newSemanticPath)
       }
     }
 
     // will be hoisting up
-    function isValidArrayPrototypeInternal(myptr) {
-      const isValidParent = myptr.parentPath.type === 'CallExpression'
-      // swyx: TODO: we'll probably have to support normal functions here too
-      const isArrowChild =
-        myptr.parentPath.get('arguments')[0].type === 'ArrowFunctionExpression'
+    function isValidArrayPrototypeInternal(ptr) {
+      const isValidParent = ptr.parentPath.type === 'CallExpression'
+      const isArrowChild = [
+        'ArrowFunctionExpression',
+        'FunctionExpression',
+      ].includes(ptr.parentPath.get('arguments')[0].type)
       return isValidParent && isArrowChild
     }
   }

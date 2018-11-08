@@ -9,7 +9,7 @@ title: What is Babel-Blade?
 
 The quickest, zero-install way to try it out is on either:
 
-- [astexplorer](https://astexplorer.net/#/gist/01983f61e310f1eaf6b12a221556a937/c26b3ea290af98618320454593747ddfeb40a2bb)
+- [astexplorer](https://astexplorer.net/#/gist/01983f61e310f1eaf6b12a221556a937/b5d86dd28cd3e76390903bd514285af22251c184)
 - or the [Babel REPL](https://babeljs.io/repl#?babili=false&browsers=&build=&builtIns=false&spec=false&loose=false&code_lz=JYWwDg9gTgLgBAbzgYQgOzQUwMYwDRwCOArplAJ5wC-cAZlBCHAOTFSEA2zA3AFC_Z0AZ3ggIAN2CYAiqQpwAvHGxRMAQxgy55ABQBKPoLQi4AWQlTFcHQmAATKnsUA-a7zhwAPHeDjn7jy9UDBwYAMCibQUEEjJdMUktOL0qcMDsAAtgDjtVNGibODsNNWonBVcENIijEwARAEEAFQarBKlZOJ1imDU9avTheAQYYBgOTAI1XGghGiVGloA6dswdAAN7AC44ABJbB3X-iIjVGDY0NxOT719_a-vPDIAmZxGxiapPAHoX-4eIghpjBZis1GAdMDoC44FCoEs0GoQJgUgMIj8fH40XADAMqKkIt9_hi7rwDEA&debug=false&forceAllTransforms=false&shippedProposals=false&circleciRepo=&evaluate=false&fileSize=false&timeTravel=false&sourceType=module&lineWrap=true&presets=&prettier=true&targets=&version=6.26.0&envVersion=) (go to Plugins on the bottom left, and add `babel-plugin-blade` to get it working)
 
 If you like it, head over to our **Getting Started** docs to see how to install the babel plugin in your app.

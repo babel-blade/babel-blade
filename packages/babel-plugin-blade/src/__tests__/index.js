@@ -25,6 +25,9 @@ pluginTester({
   babelOptions: {filename: __filename},
   tests: {
     'basic test of functionality': fixture('basic'),
+    'basic array map works': fixture('arraymap1'),
+    'array map destructuring arrow function works': fixture('arraymap2'),
+    'array map destructuring normal function works': fixture('arraymap3'),
     'assignments and aliases work': fixture('assignment'),
     'overlapping assignments work': fixture('assignment-overlapping'),
     'destructuring work': fixture('destructuring'),

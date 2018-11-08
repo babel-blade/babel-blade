@@ -5,8 +5,8 @@ const App = () => (
   <Connect
     query={query(pageQuery)}
     children={({data}) => {
-      let result = pageQuery(data)
-      let actors = result.movie
+      const result = pageQuery(data)
+      const actors = result.movie
       return (
         <ul>
           <Movie data={result.movie.title} />

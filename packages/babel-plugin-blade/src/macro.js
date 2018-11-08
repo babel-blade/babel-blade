@@ -1,33 +1,12 @@
-const { createMacro, MacroError } = require('babel-plugin-macros');
-// const {getReplacement} = require('./helpers')
-const { handleCreateRazor } = require('./index');
+const {createMacro} = require('babel-plugin-macros')
+const {handleCreateRazor} = require('./index')
 
-module.exports = createMacro(bladeMacros);
+module.exports = createMacro(bladeMacros)
 
-function bladeMacros({ references, state, babel: { types: t } }) {
-  const {
-    JSXMacro = [],
-    default: defaultImport = [],
-    createQuery,
-    createFragment,
-  } = references;
+function bladeMacros({references, babel: {types: t}}) {
+  const {createQuery, createFragment} = references
 
-  createQuery &&
-    createQuery.forEach(referencePath => handleCreateRazor(referencePath, t));
-  createFragment &&
-    createFragment.forEach(referencePath =>
-      handleCreateRazor(referencePath, t),
-    );
+  ;[...createFragment, ...createQuery].forEach(referencePath =>
+    handleCreateRazor(referencePath, t),
+  )
 }
-
-// module.exports = createMacro(bladeMacros);
-
-// function bladeMacros({ references, state, babel: { types: t } }) {
-// 	Object.keys(references).forEach(referenceKey => {
-// 		if (referenceKey === 'createQuery' || referenceKey === 'createFragment') {
-// 			references[referenceKey].forEach(referencePath => {
-// 				handleCreateRazor(referencePath, t);
-// 			});
-// 		} else throw new MacroError('invalid require?');
-// 	});
-// }

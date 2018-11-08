@@ -5,7 +5,7 @@ dist
 .opt-out
 *.log
 parceldemo
-
+.netlify
 package-lock.json
 yarn.lock
 

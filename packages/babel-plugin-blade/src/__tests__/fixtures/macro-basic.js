@@ -5,7 +5,7 @@ const movieQuery = createQuery('$id: id')
 const Movie = ({id, onClose}) => (
   <div>
     <Connect
-      query={query(movieQuery, {id: id})}
+      query={query(movieQuery, {id})}
       children={({data}) => {
         const DATA = movieQuery(data)
         return (

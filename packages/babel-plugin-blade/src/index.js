@@ -58,6 +58,12 @@ const {semanticTrace} = require('./semanticTrace')
  * - const var7 = DATA.v3({ foo: 3, bar: 4}).var8
  * - DATA.v3.var8 // no assignment!
  *
+ * Array methods
+ * - const var2 = DATA.v3.var3[0].foo
+ * - DATA.foo.map(bar => bar.baz)
+ * - DATA.foo.map(({bar}) => bar.baz)
+ * - DATA.foo.map(function ({bar}) {bar.baz})
+ *
  **/
 
 /* eslint-disable complexity */
@@ -153,9 +159,6 @@ export function handleCreateRazor(path, t) {
                            currentRazor: [...currentRazor._children],
                            razorData: [...razorData._children],
                           })*/
-          //if (currentRazor._args && aliasPath) aliasPath.parentPath.replaceWith(aliasPath)
-          //if (currentRazor._alias && aliasPath) aliasPath.node.property.name = currentRazor._alias
-
           if (currentRazor._args && aliasPath) {
             aliasReplaceQueue.set(aliasPath, currentRazor)
           }
@@ -167,20 +170,20 @@ export function handleCreateRazor(path, t) {
         const semanticVisitor = {
           CallExpression(...args) {
             // const [hand, ref, semPath, ...rest] = args
-            const [_, ref] = args
+            const [, ref] = args
             const callee = ref.get('callee')
             // console.log('CallExpression', hand, semPath, ref,callee)
             ref.replaceWith(callee)
           },
           Identifier(...args) {
             // const [hand, ref, semPath, ...rest] = args
-            const [hand, _, semPath] = args
+            const [hand, , semPath] = args
             // console.log("Identifier", hand, semPath, ref);
             if (hand === 'origin') idempotentAddToRazorData(semPath)
           },
           MemberExpression(...topargs) {
             // const [hand, ref, semPath, ...rest] = topargs
-            const [_1, _2, semPath] = topargs
+            const [, , semPath] = topargs
             // console.log('MemberExpression', hand, semPath, ref)
             idempotentAddToRazorData(semPath)
           },
@@ -188,12 +191,6 @@ export function handleCreateRazor(path, t) {
           default(...args){
             console.log('[debugging callback]', ...args)
           },
-          VariableDeclarator(...args){
-            console.log('VariableDeclarator', ...args)
-          },
-          ArrowFunctionExpression(...args){
-            console.log('ArrowFunctionExpression', ...args)
-          }
           */
         }
         // go through all razors

@@ -4,8 +4,8 @@ import {createQuery, createFragment} from 'blade.macro'
 // MovieComponent.js
 const movieFragment = createFragment('Movie')
 const Movie = ({data}) => {
-  let result = movieFragment(data)
-  let movie = result.movie
+  const result = movieFragment(data)
+  const movie = result.movie
   return (
     <div className="movie">
       {loaded === false ? (
@@ -30,7 +30,7 @@ const App = () => (
   <Connect
     query={query(pageQuery)}
     children={({loaded, data}) => {
-      let result = pageQuery(data)
+      const result = pageQuery(data)
       // rendering Movie while adding
       // `Movie.fragment` into the query.
       // (could be automatic in future)

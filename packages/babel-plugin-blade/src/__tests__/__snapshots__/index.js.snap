@@ -1,5 +1,101 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`babel-blade array map destructuring arrow function works: array map destructuring arrow function works 1`] = `
+
+import { Connect, query } from 'urql';
+
+const movieQuery = createQuery();
+const Movie = ({ id, onClose }) => (
+  <div>
+    <Connect
+      query={query(movieQuery)}
+      children={({ data }) => {
+        const DATA = movieQuery(data);
+        const { actors } = DATA.movie;
+        return (
+          <ul>
+            {actors.map(({ name }) => (
+              <li>{name}</li>
+            ))}
+          </ul>
+        );
+      }}
+    />
+  </div>
+);
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+import { Connect, query } from 'urql';
+
+const Movie = ({ id, onClose }) => <div>
+    <Connect query={query(\`
+query movieQuery{
+  movie {
+    actors {
+      name
+    }
+  }
+}\`)} children={({ data }) => {
+    const DATA = data;
+    const { actors } = DATA.movie;
+    return <ul>
+            {actors.map(({ name }) => <li>{name}</li>)}
+          </ul>;
+  }} />
+  </div>;
+
+`;
+
+exports[`babel-blade array map destructuring normal function works: array map destructuring normal function works 1`] = `
+
+import { Connect, query } from 'urql';
+
+const movieQuery = createQuery();
+const Movie = ({ id, onClose }) => (
+  <div>
+    <Connect
+      query={query(movieQuery)}
+      children={({ data }) => {
+        const DATA = movieQuery(data);
+        const { actors } = DATA.movie;
+        return (
+          <ul>
+            {actors.map(function({ name }) {
+              return <li>{name}</li>;
+            })}
+          </ul>
+        );
+      }}
+    />
+  </div>
+);
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+import { Connect, query } from 'urql';
+
+const Movie = ({ id, onClose }) => <div>
+    <Connect query={query(\`
+query movieQuery{
+  movie {
+    actors {
+      name
+    }
+  }
+}\`)} children={({ data }) => {
+    const DATA = data;
+    const { actors } = DATA.movie;
+    return <ul>
+            {actors.map(function ({ name }) {
+        return <li>{name}</li>;
+      })}
+          </ul>;
+  }} />
+  </div>;
+
+`;
+
 exports[`babel-blade assignments and aliases work: assignments and aliases work 1`] = `
 
 import {Connect, query} from 'urql'
@@ -47,6 +143,53 @@ query movieQuery($id: id){
             <p>{film.monkey}</p>
             <p>{DATA.chimp}</p>
           </div>;
+  }} />
+  </div>;
+
+`;
+
+exports[`babel-blade basic array map works: basic array map works 1`] = `
+
+import { Connect, query } from 'urql';
+
+const movieQuery = createQuery();
+const Movie = ({ id, onClose }) => (
+  <div>
+    <Connect
+      query={query(movieQuery)}
+      children={({ data }) => {
+        const DATA = movieQuery(data);
+        const { actors } = DATA.movie;
+        return (
+          <ul>
+            {actors.map(actor => (
+              <li>{actor.name}</li>
+            ))}
+          </ul>
+        );
+      }}
+    />
+  </div>
+);
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+import { Connect, query } from 'urql';
+
+const Movie = ({ id, onClose }) => <div>
+    <Connect query={query(\`
+query movieQuery{
+  movie {
+    actors {
+      name
+    }
+  }
+}\`)} children={({ data }) => {
+    const DATA = data;
+    const { actors } = DATA.movie;
+    return <ul>
+            {actors.map(actor => <li>{actor.name}</li>)}
+          </ul>;
   }} />
   </div>;
 
@@ -448,29 +591,29 @@ query pageQuery{
 
 exports[`babel-blade overlapping assignments work: overlapping assignments work 1`] = `
 
-import { Connect, query } from "urql";
+import {Connect, query} from 'urql'
 // import {createQuery} from 'blade.macro'
-const pageQuery = createQuery();
+const pageQuery = createQuery()
 const App = () => (
   <Connect
     query={query(pageQuery)}
-    children={({ data }) => {
-      let result = pageQuery(data);
-      let actors = result.movie;
+    children={({data}) => {
+      let result = pageQuery(data)
+      let actors = result.movie
       return (
         <ul>
           <Movie data={result.movie.title} />
           <Actor data={actors.supporting} />
           <Actor data={actors.leading} />
         </ul>
-      );
+      )
     }}
   />
-);
+)
 
       ↓ ↓ ↓ ↓ ↓ ↓
 
-import { Connect, query } from "urql";
+import { Connect, query } from 'urql';
 // import {createQuery} from 'blade.macro'
 
 const App = () => <Connect query={query(\`

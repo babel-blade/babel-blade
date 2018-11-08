@@ -1,69 +1,70 @@
 {
-	"name": "babel-plugin-blade",
-	"version": "0.1.4",
-	"description": "generate inline graphql",
-	"main": "dist/index.js",
-	"engines": {
-		"node": "> 4",
-		"npm": "> 3"
-	},
-	"scripts": {
-		"add-contributor": "kcd-scripts contributors add",
-		"build": "kcd-scripts build",
-		"lint": "kcd-scripts lint",
-		"test": "kcd-scripts test",
-		"test:update": "kcd-scripts test --updateSnapshot",
-		"validate": "kcd-scripts validate",
-		"precommit": "kcd-scripts precommit"
-	},
-	"files": [
-		"dist",
-		"macro.js"
-	],
-	"keywords": [
-		"babel-plugin-macros",
-		"babel-plugin",
-		"babel",
-		"code generation"
-	],
-	"author": "swyx <swyx@dontemail.me> (http://twitter.com/swyx)",
-	"license": "MIT",
-	"dependencies": {
-		"@babel/plugin-syntax-jsx": "^7.0.0-beta.52",
-		"babel-plugin-macros": "^2.2.1",
-		"babel-plugin-syntax-jsx": "^6.18.0",
-		"require-from-string": "^2.0.2",
-		"semver": "^5.5.0"
-	},
-	"devDependencies": {
-		"ast-pretty-print": "^2.0.1",
-		"babel-plugin-tester": "^5.0.0",
-		"kcd-scripts": "^0.39.0"
-	},
-	"eslintConfig": {
-		"extends": "./node_modules/kcd-scripts/eslint.js"
-	},
-	"eslintIgnore": [
-		"node_modules",
-		"coverage",
-		"dist"
-	],
-	"jest": {
-		"testEnvironment": "node",
-		"testPathIgnorePatterns": [
-			"/node_modules/",
-			"/fixtures/"
-		]
-	},
-	"babel": {
-		"presets": "kcd-scripts/babel"
-	},
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/sw-yx/babel-blade.git"
-	},
-	"bugs": {
-		"url": "https://github.com/sw-yx/babel-blade/issues"
-	},
-	"homepage": "https://github.com/sw-yx/babel-blade#readme"
+  "name": "babel-plugin-blade",
+  "version": "0.1.4",
+  "description": "generate inline graphql",
+  "main": "dist/index.js",
+  "engines": {
+    "node": "> 4",
+    "npm": "> 3"
+  },
+  "scripts": {
+    "add-contributor": "kcd-scripts contributors add",
+    "build": "kcd-scripts build",
+    "lint": "kcd-scripts lint",
+    "test": "kcd-scripts test",
+    "test:update": "kcd-scripts test --updateSnapshot",
+    "validate": "kcd-scripts validate",
+    "precommit": "kcd-scripts precommit"
+  },
+  "files": [
+    "dist",
+    "macro.js"
+  ],
+  "keywords": [
+    "babel-plugin-macros",
+    "babel-plugin",
+    "babel",
+    "code generation"
+  ],
+  "author": "swyx <swyx@dontemail.me> (http://twitter.com/swyx)",
+  "license": "MIT",
+  "dependencies": {
+    "@babel/plugin-syntax-jsx": "^7.0.0-beta.52",
+    "babel-plugin-macros": "^2.2.1",
+    "babel-plugin-syntax-jsx": "^6.18.0",
+    "require-from-string": "^2.0.2",
+    "semver": "^5.5.0"
+  },
+  "devDependencies": {
+    "ast-pretty-print": "^2.0.1",
+    "babel-plugin-tester": "^5.0.0",
+    "kcd-scripts": "^0.39.0"
+  },
+  "eslintConfig": {
+    "extends": "./node_modules/kcd-scripts/eslint.js"
+  },
+  "eslintIgnore": [
+    "node_modules",
+    "coverage",
+    "__tests__",
+    "dist"
+  ],
+  "jest": {
+    "testEnvironment": "node",
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "/fixtures/"
+    ]
+  },
+  "babel": {
+    "presets": "kcd-scripts/babel"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sw-yx/babel-blade.git"
+  },
+  "bugs": {
+    "url": "https://github.com/sw-yx/babel-blade/issues"
+  },
+  "homepage": "https://github.com/sw-yx/babel-blade#readme"
 }
