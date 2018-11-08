@@ -7,7 +7,7 @@ title: As a babel macro
 
 ## Installation
 
-This module is distributed via [npm][npm] which is bundled with [node][node] and
+This module is distributed via npm which is bundled with node and
 should be installed as one of your project's `devDependencies`:
 
 ```
@@ -15,7 +15,7 @@ npm install --save-dev blade.macro
 ```
 
 You'll also need to install and configure
-[`babel-plugin-macros`][babel-plugin-macros] if you haven't already.
+[`babel-plugin-macros`][https://www.npmjs.com/package/babel-plugin-macros] if you haven't already.
 
 ## configuring `babel-plugin-macros`
 
