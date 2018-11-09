@@ -9,5 +9,6 @@ parceldemo
 package-lock.json
 yarn.lock
 
+.npmrc
 ## blanking it out for now
 vscode-extension

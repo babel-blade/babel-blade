@@ -34,7 +34,6 @@ const {semanticTrace} = require('./semanticTrace')
  * - inject graphql
  * - `aliasReplaceQueue.forEach` and rename
  *
- *
  * LHS cases to handle:
  * - const var1 = DATA
  * - const { var2 } = DATA

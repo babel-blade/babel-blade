@@ -32,6 +32,41 @@ const Movie = () => (
 );
 ```
 
+## API Note: Exporting queries
+
+As of `v0.1.7` you can now export queries.
+
+Before:
+
+```js
+export const pageQuery = createQuery();
+
+const App = data => {
+  const DATA = pageQuery(data);
+  const movie = DATA.movie;
+};
+```
+
+After:
+
+```js
+export const pageQuery = `
+query pageQuery{
+  movie
+}`;
+
+const App = data => {
+  const DATA = data;
+  const movie = DATA.movie;
+};
+```
+
+So you can run your queries (or fragments!) elsewhere!
+
+[Thanks to Jonas](https://github.com/sw-yx/babel-blade/issues/18) for the suggestion!
+
+## API Note: Array methods
+
 <details>
 <summary>
 <em>
