@@ -36,7 +36,7 @@ Ken Wheeler, probably</div>
 > "Super duper"
 
 <div align="right">
-Ken C. Dodds, obviously</div>
+Kent C. Dodds, obviously</div>
 
 ---
 

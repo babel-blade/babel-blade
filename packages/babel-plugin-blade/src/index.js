@@ -98,8 +98,14 @@ export function handleCreateRazor(path, t) {
     // traverse scope for identifier references
     const refs = path.scope.bindings[identifier].referencePaths
     // clear the reference
-    path.findParent(ppath => ppath.isVariableDeclaration()).remove()
-    const aliasReplaceQueue = new Map() // we will defer alias replacement til all semantic traversals are done
+    const razorParentPath = path.findParent(ppath =>
+      ppath.isVariableDeclaration(),
+    )
+    if (!razorParentPath.parentPath.isExportNamedDeclaration()) {
+      razorParentPath.remove() // remove it unless its exported :)
+    }
+    // create the queue - we will defer alias replacement til all semantic traversals are done
+    const aliasReplaceQueue = new Map()
     if (refs.length > 0) {
       let razorID = null
       if (isCreateFragment(path) && !queryArgs[0])
@@ -224,6 +230,15 @@ export function handleCreateRazor(path, t) {
             }),
           )
 
+          if (razor.isExportNamedDeclaration()) {
+            // allow 1 export
+            const decs = razor.get('declaration').get('declarations')
+            if (decs.length > 1)
+              throw new Error(
+                'detected multiple export declarations in one line, you are restricted to 1 for now',
+              )
+            razor = decs[0].get('init') // mutate razor to get ready for replacement
+          }
           if (razorData._type === 'fragment') {
             razor.replaceWith(
               t.arrowFunctionExpression(
@@ -231,7 +246,9 @@ export function handleCreateRazor(path, t) {
                 graphqlOutput,
               ),
             )
-          } else razor.replaceWith(graphqlOutput)
+          } else {
+            razor.replaceWith(graphqlOutput)
+          }
         }
       })
     }

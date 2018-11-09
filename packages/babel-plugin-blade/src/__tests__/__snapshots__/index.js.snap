@@ -2,27 +2,21 @@
 
 exports[`babel-blade array map destructuring arrow function works: array map destructuring arrow function works 1`] = `
 
-import { Connect, query } from 'urql';
+import {Connect, query} from 'urql'
 
-const movieQuery = createQuery();
-const Movie = ({ id, onClose }) => (
+const movieQuery = createQuery()
+const Movie = ({id, onClose}) => (
   <div>
     <Connect
       query={query(movieQuery)}
-      children={({ data }) => {
-        const DATA = movieQuery(data);
-        const { actors } = DATA.movie;
-        return (
-          <ul>
-            {actors.map(({ name }) => (
-              <li>{name}</li>
-            ))}
-          </ul>
-        );
+      children={({data}) => {
+        const DATA = movieQuery(data)
+        const {actors} = DATA.movie
+        return <ul>{actors.map(({name}) => <li>{name}</li>)}</ul>
       }}
     />
   </div>
-);
+)
 
       ↓ ↓ ↓ ↓ ↓ ↓
 
@@ -39,9 +33,7 @@ query movieQuery{
 }\`)} children={({ data }) => {
     const DATA = data;
     const { actors } = DATA.movie;
-    return <ul>
-            {actors.map(({ name }) => <li>{name}</li>)}
-          </ul>;
+    return <ul>{actors.map(({ name }) => <li>{name}</li>)}</ul>;
   }} />
   </div>;
 
@@ -49,27 +41,27 @@ query movieQuery{
 
 exports[`babel-blade array map destructuring normal function works: array map destructuring normal function works 1`] = `
 
-import { Connect, query } from 'urql';
+import {Connect, query} from 'urql'
 
-const movieQuery = createQuery();
-const Movie = ({ id, onClose }) => (
+const movieQuery = createQuery()
+const Movie = ({id, onClose}) => (
   <div>
     <Connect
       query={query(movieQuery)}
-      children={({ data }) => {
-        const DATA = movieQuery(data);
-        const { actors } = DATA.movie;
+      children={({data}) => {
+        const DATA = movieQuery(data)
+        const {actors} = DATA.movie
         return (
           <ul>
-            {actors.map(function({ name }) {
-              return <li>{name}</li>;
+            {actors.map(({name}) => {
+              return <li>{name}</li>
             })}
           </ul>
-        );
+        )
       }}
     />
   </div>
-);
+)
 
       ↓ ↓ ↓ ↓ ↓ ↓
 
@@ -87,7 +79,7 @@ query movieQuery{
     const DATA = data;
     const { actors } = DATA.movie;
     return <ul>
-            {actors.map(function ({ name }) {
+            {actors.map(({ name }) => {
         return <li>{name}</li>;
       })}
           </ul>;
@@ -104,7 +96,7 @@ const movieQuery = createQuery('$id: id')
 const Movie = ({id, onClose}) => (
   <div>
     <Connect
-      query={query(movieQuery, {id: id})} // watch the query ABOVE!
+      query={query(movieQuery, {id})} // watch the query ABOVE!
       children={({data}) => {
         const DATA = movieQuery(data)
         const core = DATA
@@ -129,15 +121,15 @@ const Movie = ({ id, onClose }) => <div>
     <Connect query={query(\`
 query movieQuery($id: id){
   gorilla
-  movie_6caf: movie(count: id) {
+  movie_90ce: movie(count: id) {
     monkey
   }
   chimp
-}\`, { id: id })} // watch the query ABOVE!
+}\`, { id })} // watch the query ABOVE!
   children={({ data }) => {
     const DATA = data;
     const core = DATA;
-    const film = DATA.movie_6caf;
+    const film = DATA.movie_90ce;
     return <div>
             <h2>{core.gorilla}</h2>
             <p>{film.monkey}</p>
@@ -150,27 +142,21 @@ query movieQuery($id: id){
 
 exports[`babel-blade basic array map works: basic array map works 1`] = `
 
-import { Connect, query } from 'urql';
+import {Connect, query} from 'urql'
 
-const movieQuery = createQuery();
-const Movie = ({ id, onClose }) => (
+const movieQuery = createQuery()
+const Movie = ({id, onClose}) => (
   <div>
     <Connect
       query={query(movieQuery)}
-      children={({ data }) => {
-        const DATA = movieQuery(data);
-        const { actors } = DATA.movie;
-        return (
-          <ul>
-            {actors.map(actor => (
-              <li>{actor.name}</li>
-            ))}
-          </ul>
-        );
+      children={({data}) => {
+        const DATA = movieQuery(data)
+        const {actors} = DATA.movie
+        return <ul>{actors.map(actor => <li>{actor.name}</li>)}</ul>
       }}
     />
   </div>
-);
+)
 
       ↓ ↓ ↓ ↓ ↓ ↓
 
@@ -187,9 +173,7 @@ query movieQuery{
 }\`)} children={({ data }) => {
     const DATA = data;
     const { actors } = DATA.movie;
-    return <ul>
-            {actors.map(actor => <li>{actor.name}</li>)}
-          </ul>;
+    return <ul>{actors.map(actor => <li>{actor.name}</li>)}</ul>;
   }} />
   </div>;
 
@@ -203,7 +187,7 @@ const movieQuery = createQuery('$id: id')
 const Movie = ({id, onClose}) => (
   <div>
     <Connect
-      query={query(movieQuery, {id: id})}
+      query={query(movieQuery, {id})}
       children={({data}) => {
         const DATA = movieQuery(data)
         return (
@@ -230,7 +214,7 @@ query movieQuery($id: id){
     monkey
   }
   chimp
-}\`, { id: id })} children={({ data }) => {
+}\`, { id })} children={({ data }) => {
     const DATA = data;
     return <div>
             <h2>{DATA.movie.gorilla}</h2>
@@ -250,7 +234,7 @@ const movieQuery = createQuery('$id: id')
 const Movie = ({id, onClose}) => (
   <div>
     <Connect
-      query={query(movieQuery, {id: id})}
+      query={query(movieQuery, {id})}
       children={({data}) => {
         const DATA = movieQuery(data)
         const {actors} = DATA.movie('id: 234').credits
@@ -272,7 +256,7 @@ import { Connect, query } from 'urql';
 const Movie = ({ id, onClose }) => <div>
     <Connect query={query(\`
 query movieQuery($id: id){
-  movie_0f00: movie(id: 234) {
+  movie_7132: movie(id: 234) {
     credits {
       actors {
         leading
@@ -280,9 +264,9 @@ query movieQuery($id: id){
       }
     }
   }
-}\`, { id: id })} children={({ data }) => {
+}\`, { id })} children={({ data }) => {
     const DATA = data;
-    const { actors } = DATA.movie_0f00.credits;
+    const { actors } = DATA.movie_7132.credits;
     return <div>
             <h2>{actors.leading}</h2>
             <h2>{actors.supporting}</h2>
@@ -492,6 +476,29 @@ query movieQuery(\${\`$movieID: \${movieID}\`}){
 
 `;
 
+exports[`babel-blade exportable query: exportable query 1`] = `
+
+export const pageQuery = createQuery()
+
+const App = data => {
+  const DATA = pageQuery(data)
+  const movie = DATA.movie
+}
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+export const pageQuery = \`
+query pageQuery{
+  movie
+}\`;
+
+const App = data => {
+  const DATA = data;
+  const movie = DATA.movie;
+};
+
+`;
+
 exports[`babel-blade injection of fragments: injection of fragments 1`] = `
 
 /* eslint-disable */
@@ -598,8 +605,8 @@ const App = () => (
   <Connect
     query={query(pageQuery)}
     children={({data}) => {
-      let result = pageQuery(data)
-      let actors = result.movie
+      const result = pageQuery(data)
+      const actors = result.movie
       return (
         <ul>
           <Movie data={result.movie.title} />
@@ -624,8 +631,8 @@ query pageQuery{
     title
   }
 }\`)} children={({ data }) => {
-  let result = data;
-  let actors = result.movie;
+  const result = data;
+  const actors = result.movie;
   return <ul>
           <Movie data={result.movie.title} />
           <Actor data={actors.supporting} />

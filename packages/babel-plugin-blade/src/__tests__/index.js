@@ -25,6 +25,7 @@ pluginTester({
   babelOptions: {filename: __filename},
   tests: {
     'basic test of functionality': fixture('basic'),
+    'exportable query': fixture('exportconstquery'),
     'basic array map works': fixture('arraymap1'),
     'array map destructuring arrow function works': fixture('arraymap2'),
     'array map destructuring normal function works': fixture('arraymap3'),
