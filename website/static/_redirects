@@ -1,4 +1,4 @@
 # Redirects https://www.netlify.com/docs/redirects/
 /astexplorer              /astexplorer-basic    200
-/astexplorer-basic              https://astexplorer.net/#/gist/01983f61e310f1eaf6b12a221556a937/c5fad39a809e238657ebaa002c5cdba7b2e5bf1e    200
-/astexplorer-fragment           https://astexplorer.net/#/gist/01983f61e310f1eaf6b12a221556a937/f53fd8fd214daa57b1180e2c8a9a43806e088a94    200
+/astexplorer-basic              https://astexplorer.net/#/gist/01983f61e310f1eaf6b12a221556a937/c5fad39a809e238657ebaa002c5cdba7b2e5bf1e    307
+/astexplorer-fragment           https://astexplorer.net/#/gist/01983f61e310f1eaf6b12a221556a937/f53fd8fd214daa57b1180e2c8a9a43806e088a94    307
