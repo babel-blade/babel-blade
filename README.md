@@ -33,6 +33,11 @@ Have you heard that we have a **[new Docs site](https://babel-blade.netlify.com/
 <div align="right">
 Ken Wheeler, probably</div>
 
+> "Super duper"
+
+<div align="right">
+Ken C. Dodds, obviously</div>
+
 ---
 
 # For developers of plugins/contributors
