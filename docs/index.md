@@ -14,9 +14,11 @@ The quickest, zero-install way to try it out is on either:
 
 If you like it, head over to our **Getting Started** docs to see how to install the babel plugin in your app.
 
-## See 7 minute introductory video
+## See 7 minute introductory videos
 
-[![babel blade walkthrough on youtube](https://user-images.githubusercontent.com/6764957/48116756-ef34a800-e21b-11e8-9d4f-049362c25b23.gif)](https://www.youtube.com/watch?v=z9wKcRjNqlw)
+Here is the old (slightly out of date API) [walkthrough on youtube](https://www.youtube.com/watch?v=z9wKcRjNqlw).
+
+Here is the new 7 minute lightning talk at React Boston with the motivation and context of Babel Blade: [https://youtu.be/30wOsJOluA4?t=497](https://youtu.be/30wOsJOluA4?t=497)
 
 Here's [a longer 25 minute talk at GraphQLNYC](https://youtu.be/7OHXz7vXC0g) going through more of the API and the motivations behind what `babel-blade` is.
 

@@ -4,7 +4,7 @@
 
 `babel-blade` is the collective name for the babel plugin/macro that helps to generate graphql query strings inline and solves [the double declaration problem](https://babel-blade.netlify.com/docs/declarationdeclaration.html).
 
-Check **[our new Docs site](https://babel-blade.netlify.com/)** or view [the youtube walkthrough](https://www.youtube.com/watch?v=z9wKcRjNqlw) for an explainer!
+Check **[our new Docs site](https://babel-blade.netlify.com/)** or view [my 7 minute talk at React Boston](https://youtu.be/30wOsJOluA4?t=497) for an explainer!
 
 [![babel blade walkthrough on youtube](https://user-images.githubusercontent.com/6764957/48116756-ef34a800-e21b-11e8-9d4f-049362c25b23.gif)](https://www.youtube.com/watch?v=z9wKcRjNqlw)
 
@@ -36,7 +36,7 @@ Ken Wheeler, probably</div>
 > "Super duper"
 
 <div align="right">
-Kent C. Dodds, obviously</div>
+<a href="https://github.com/sw-yx/babel-blade/pull/16">Kent C. Dodds, obviously</a></div>
 
 ---
 
