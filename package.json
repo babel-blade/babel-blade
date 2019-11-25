@@ -1,5 +1,12 @@
 {
   "devDependencies": {
-    "lerna": "^2.11.0"
+    "lerna": "^3.19.0"
+  },
+  "scripts": {
+    "bootstrap": "lerna bootstrap",
+    "build": "lerna run build --sort --stream",
+    "lint": "lerna run lint",
+    "test": "npm run build && npm run test:all && npm run lint",
+    "test:all": "lerna run test --stream --parallel"
   }
 }
