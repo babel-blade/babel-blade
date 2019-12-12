@@ -88,11 +88,14 @@ export class RazorData {
       fragments.forEach(frag => {
         TemplateLiteral.addStr('\n\n')
         TemplateLiteral.addLit(frag)
+        // babel is not happy if you don't have strings surrounding the var
+        TemplateLiteral.addStr(' ')
       })
     }
     return zipAccumulators(TemplateLiteral.get())
   }
 }
+
 export class BladeData {
   constructor({name = null, args = [], fragments = [], directives = []}) {
     if (!name) throw new Error('new Blade must have name')

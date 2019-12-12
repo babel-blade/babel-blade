@@ -20,22 +20,34 @@ const Movie = ({id, onClose}) => (
 
       ↓ ↓ ↓ ↓ ↓ ↓
 
-import { Connect, query } from 'urql';
+import { Connect, query } from "urql";
 
-const Movie = ({ id, onClose }) => <div>
-    <Connect query={query(\`
+const Movie = ({ id, onClose }) => (
+  <div>
+    <Connect
+      query={query(\`
 query movieQuery{
   movie {
     actors {
       name
     }
   }
-}\`)} children={({ data }) => {
-    const DATA = data;
-    const { actors } = DATA.movie;
-    return <ul>{actors.map(({ name }) => <li>{name}</li>)}</ul>;
-  }} />
-  </div>;
+}\`)}
+      children={({ data }) => {
+        const DATA = data;
+        const { actors } = DATA.movie;
+        return (
+          <ul>
+            {actors.map(({ name }) => (
+              <li>{name}</li>
+            ))}
+          </ul>
+        );
+      }}
+    />
+  </div>
+);
+
 
 `;
 
@@ -65,26 +77,34 @@ const Movie = ({id, onClose}) => (
 
       ↓ ↓ ↓ ↓ ↓ ↓
 
-import { Connect, query } from 'urql';
+import { Connect, query } from "urql";
 
-const Movie = ({ id, onClose }) => <div>
-    <Connect query={query(\`
+const Movie = ({ id, onClose }) => (
+  <div>
+    <Connect
+      query={query(\`
 query movieQuery{
   movie {
     actors {
       name
     }
   }
-}\`)} children={({ data }) => {
-    const DATA = data;
-    const { actors } = DATA.movie;
-    return <ul>
+}\`)}
+      children={({ data }) => {
+        const DATA = data;
+        const { actors } = DATA.movie;
+        return (
+          <ul>
             {actors.map(({ name }) => {
-        return <li>{name}</li>;
-      })}
-          </ul>;
-  }} />
-  </div>;
+              return <li>{name}</li>;
+            })}
+          </ul>
+        );
+      }}
+    />
+  </div>
+);
+
 
 `;
 
@@ -115,28 +135,40 @@ const Movie = ({id, onClose}) => (
 
       ↓ ↓ ↓ ↓ ↓ ↓
 
-import { Connect, query } from 'urql';
+import { Connect, query } from "urql";
 
-const Movie = ({ id, onClose }) => <div>
-    <Connect query={query(\`
+const Movie = ({ id, onClose }) => (
+  <div>
+    <Connect
+      query={query(
+        \`
 query movieQuery($id: id){
   gorilla
   movie_90ce: movie(count: id) {
     monkey
   }
   chimp
-}\`, { id })} // watch the query ABOVE!
-  children={({ data }) => {
-    const DATA = data;
-    const core = DATA;
-    const film = DATA.movie_90ce;
-    return <div>
+}\`,
+        {
+          id
+        }
+      )} // watch the query ABOVE!
+      children={({ data }) => {
+        const DATA = data;
+        const core = DATA;
+        const film = DATA.movie_90ce;
+        return (
+          <div>
             <h2>{core.gorilla}</h2>
             <p>{film.monkey}</p>
             <p>{DATA.chimp}</p>
-          </div>;
-  }} />
-  </div>;
+          </div>
+        );
+      }}
+    />
+  </div>
+);
+
 
 `;
 
@@ -160,22 +192,34 @@ const Movie = ({id, onClose}) => (
 
       ↓ ↓ ↓ ↓ ↓ ↓
 
-import { Connect, query } from 'urql';
+import { Connect, query } from "urql";
 
-const Movie = ({ id, onClose }) => <div>
-    <Connect query={query(\`
+const Movie = ({ id, onClose }) => (
+  <div>
+    <Connect
+      query={query(\`
 query movieQuery{
   movie {
     actors {
       name
     }
   }
-}\`)} children={({ data }) => {
-    const DATA = data;
-    const { actors } = DATA.movie;
-    return <ul>{actors.map(actor => <li>{actor.name}</li>)}</ul>;
-  }} />
-  </div>;
+}\`)}
+      children={({ data }) => {
+        const DATA = data;
+        const { actors } = DATA.movie;
+        return (
+          <ul>
+            {actors.map(actor => (
+              <li>{actor.name}</li>
+            ))}
+          </ul>
+        );
+      }}
+    />
+  </div>
+);
+
 
 `;
 
@@ -204,25 +248,38 @@ const Movie = ({id, onClose}) => (
 
       ↓ ↓ ↓ ↓ ↓ ↓
 
-import { Connect, query } from 'urql';
+import { Connect, query } from "urql";
 
-const Movie = ({ id, onClose }) => <div>
-    <Connect query={query(\`
+const Movie = ({ id, onClose }) => (
+  <div>
+    <Connect
+      query={query(
+        \`
 query movieQuery($id: id){
   movie {
     gorilla
     monkey
   }
   chimp
-}\`, { id })} children={({ data }) => {
-    const DATA = data;
-    return <div>
+}\`,
+        {
+          id
+        }
+      )}
+      children={({ data }) => {
+        const DATA = data;
+        return (
+          <div>
             <h2>{DATA.movie.gorilla}</h2>
             <p>{DATA.movie.monkey}</p>
             <p>{DATA.chimp}</p>
-          </div>;
-  }} />
-  </div>;
+          </div>
+        );
+      }}
+    />
+  </div>
+);
+
 
 `;
 
@@ -251,10 +308,13 @@ const Movie = ({id, onClose}) => (
 
       ↓ ↓ ↓ ↓ ↓ ↓
 
-import { Connect, query } from 'urql';
+import { Connect, query } from "urql";
 
-const Movie = ({ id, onClose }) => <div>
-    <Connect query={query(\`
+const Movie = ({ id, onClose }) => (
+  <div>
+    <Connect
+      query={query(
+        \`
 query movieQuery($id: id){
   movie_7132: movie(id: 234) {
     credits {
@@ -264,15 +324,25 @@ query movieQuery($id: id){
       }
     }
   }
-}\`, { id })} children={({ data }) => {
-    const DATA = data;
-    const { actors } = DATA.movie_7132.credits;
-    return <div>
+}\`,
+        {
+          id
+        }
+      )}
+      children={({ data }) => {
+        const DATA = data;
+        const { actors } = DATA.movie_7132.credits;
+        return (
+          <div>
             <h2>{actors.leading}</h2>
             <h2>{actors.supporting}</h2>
-          </div>;
-  }} />
-  </div>;
+          </div>
+        );
+      }}
+    />
+  </div>
+);
+
 
 `;
 
@@ -302,10 +372,12 @@ const Movie = () => (
 
       ↓ ↓ ↓ ↓ ↓ ↓
 
-import { Connect, query } from 'urql';
+import { Connect, query } from "urql";
 
-const Movie = () => <div>
-    <Connect query={query(\`
+const Movie = () => (
+  <div>
+    <Connect
+      query={query(\`
 query movieQuery{
   movie_27f6: movie(limit: 5) {
     schedule_2655: schedule(schedule: true) {
@@ -313,16 +385,22 @@ query movieQuery{
     }
     titles
   }
-}\`)} children={({ data }) => {
-    const DATA = data;
-    const film = DATA.movie_27f6;
-    const nestedQuery = film.schedule_2655;
-    return <div>
+}\`)}
+      children={({ data }) => {
+        const DATA = data;
+        const film = DATA.movie_27f6;
+        const nestedQuery = film.schedule_2655;
+        return (
+          <div>
             <Films data={film.titles} />
             <Schedule data={nestedQuery.data} />
-          </div>;
-  }} />
-  </div>;
+          </div>
+        );
+      }}
+    />
+  </div>
+);
+
 
 `;
 
@@ -354,10 +432,12 @@ const Movie = () => (
       ↓ ↓ ↓ ↓ ↓ ↓
 
 /* eslint-disable */
-import { Connect, query } from 'urql';
+import { Connect, query } from "urql";
 
-const Movie = () => <div>
-    <Connect query={query(\`
+const Movie = () => (
+  <div>
+    <Connect
+      query={query(\`
 query movieQuery{
   movie_b3f6: movie(limit: 5) {
     schedule_57cb: schedule(id: 23) @sort @ping {
@@ -365,16 +445,22 @@ query movieQuery{
     }
     titles
   }
-}\`)} children={({ data }) => {
-    const DATA = data;
-    const film = DATA.movie_b3f6;
-    const nestedQuery = film.schedule_57cb;
-    return <div>
+}\`)}
+      children={({ data }) => {
+        const DATA = data;
+        const film = DATA.movie_b3f6;
+        const nestedQuery = film.schedule_57cb;
+        return (
+          <div>
             <Films data={film.titles} />
             <Schedule data={nestedQuery.data} />
-          </div>;
-  }} />
-  </div>;
+          </div>
+        );
+      }}
+    />
+  </div>
+);
+
 
 `;
 
@@ -403,25 +489,33 @@ const Movie = () => (
 
       ↓ ↓ ↓ ↓ ↓ ↓
 
-import { Connect, query } from 'urql';
+import { Connect, query } from "urql";
 
-const Movie = () => <div>
-    <Connect query={query(\`
+const Movie = () => (
+  <div>
+    <Connect
+      query={query(\`
 query movieQuery{
   movie {
     gorilla
     monkey
   }
   chimp
-}\`)} children={({ data }) => {
-    const DATA = data;
-    return <div>
+}\`)}
+      children={({ data }) => {
+        const DATA = data;
+        return (
+          <div>
             <h2>{DATA.movie.gorilla}</h2>
             <p>{DATA.movie.monkey}</p>
             <p>{DATA.chimp}</p>
-          </div>;
-  }} />
-  </div>;
+          </div>
+        );
+      }}
+    />
+  </div>
+);
+
 
 `;
 
@@ -452,27 +546,34 @@ const Movie = () => (
 
       ↓ ↓ ↓ ↓ ↓ ↓
 
-import { Connect, query } from 'urql';
-
+import { Connect, query } from "urql";
 const movieID = 12;
 
-const Movie = () => <div>
-    <Connect query={query(\`
+const Movie = () => (
+  <div>
+    <Connect
+      query={query(\`
 query movieQuery(\${\`$movieID: \${movieID}\`}){
   movie_803c: movie(id: movieID) {
     monkey
   }
   chimp
-}\`)} children={({ data }) => {
-    const DATA = data;
-    const film = DATA.movie_803c;
-    return <div>
+}\`)}
+      children={({ data }) => {
+        const DATA = data;
+        const film = DATA.movie_803c;
+        return (
+          <div>
             <h2>{film}</h2>
             <p>{film.monkey}</p>
             <p>{DATA.chimp}</p>
-          </div>;
-  }} />
-  </div>;
+          </div>
+        );
+      }}
+    />
+  </div>
+);
+
 
 `;
 
@@ -496,6 +597,7 @@ const App = data => {
   const DATA = data;
   const movie = DATA.movie;
 };
+
 
 `;
 
@@ -548,21 +650,25 @@ const App = () => (
       ↓ ↓ ↓ ↓ ↓ ↓
 
 /* eslint-disable */
-import { Connect, query } from 'urql';
-
-// MovieComponent.js
+import { Connect, query } from "urql"; // MovieComponent.js
 
 const Movie = ({ data }) => {
   let result = data;
   let movie = result.movie;
-  return <div className="movie">
-      {loaded === false ? <p>Loading</p> : <div>
+  return (
+    <div className="movie">
+      {loaded === false ? (
+        <p>Loading</p>
+      ) : (
+        <div>
           <h2>{movie.title}</h2>
           <p>{movie.actors.supporting}</p>
           <p>{movie.actors.leading}</p>
           <button onClick={onClose}>Close</button>
-        </div>}
-    </div>;
+        </div>
+      )}
+    </div>
+  );
 };
 
 Movie.fragment = movieFragment => \`
@@ -577,22 +683,30 @@ fragment \${movieFragment} on Movie{
 }\`;
 
 // create a top-level query
-const App = () => <Connect query={query(\`
+const App = () => (
+  <Connect
+    query={query(\`
 query pageQuery{
   movie {
     ...Moviefragment
   }
 }
 
-\`)} children={({ loaded, data }) => {
-  let result = data;
-  // rendering Movie while adding
-  // \`Movie.fragment\` into the query.
-  // (could be automatic in future)
-  return <ul>
+\${Movie.fragment("Moviefragment")} \`)}
+    children={({ loaded, data }) => {
+      let result = data; // rendering Movie while adding
+      // \`Movie.fragment\` into the query.
+      // (could be automatic in future)
+
+      return (
+        <ul>
           <Movie data={result.movie(Movie.fragment)} />
-        </ul>;
-}} />;
+        </ul>
+      );
+    }}
+  />
+);
+
 
 `;
 
@@ -620,24 +734,31 @@ const App = () => (
 
       ↓ ↓ ↓ ↓ ↓ ↓
 
-import { Connect, query } from 'urql';
-// import {createQuery} from 'blade.macro'
+import { Connect, query } from "urql"; // import {createQuery} from 'blade.macro'
 
-const App = () => <Connect query={query(\`
+const App = () => (
+  <Connect
+    query={query(\`
 query pageQuery{
   movie {
     supporting
     leading
     title
   }
-}\`)} children={({ data }) => {
-  const result = data;
-  const actors = result.movie;
-  return <ul>
+}\`)}
+    children={({ data }) => {
+      const result = data;
+      const actors = result.movie;
+      return (
+        <ul>
           <Movie data={result.movie.title} />
           <Actor data={actors.supporting} />
           <Actor data={actors.leading} />
-        </ul>;
-}} />;
+        </ul>
+      );
+    }}
+  />
+);
+
 
 `;

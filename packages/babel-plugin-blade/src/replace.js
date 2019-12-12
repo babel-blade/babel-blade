@@ -9,6 +9,7 @@ const {
 
 module.exports = getReplacers
 
+// eslint-disable-next-line max-lines-per-function
 function getReplacers(babel) {
   function asProgram(path, fileOpts) {
     const {code} = babel.transformFromAst(path.node, {
