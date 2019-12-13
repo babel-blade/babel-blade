@@ -1,4 +1,4 @@
-> Welcome! This project is **NO LONGER ACTIVE** and seeking a maintainer! [get in touch!](https://twitter.com/swyx)
+> Welcome! This project is **STILL A WORK IN PROGRESS** and not yet production ready - but I appreciate you trying this out and giving feedback!
 
 # Babel-Blade ⛸️
 

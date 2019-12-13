@@ -1,0 +1,6 @@
+status = [
+  "CI / Test (8.x) (push)",
+  "CI / Test (10.x) (push)",
+  "CI / Test (12.x) (push)",
+]
+delete_merged_branches = true
