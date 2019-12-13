@@ -6,9 +6,14 @@ dist
 *.log
 parceldemo
 .netlify
-package-lock.json
-yarn.lock
+.DS_Store
+.eslintcache
 
 .npmrc
 ## blanking it out for now
 vscode-extension
+
+# these cause more harm than good
+# when working with contributors
+package-lock.json
+yarn.lock
