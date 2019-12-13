@@ -87,6 +87,7 @@ export default function(babel) {
   }
 }
 
+// eslint-disable-next-line max-lines-per-function
 export function handleCreateRazor(path, t) {
   if (isCreateQuery(path) || isCreateFragment(path)) {
     // get the identifier and available args
@@ -140,7 +141,8 @@ export function handleCreateRazor(path, t) {
               if (x.type === 'StringLiteral' || x.type === 'TemplateLiteral') {
                 // its an arg or a directive; peek at first character to decide
                 const peek = x.quasis ? x.quasis[0].value.raw[0] : x.value[0]
-                peek === '@' ? directives.push(x) : args.push(x)
+                if (peek === '@') directives.push(x)
+                else args.push(x)
               } else {
                 // its a fragment
                 fragments.push(x)
@@ -148,8 +150,8 @@ export function handleCreateRazor(path, t) {
             }
           }
           // const mockRazorToGetAlias = new BladeData({name, args}) // this is hacky, i know; a result of the datastructures being legacy
-          /*console.log('b4',{name, 
-                           args: args.length && args[0].value, 
+          /*console.log('b4',{name,
+                           args: args.length && args[0].value,
                            currentRazor: [...currentRazor._children],
                            razorData: [...razorData._children],
                           })*/
